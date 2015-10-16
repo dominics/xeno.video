@@ -1,0 +1,142 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+
+/**
+ * Configuration
+ */
+var conf = __dirname + '/../.env';
+
+if (fs.existsSync(conf)) {
+    require('node-env-file')(conf);
+}
+
+[
+    'HOST',
+    'PORT',
+    'SESSION_SECRET',
+    'REDDIT_CONSUMER_KEY',
+    'REDDIT_CONSUMER_SECRET'
+].forEach(function (param) {
+  if (!process.env[param]) {
+    throw 'You must define ' + param + ' as an environment variable, or in .env'
+  }
+});
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('vend-location-map:server');
+var http = require('http');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT);
+app.set('port', port);
+
+/**
+ * Store other configuration
+ */
+app.set('env', process.env.EXPRESS_ENVIRONMENT);
+
+app.locals.queue_name          = process.env.QUEUE_NAME;
+app.locals.maps_api_key        = process.env.MAPS_API_KEY;
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+/**
+ * Create socket.io server.
+ */
+
+var io = require('socket.io')(server);
+app.locals.io = io;
+
+/**
+ * Load routes.
+ */
+
+var passport = require('../session')(app, io);
+var index = require('../routes/index')(passport);
+app.use('/', index);
+
+/**
+ * Start emitter
+ */
+
+require('../emitter')(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
