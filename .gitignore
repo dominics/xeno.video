@@ -2,7 +2,7 @@
 build
 node_modules
 public/css
-public/js/tv.js
+public/js/app.js
 public/js/*.map
 .sass-cache
 xeno.video.iml
