@@ -41,7 +41,7 @@ app.set('port', port);
 /**
  * Store other configuration
  */
-app.set('env', process.env.EXPRESS_ENVIRONMENT);
+app.set('env', process.env.NODE_ENV);
 
 app.locals.queue_name          = process.env.QUEUE_NAME;
 app.locals.maps_api_key        = process.env.MAPS_API_KEY;
@@ -66,6 +66,16 @@ app.locals.io = io;
 var passport = require('../session')(app, io);
 var index = require('../routes/index')(passport);
 app.use('/', index);
+
+/**
+ * Common template vars
+ */
+
+app.use(function (req, res, next) {
+  res.locals.session = req.session;
+  res.locals.isAuthenticated = req.isAuthenticated();
+  next();
+});
 
 /**
  * Start emitter
