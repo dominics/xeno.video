@@ -2,6 +2,10 @@
   "extends": "airbnb",
   "rules": {
     "react/jsx-quotes": 0,
-    "jsx-quotes": [2, "prefer-double"]
+    "jsx-quotes": [2, "prefer-double"],
+    "strict": [2, "function"],
+    "key-spacing": [2, {"beforeColon": false, "afterColon": true, "mode": "minimum"}],
+    "new-cap": [2, {"capIsNew": false}],
+    "indent": [2, 2, {"SwitchCase": 1}]
   }
 }

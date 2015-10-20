@@ -1,59 +1,56 @@
-var session  = require('express-session');
-var RedisStore = require('connect-redis')(session);
-var cookieParser = require('cookie-parser');
-var RedditStrategy = require('passport-reddit').Strategy;
-var passport = require('passport');
-var _ = require('lodash');
+const session        = require('express-session');
+const RedisStore     = require('connect-redis')(session);
+const RedditStrategy = require('passport-reddit').Strategy;
+const passport       = require('passport');
+const _              = require('lodash');
+const debug          = require('debug')('session');
 
-module.exports = function(app, io) {
-    passport.serializeUser(function(user, done) {
-        done(null, user);
+module.exports = (app, io, redis) => {
+  passport.serializeUser((user, done) => {
+    done(null, user);
+  });
+
+  passport.deserializeUser((obj, done) => {
+    done(null, obj);
+  });
+
+  passport.use(new RedditStrategy({
+    clientID:     process.env.REDDIT_CONSUMER_KEY,
+    clientSecret: process.env.REDDIT_CONSUMER_SECRET,
+    callbackURL:  process.env.HOST + '/callback',
+  }, (accessToken, refreshToken, profile, done) => {
+    debug(profile);
+
+    process.nextTick(() => {
+      return done(null, profile);
     });
+  }));
 
-    passport.deserializeUser(function(obj, done) {
-        done(null, obj);
-    });
+  const sessionInstance = session({
+    name:              'xeno',
+    secret:            process.env.SESSION_SECRET,
+    resave:            false, // if true, saves unaltered sessions, possibly causing race conditions
+    saveUninitialized: false,
+    store:             new RedisStore({
+      client: redis,
+    }),
+  });
 
-    passport.use(new RedditStrategy({
-        clientID:     process.env.REDDIT_CONSUMER_KEY,
-        clientSecret: process.env.REDDIT_CONSUMER_SECRET,
-        callbackURL:  process.env.HOST + "/callback"
-    }, function(accessToken, refreshToken, profile, done) {
-        console.log(profile);
+  app.use(sessionInstance);
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-        process.nextTick(function () {
-            return done(null, profile);
-        });
-    }));
+  io.use((socket, next) => {
+    sessionInstance(socket.request, socket.request.res, next);
+  });
 
-    var sessionInstance = session({
-        name: 'xeno',
-        secret: process.env.SESSION_SECRET,
-        resave: false, // if true, saves unaltered sessions, possibly causing race conditions
-        saveUninitialized: false,
-        store: new RedisStore({
-            host: process.env.REDIS_HOST,
-            port: process.env.REDIS_PORT
-        })
-    });
+  io.on('connection', (socket) => {
+    if (!_.get(socket, 'request.session.passport.user.id', false)) {
+      debug('Unauthenticated Socket.io client has been disconnected');
+      socket.disconnect();
+      return;
+    }
+  });
 
-    app.use(sessionInstance);
-    app.use(passport.initialize());
-    app.use(passport.session());
-
-    io.use(function(socket, next) {
-        sessionInstance(socket.request, socket.request.res, next);
-    });
-
-    io.on('connection', function(socket) {
-        if (!_.get(socket, 'request.session.passport.user.id', false)) {
-            console.log("Unauthenticated Socket.io client has been disconnected");
-            socket.disconnect();
-            return;
-        }
-
-        console.log("Authenticated Socket.io client connected");
-    });
-
-    return passport;
+  return passport;
 };

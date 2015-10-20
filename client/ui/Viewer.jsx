@@ -1,18 +1,30 @@
-'use strict';
+const React = require('react/addons');
+const Item = require('./Item.jsx');
 
-var React = require('react');
+module.exports = class Viewer extends React.Component {
+  static propTypes = {
+    item: React.PropTypes.instanceOf(Item),
+  }
 
-module.exports = React.createClass({
-    getInitialState: function () {
-        return {
-            start: new Date()
-        };
-    },
+  static defaultProps = {
+    item: null,
+  }
 
-    render: function () {
-        return (
-            <div id="viewer">
-            </div>
-        );
+  constructor() {
+    super();
+
+    this.state = {};
+  }
+
+  render() {
+    if (!this.props.item) {
+      return null;
     }
-});
+
+    return (
+      <div id="viewer">
+        <h2>Viewer</h2>
+      </div>
+    );
+  }
+};

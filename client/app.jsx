@@ -1,15 +1,13 @@
 // Event handler
-var handler = require('./handler');
-var React = require('react');
-var Container = require('./ui/Container.jsx');
+const io   = require('./io');
+const React     = require('react/addons');
+const Container = require('./ui/Container.jsx');
 
-document.addEventListener('DOMContentLoaded', function() {
-    handler();
+window.dbg = require('debug');
 
-    console.log('ui started');
-
-    React.render(
-        <Container />,
-        document.getElementById('tv')
-    );
+document.addEventListener('DOMContentLoaded', () => {
+  React.render(
+    <Container url="/config" io={io} />,
+    document.getElementById('tv')
+  );
 });

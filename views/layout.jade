@@ -3,8 +3,17 @@ html
   head
     title= title
     link(rel='stylesheet', href='/css/style.css')
+
+    if env === 'development'
+      script(src=lr_host + '/livereload.js')
+      script(src='https://code.jquery.com/jquery-2.1.4.js')
+    else
+      script(src='https://code.jquery.com/jquery-2.1.4.min.js')
+
     script(src='https://cdn.socket.io/socket.io-1.3.5.js')
     script(src='/js/app.js')
+
+
   body
     block content
 
@@ -12,7 +21,7 @@ html
       nav#main
         if isAuthenticated
           a(href="/logout")
-            Logout
+            | Logout
         else
           a(href="/login")
-            Login
+            | Login

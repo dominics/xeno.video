@@ -1,102 +1,43 @@
 #!/usr/bin/env node
 
-var fs = require('fs');
+const fs = require('fs');
+const debug = require('debug')('server');
 
 /**
  * Configuration
  */
-var conf = __dirname + '/../.env';
+const conf = __dirname + '/../.env';
 
 if (fs.existsSync(conf)) {
-    require('node-env-file')(conf);
+  require('node-env-file')(conf);
 }
 
 [
-    'HOST',
-    'PORT',
-    'SESSION_SECRET',
-    'REDDIT_CONSUMER_KEY',
-    'REDDIT_CONSUMER_SECRET'
-].forEach(function (param) {
-  if (!process.env[param]) {
-    throw 'You must define ' + param + ' as an environment variable, or in .env'
-  }
-});
+  'NODE_ENV',
+  'HOST',
+  'PORT',
+  'SESSION_SECRET',
+  'REDDIT_CONSUMER_KEY',
+  'REDDIT_CONSUMER_SECRET',
+]
+  .forEach((param) => {
+    if (!process.env[param]) {
+      throw new Error('You must define ' + param + ' as an environment variable, or in .env');
+    }
+  });
 
 /**
  * Module dependencies.
  */
-
-var app = require('../app');
-var debug = require('debug')('vend-location-map:server');
-var http = require('http');
+const app = require('../app');
+const http = require('http');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT);
-app.set('port', port);
-
-/**
- * Store other configuration
- */
-app.set('env', process.env.NODE_ENV);
-
-app.locals.queue_name          = process.env.QUEUE_NAME;
-app.locals.maps_api_key        = process.env.MAPS_API_KEY;
-
-/**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
-
-/**
- * Create socket.io server.
- */
-
-var io = require('socket.io')(server);
-app.locals.io = io;
-
-/**
- * Load routes.
- */
-
-var passport = require('../session')(app, io);
-var index = require('../routes/index')(passport);
-app.use('/', index);
-
-/**
- * Common template vars
- */
-
-app.use(function (req, res, next) {
-  res.locals.session = req.session;
-  res.locals.isAuthenticated = req.isAuthenticated();
-  next();
-});
-
-/**
- * Start emitter
- */
-
-require('../emitter')(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val) {
-  var port = parseInt(val, 10);
+const normalizedPort = ((val) => {
+  const port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -109,18 +50,75 @@ function normalizePort(val) {
   }
 
   return false;
-}
+})(process.env.PORT);
+
+app.set('port', normalizedPort);
 
 /**
- * Event listener for HTTP server "error" event.
+ * Store other configuration
  */
+app.set('env', process.env.NODE_ENV);
 
-function onError(error) {
+/**
+ * Create HTTP server.
+ */
+const server = http.createServer(app);
+
+const redis = require('redis');
+const redisConnection = redis.createClient(
+  process.env.REDIS_PORT,
+  process.env.REDIS_HOST,
+  {}
+);
+
+/**
+ * Create socket.io server.
+ */
+const io = require('socket.io')(server);
+app.locals.io = io;
+
+/**
+ * Session
+ */
+const passport = require('../session')(app, io, redisConnection);
+
+/**
+ * Common template vars
+ */
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  res.locals.isAuthenticated = req.isAuthenticated();
+  res.locals.env = app.get('env');
+  res.locals.host = process.env.HOST;
+  res.locals.port = process.env.PORT;
+  res.locals.lr_host = process.env.LR_HOST;
+  res.locals.lr_port = process.env.LR_PORT;
+  next();
+});
+
+/**
+ * Routes
+ */
+const index = require('../routes/index')(passport);
+app.use('/', index);
+
+/**
+ * Start emitter
+ */
+require('../emitter')(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+server.listen(app.get('port'));
+
+server.on('error', (error) => {
   if (error.syscall !== 'listen') {
     throw error;
   }
 
-  var bind = typeof port === 'string'
+  const port = app.get('port');
+  const bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
 
@@ -137,16 +135,13 @@ function onError(error) {
     default:
       throw error;
   }
-}
+});
 
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
+server.on('listening', () => {
+  const addr = server.address();
+  const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
+
   debug('Listening on ' + bind);
-}
+});
