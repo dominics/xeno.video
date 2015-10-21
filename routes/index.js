@@ -1,5 +1,6 @@
 const express = require('express');
 const crypto = require('crypto');
+const debug = require('debug')('router');
 
 const auth = (req, res, next) => {
   if (!req.isAuthenticated()) {
@@ -42,14 +43,27 @@ module.exports = (passport) => {
     });
   });
 
-  router.get('/config', auth, (req, res) => {
+  router.get('/channel/all', auth, (req, res) => {
     res.json({
-      channels: [
+      channel: [
         {id: 'all', title: 'All'},
         {id: 'videos', title: 'Videos'},
       ],
     });
   });
+
+  router.get('/item/channel/:channel', auth, (req, res) => {
+    debug(req);
+    debug(res);
+
+    res.json({
+      item: [
+        {id: 'foo', url: 'http://example.com', title: 'Some Video'},
+        {id: 'foo2', url: 'http://example.com/2', title: 'And another'},
+      ],
+    });
+  });
+
 
   router.get('/401', (req, res) => {
     res.render('error', {

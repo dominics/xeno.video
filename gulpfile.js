@@ -5,7 +5,6 @@ const babelify = require('babelify');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 const uglify = require('gulp-uglify');
-const beautify = require('gulp-jsbeautify');
 const sourcemaps = require('gulp-sourcemaps');
 const gutil = require('gulp-util');
 const sass = require('gulp-sass');
@@ -14,6 +13,21 @@ const shell = require('gulp-shell');
 const gulpif = require('gulp-if');
 const lazypipe = require('lazypipe');
 const eslint = require('gulp-eslint');
+const fs = require('fs');
+
+/**
+ * Configuration
+ */
+const conf = __dirname + '/.env';
+
+if (fs.existsSync(conf)) {
+  console.log('Loading!');
+  require('node-env-file')(conf);
+} else {
+  console.log('No env file at ' + conf);
+}
+
+const logger = require('debug')('gulp');
 
 /*
  * Main Settings
@@ -40,7 +54,7 @@ const config = {
   compress: !debug,
 };
 
-console.log('config', config);
+logger('config', config);
 
 /*
  * Pipeline definitions
@@ -89,15 +103,19 @@ gulp.task('run:shell', shell.task([
   config.paths.server,
 ]));
 
+gulp.task('util:pkill', shell.task([
+  'pkill -f node\\ bin/www || true',
+]));
+
 gulp.task('jsClientBuild', () => {
   return sources.jsClient()
     .bundle()
     .pipe(source(config.paths.clientCompiled))
     .pipe(buffer())
     .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
-    .pipe(gulpif(config.compress, uglify(), beautify()))
+    .pipe(gulpif(config.compress, uglify({ mangle: !config.sourcemap })))
     .on('error', gutil.log)
-    .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
+    .pipe(gulpif(config.sourcemap, sourcemaps.write('./js')))
     .pipe(gulp.dest(config.paths.clientOutputDir));
 });
 
@@ -119,7 +137,7 @@ gulp.task('css', () => {
     .pipe(gulp.dest(config.paths.cssOutputDir));
 });
 
-gulp.task('watch', ['build'], () => {
+gulp.task('watch', ['build', 'util:pkill'], () => {
   const server = gls(config.paths.server);
   server.start();
 
