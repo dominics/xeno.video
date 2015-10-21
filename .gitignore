@@ -3,7 +3,7 @@ build
 node_modules
 public/css
 public/js/app.js
-public/js/*.map
+public/js/**/*.map
 .sass-cache
 xeno.video.iml
 .env

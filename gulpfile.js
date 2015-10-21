@@ -115,7 +115,7 @@ gulp.task('jsClientBuild', () => {
     .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
     .pipe(gulpif(config.compress, uglify({ mangle: !config.sourcemap })))
     .on('error', gutil.log)
-    .pipe(gulpif(config.sourcemap, sourcemaps.write('./js')))
+    .pipe(gulpif(config.sourcemap, sourcemaps.write('/')))
     .pipe(gulp.dest(config.paths.clientOutputDir));
 });
 
