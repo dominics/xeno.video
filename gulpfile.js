@@ -1,19 +1,20 @@
-const gulp = require('gulp');
-const gls = require('gulp-live-server');
-const browserify = require('browserify');
-const babelify = require('babelify');
-const source = require('vinyl-source-stream');
-const buffer = require('vinyl-buffer');
-const uglify = require('gulp-uglify');
-const sourcemaps = require('gulp-sourcemaps');
-const gutil = require('gulp-util');
-const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
-const shell = require('gulp-shell');
-const gulpif = require('gulp-if');
-const lazypipe = require('lazypipe');
+const babelify = require('babelify');
+const bower = require('gulp-bower');
+const browserify = require('browserify');
+const buffer = require('vinyl-buffer');
 const eslint = require('gulp-eslint');
 const fs = require('fs');
+const gls = require('gulp-live-server');
+const gulp = require('gulp');
+const gulpif = require('gulp-if');
+const gutil = require('gulp-util');
+const lazypipe = require('lazypipe');
+const sass = require('gulp-sass');
+const shell = require('gulp-shell');
+const source = require('vinyl-source-stream');
+const uglify = require('gulp-uglify');
+const sourcemaps = require('gulp-sourcemaps');
 
 /**
  * Configuration
@@ -40,11 +41,15 @@ const config = {
     server: 'bin/www',
     serverSource: ['*.js', 'routes/*.js', 'gulpfile.js'],
     serverJadeSource: ['views/*.jade'],
+
     client: './client/app.jsx',
     clientSource: ['client/**/*.js'],
     clientJsxSource: ['client/**/*.jsx'],
     clientCompiled: 'app.js',
     clientOutputDir: './public/js/',
+
+    bower: './bower_components',
+
     scssSource: ['./scss/*.scss'],
     cssOutputDir: './public/css',
   },
@@ -68,6 +73,11 @@ const pipes = {
   scss: lazypipe()
     .pipe(sass, {
       outputStyle: config.compress ? 'compressed' : 'expanded',
+      includePaths: [
+        './scss',
+        config.paths.bower + '/bootstrap-sass/assets/stylesheets',
+        config.paths.bower + '/font-awesome/scss',
+      ],
     })
     .pipe(autoprefixer, {
       browsers: ['last 2 versions'],
@@ -107,6 +117,16 @@ gulp.task('util:pkill', shell.task([
   'pkill -f node\\ bin/www || true',
 ]));
 
+gulp.task('bower', () => {
+  return bower()
+    .pipe(gulp.dest(config.paths.bower));
+});
+
+gulp.task('font-awesome', () => {
+  return gulp.src(config.paths.bower + '/font-awesome/fonts/**.*')
+    .pipe(gulp.dest('./public/fonts'));
+});
+
 gulp.task('jsClientBuild', () => {
   return sources.jsClient()
     .bundle()
@@ -115,7 +135,7 @@ gulp.task('jsClientBuild', () => {
     .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
     .pipe(gulpif(config.compress, uglify({ mangle: !config.sourcemap })))
     .on('error', gutil.log)
-    .pipe(gulpif(config.sourcemap, sourcemaps.write('/')))
+    .pipe(gulpif(config.sourcemap, sourcemaps.write('/js/')))
     .pipe(gulp.dest(config.paths.clientOutputDir));
 });
 
@@ -129,7 +149,7 @@ gulp.task('jsServer', () => {
     .pipe(gulpif(config.linting, pipes.jsLint()));
 });
 
-gulp.task('css', () => {
+gulp.task('css', ['bower', 'font-awesome'], () => {
   return sources.scss()
     .pipe(gulpif(config.sourcemap, sourcemaps.init()))
     .pipe(pipes.scss())
