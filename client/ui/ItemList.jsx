@@ -1,7 +1,7 @@
 const React = require('react/addons');
 const Item = require('./Item.jsx');
 const Channel = require('./Channel.jsx');
-const debug = require('debug')('item-list');
+// const debug = require('debug')('item-list');
 
 /**
  * An item-list is full of items
@@ -18,21 +18,16 @@ module.exports = class ItemList extends React.Component {
     items: [],
   };
 
-  constructor() {
-    super();
-  }
-
   itemNodes(items, selectedId, callback) {
-    debug('Displaying item list', items);
-
     return items.map(
       (item) => {
-        if (item.id === selectedId) {
-          debug('Got selected ID', item);
-        }
-
         return (
-          <Item key={item.id} id={item.id} url={item.url} title={item.title} onClick={callback}/>
+          <Item key={item.id}
+                id={item.id}
+                url={item.url}
+                title={item.title}
+                onClick={callback}
+                selected={(item.id === selectedId)}/>
         );
       }
     );
