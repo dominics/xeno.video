@@ -1,6 +1,6 @@
 const React = require('react/addons');
 
-module.exports = class Item extends React.Component {
+export default class Item extends React.Component {
   static propTypes = {
     id: React.PropTypes.string.isRequired,
     url: React.PropTypes.string.isRequired,
@@ -9,11 +9,16 @@ module.exports = class Item extends React.Component {
     selected: React.PropTypes.bool.isRequired,
   };
 
+  state = {
+    unwatched: 3,
+  };
+
   render() {
     return (
-      <li className="item" id={'item-' + this.props.id} onClick={this.props.onClick.bind(undefined, this)}>
+      <li className="list-group-item" id={'item-' + this.props.id} onClick={this.props.onClick.bind(undefined, this)}>
+        <span className="badge">{this.state.unwatched}</span>
         {this.props.title}
       </li>
     );
   }
-};
+}

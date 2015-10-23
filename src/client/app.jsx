@@ -1,9 +1,9 @@
 // Event handler
 const io   = require('./io');
 const React     = require('react/addons');
-const Container = require('./ui/Container.jsx');
-const ItemStore = require('./store/ItemStore.js');
-const ChannelStore = require('./store/ChannelStore.js');
+import Container from './ui/Container.jsx';
+import ItemStore from './store/ItemStore.js';
+import ChannelStore from './store/ChannelStore.js';
 
 window.dbg = require('debug');
 

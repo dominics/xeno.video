@@ -1,12 +1,12 @@
 const React = require('react/addons');
-const ChannelList = require('./ChannelList.jsx');
-const Channel = require('./Channel.jsx');
-const ItemList = require('./ItemList.jsx');
-const Item = require('./Item.jsx');
-const Viewer = require('./Viewer.jsx');
+import ChannelList from './ChannelList.jsx';
+import Channel from './Channel.jsx';
+import ItemList from './ItemList.jsx';
+import Item from './Item.jsx';
+import Viewer from './Viewer.jsx';
 const debug = require('debug')('container');
 
-module.exports = class Container extends React.Component {
+export default class Container extends React.Component {
   static propTypes = {
     socket: React.PropTypes.object,
     stores: React.PropTypes.object,
@@ -91,9 +91,12 @@ module.exports = class Container extends React.Component {
     return (
       <div id="container">
         <ChannelList channels={channels} selected={selChan} onChannelSelect={this.onChannelSelect.bind(this)} />
-        <ItemList items={items} channel={selChan} selected={selItem} onItemSelect={this.onItemSelect.bind(this)} />
-        <Viewer item={selItem} />
+
+        <div className="row">
+          <Viewer item={selItem} />
+          <ItemList items={items} channel={selChan} selected={selItem} onItemSelect={this.onItemSelect.bind(this)} />
+        </div>
       </div>
     );
   }
-};
+}

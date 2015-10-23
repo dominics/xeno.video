@@ -1,4 +1,4 @@
-module.exports = class Store {
+export default class Store {
   constructor() {
     this.name = null;
   }
@@ -15,4 +15,4 @@ module.exports = class Store {
   _payload(data) {
     return data[this.name];
   }
-};
+}

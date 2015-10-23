@@ -1,10 +1,10 @@
-const GeneralStrategy = require('./GeneralStrategy.jsx');
+import GeneralStrategy from './GeneralStrategy.jsx';
 const debug = require('debug')('render');
 
-module.exports = class UnsupportedStrategy extends GeneralStrategy {
+export default class UnsupportedStrategy extends GeneralStrategy {
   render(viewer, url) {
     debug('Unsupported URL', url);
 
     return super.render(viewer, url);
   }
-};
+}
