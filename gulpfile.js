@@ -4,6 +4,7 @@ const babel = require('gulp-babel');
 const bower = require('gulp-bower');
 const browserify = require('browserify');
 const buffer = require('vinyl-buffer');
+const del = require('del');
 const eslint = require('gulp-eslint');
 const fs = require('fs');
 const gls = require('gulp-live-server');
@@ -11,6 +12,7 @@ const gulp = require('gulp');
 const gulpif = require('gulp-if');
 const gutil = require('gulp-util');
 const lazypipe = require('lazypipe');
+const sequence = require('gulp-sequence');
 const sass = require('gulp-sass');
 const shell = require('gulp-shell');
 const source = require('vinyl-source-stream');
@@ -78,6 +80,12 @@ const config = {
   },
 };
 
+config.outputs = [
+  config.paths.client.output,
+  config.paths.server.output,
+  config.paths.css.output,
+];
+
 logger('config', config);
 
 /*
@@ -133,28 +141,31 @@ const sources = {
  * And finally, our task definitions
  */
 
-gulp.task('default', ['build', 'lint']);
+gulp.task('default', ['build']);
 
-gulp.task('build', ['jsBuild', 'css']);
-gulp.task('lint', ['jsLint']);
+gulp.task('build', sequence('clean', ['jsBuild', 'jsLint', 'css']));
+
+gulp.task('clean', () => {
+  return del.sync(config.outputs);
+});
 
 gulp.task('js', ['jsClient', 'jsServer']);
 
 gulp.task('jsBuild', ['jsClientBuild', 'jsServerBuild']);
-gulp.task('jsLint',  ['jsClientSource', 'jsServerSource']);
+gulp.task('jsLint',  ['jsBuild', 'jsClientSource', 'jsServerSource']);
 
 gulp.task('jsClient', ['jsClientBuild', 'jsClientSource']);
 gulp.task('jsServer', ['jsServerBuild', 'jsServerSource']);
 
-gulp.task('run:docker', shell.task([
+gulp.task('docker', shell.task([
   'docker run --env-file=.env .',
 ]));
 
-gulp.task('run:shell', shell.task([
+gulp.task('shell', shell.task([
   config.paths.server.entryPoint,
 ]));
 
-gulp.task('util:pkill', shell.task([
+gulp.task('pkill', shell.task([
   'pkill -f node\\ bin/www || true',
 ]));
 
@@ -208,7 +219,7 @@ gulp.task('css', ['bower', 'font-awesome'], () => {
     .pipe(gulp.dest(config.paths.css.output));
 });
 
-gulp.task('watch', ['build', 'lint', 'util:pkill'], () => {
+gulp.task('watch', ['build'], () => {
   const server = gls(config.paths.server.entryPoint);
 
   server.start();
