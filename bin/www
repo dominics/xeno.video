@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
-const debug = require('debug')('server');
 
 /**
  * Configuration
@@ -11,6 +10,9 @@ const conf = __dirname + '/../.env';
 if (fs.existsSync(conf)) {
   require('node-env-file')(conf);
 }
+
+const debug = require('debug');
+const log = debug('server');
 
 if (!fs.existsSync(__dirname + '/../dist')) {
   throw new Error('You must run the server-side transpile build first (usually, gulp build)');
@@ -31,121 +33,9 @@ if (!fs.existsSync(__dirname + '/../dist')) {
   });
 
 /**
- * Module dependencies.
+ * Start the application
+ *
+ * We're requiring for the side-effects here. This won't return.
  */
 const app = require('./../dist/app');
-const http = require('http');
 
-/**
- * Get port from environment and store in Express.
- */
-
-const normalizedPort = ((val) => {
-  const port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
-})(process.env.PORT);
-
-app.set('port', normalizedPort);
-
-/**
- * Store other configuration
- */
-app.set('env', process.env.NODE_ENV);
-
-/**
- * Create HTTP server.
- */
-const server = http.createServer(app);
-
-const redis = require('redis');
-const redisConnection = redis.createClient(
-  process.env.REDIS_PORT,
-  process.env.REDIS_HOST,
-  {}
-);
-
-/**
- * Create socket.io server.
- */
-const io = require('socket.io')(server);
-app.locals.io = io;
-
-/**
- * Session
- */
-const passport = require('./../dist/session')(app, io, redisConnection);
-
-/**
- * Common template vars
- */
-app.use((req, res, next) => {
-  res.locals.session = req.session;
-  res.locals.isAuthenticated = req.isAuthenticated();
-  res.locals.env = app.get('env');
-  res.locals.host = process.env.HOST;
-  res.locals.port = process.env.PORT;
-  res.locals.lr_host = process.env.LR_HOST;
-  res.locals.lr_port = process.env.LR_PORT;
-  next();
-});
-
-/**
- * Routes
- */
-const index = require('./../dist/index')(passport);
-app.use('/', index);
-
-/**
- * Start emitter
- */
-require('./../dist/emitter')(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-server.listen(app.get('port'));
-
-server.on('error', (error) => {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  const port = app.get('port');
-  const bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-});
-
-server.on('listening', () => {
-  const addr = server.address();
-  const bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-
-  debug('Listening on ' + bind);
-});

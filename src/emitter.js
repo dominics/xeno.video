@@ -1,17 +1,15 @@
-const debug = require('debug')('emitter');
+const debug = require('debug')('xeno:emitter');
 
 export default (app) => {
   const io = app.locals.io;
 
-  debug('Inside emitter', io);
-
   io.emit('tv', 'Hello, world');
 
   io.on('connection', (ws) => {
-    debug('A client connected', ws);
+    debug('A client connected');
   });
 
   io.on('helo', (req) => {
-    debug('Helo received from', req);
+    debug('Helo received');
   });
 };

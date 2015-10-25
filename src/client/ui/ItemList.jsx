@@ -1,7 +1,7 @@
 const React = require('react/addons');
 import Item from './Item.jsx';
 import Channel from './Channel.jsx';
-// const debug = require('debug')('item-list');
+// const debug = require('debug')('xeno:item-list');
 
 /**
  * An item-list is full of items

@@ -1,14 +1,13 @@
 export default class Store {
-  constructor(request) {
+  constructor() {
     this.name = null;
-    this.request = request;
   }
 
   _multi(url) {
     return new Promise((resolve, reject) => {
-      this.request.getJSON(url).then(
+      $.getJSON(url).then(
         (data) => resolve(this._payload(data)),
-        (xhr, status, err) => reject(err)
+        (xhr, status, err) => reject(xhr, status, err)
       );
     });
   }

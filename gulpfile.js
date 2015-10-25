@@ -31,7 +31,7 @@ if (fs.existsSync(conf)) {
   console.log('No env file at ' + conf);
 }
 
-const logger = require('debug')('gulp');
+const logger = require('debug')('xeno:gulp');
 
 /*
  * Main Settings
@@ -48,7 +48,7 @@ const config = {
     server: {
       entryPoint: 'bin/www',
       src: {
-        js: ['src/**/*.js', '!src/client/**'],
+        js: ['src/**/*.js', 'src/*.js', '!src/client/**'],
         jsx: ['src/**/*.jsx'],
         jade: ['src/views/**/*.jade'],
       },
@@ -146,7 +146,7 @@ gulp.task('default', ['build']);
 gulp.task('build', sequence('clean', ['jsBuild', 'jsLint', 'css']));
 
 gulp.task('clean', () => {
-  return del.sync(config.outputs);
+  return del(config.outputs);
 });
 
 gulp.task('js', ['jsClient', 'jsServer']);
@@ -233,8 +233,7 @@ gulp.task('watch', ['build'], () => {
   };
 
   // Restart the server when file changes
-  gulp.watch(['public/*.html'], notify);
-  gulp.watch(['public/images/*'], notify);
+  gulp.watch(['public/*.html', 'public/images/*'], notify);
 
   gulp.watch(config.paths.css.src.scss, ['css', notify]);
 

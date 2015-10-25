@@ -1,6 +1,8 @@
 const express = require('express');
+const validate = require('express-validation');
+import * as validation from './validation';
 const crypto = require('crypto');
-const debug = require('debug')('router');
+const debug = require('debug')('xeno:router');
 
 const auth = (req, res, next) => {
   if (!req.isAuthenticated()) {
@@ -10,7 +12,7 @@ const auth = (req, res, next) => {
   return next();
 };
 
-export default (passport) => {
+export default (app, passport) => {
   const router = express.Router();
 
   router.get('/login', (req, res, next) => {
@@ -18,6 +20,7 @@ export default (passport) => {
     passport.authenticate('reddit', {
       state: req.session.state,
       duration: 'temporary',
+      scope: 'identity,read,vote',
     })(req, res, next);
   });
 
@@ -52,15 +55,30 @@ export default (passport) => {
     });
   });
 
-  router.get('/item/channel/:channel', auth, (req, res) => {
-    debug(req);
-    debug(res);
+  router.get('/item/channel/:channel', auth, validate(validation.itemsForChannel), (req, res, next) => {
+    debug('Getting items for ' + req.params.channel);
 
-    res.json({
-      item: [
-        {id: 'foo', url: 'https://www.youtube.com/watch?v=uPC9qMhAKjQ', title: 'Some Video'},
-        {id: 'foo2', url: 'https://youtu.be/6UM28Ygkg1I', title: 'And another'},
-      ],
+    const channel = req.params.channel;
+
+    if (!app.locals.stores || !app.locals.stores.item) {
+      return next(new Error(400));
+    }
+
+    const itemStore = app.locals.stores.item;
+
+    itemStore.getForChannel(channel, (err, items) => {
+      if (err) return next(err);
+
+      debug('Got items!', items);
+
+      res.json({
+        item: [
+          {id: 'foo', url: 'https://www.youtube.com/watch?v=uPC9qMhAKjQ', title: 'Some Video'},
+          {id: 'foo2', url: 'https://youtu.be/6UM28Ygkg1I', title: 'And another'},
+        ],
+      });
+
+      next();
     });
   });
 

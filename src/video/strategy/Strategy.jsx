@@ -1,4 +1,4 @@
-const debug = require('debug')('render');
+const debug = require('debug')('xeno:render');
 
 export default class Strategy {
   render(url) {
