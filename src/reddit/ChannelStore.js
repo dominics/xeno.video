@@ -1,4 +1,4 @@
-import Store from './../../util/Store';
+import Store from './../util/Store';
 
 export default class ChannelStore extends Store {
   constructor(request) {
@@ -8,6 +8,5 @@ export default class ChannelStore extends Store {
   }
 
   getAll() {
-    return this._multi('/channel/all');
   }
 }
