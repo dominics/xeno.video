@@ -1,4 +1,4 @@
-import * as domains from './../data/domains.dat.js';
+import * as domains from './../../data/domains.dat.js';
 
 const parseUrl = require('url').parse;
 const debug = require('debug')('render');
