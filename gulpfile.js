@@ -46,7 +46,7 @@ const config = {
     server: {
       entryPoint: 'bin/www',
       src: {
-        js: ['src/**/*.js'],
+        js: ['src/**/*.js', '!src/client/**'],
         jsx: ['src/**/*.jsx'],
         jade: ['src/views/**/*.jade'],
       },
@@ -54,10 +54,10 @@ const config = {
     },
 
     client: {
-      entryPoint: './client/app.jsx',
+      entryPoint: './src/client/app.jsx',
       src: {
-        js: ['client/**/*.js'],
-        jsx: ['client/**/*.jsx'],
+        js: ['src/client/**/*.js'],
+        jsx: ['src/client/**/*.jsx'],
       },
       compiled: 'app.js',
       output: './public/js/',
@@ -67,7 +67,7 @@ const config = {
 
     css: {
       src: {
-        scss: ['./scss/*.scss'],
+        scss: ['./src/scss/style.scss'],
       },
       output: './public/css',
     },
@@ -133,10 +133,15 @@ const sources = {
  * And finally, our task definitions
  */
 
-gulp.task('default', ['build']);
-gulp.task('build', ['js', 'css']);
+gulp.task('default', ['build', 'lint']);
+
+gulp.task('build', ['jsBuild', 'css']);
+gulp.task('lint', ['jsLint']);
 
 gulp.task('js', ['jsClient', 'jsServer']);
+
+gulp.task('jsBuild', ['jsClientBuild', 'jsServerBuild']);
+gulp.task('jsLint',  ['jsClientSource', 'jsServerSource']);
 
 gulp.task('jsClient', ['jsClientBuild', 'jsClientSource']);
 gulp.task('jsServer', ['jsServerBuild', 'jsServerSource']);
@@ -203,8 +208,8 @@ gulp.task('css', ['bower', 'font-awesome'], () => {
     .pipe(gulp.dest(config.paths.css.output));
 });
 
-gulp.task('watch', ['build', 'util:pkill'], () => {
-  const server = gls(['--harmony_modules', config.paths.server.entryPoint]);
+gulp.task('watch', ['build', 'lint', 'util:pkill'], () => {
+  const server = gls(config.paths.server.entryPoint);
 
   server.start();
 
