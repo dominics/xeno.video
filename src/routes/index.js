@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const debug = require('debug')('xeno:router');
 
 const auth = (req, res, next) => {
-  if (!req.isAuthenticated()) {
+  if (!req.isAuthenticated() || !req.session.passport.user.accessToken) {
     return res.redirect('/login');
   }
 
@@ -55,7 +55,7 @@ export default (app, passport) => {
     });
   });
 
-  router.get('/item/channel/:channel', auth, validate(validation.itemsForChannel), (req, res, next) => {
+  router.get('/item/channel/:channel', auth, validate(validation.itemsForChannel), (req, res) => {
     debug('Getting items for ' + req.params.channel);
 
     const channel = req.params.channel;
@@ -66,19 +66,14 @@ export default (app, passport) => {
 
     const itemStore = app.locals.stores.item;
 
-    itemStore.getForChannel(channel, (err, items) => {
+    itemStore.getForChannel(channel, req, (err, items) => {
       if (err) return next(err);
 
-      debug('Got items!', items);
-
       res.json({
-        item: [
-          {id: 'foo', url: 'https://www.youtube.com/watch?v=uPC9qMhAKjQ', title: 'Some Video'},
-          {id: 'foo2', url: 'https://youtu.be/6UM28Ygkg1I', title: 'And another'},
-        ],
+        item: items,
       });
 
-      next();
+      res.end();
     });
   });
 

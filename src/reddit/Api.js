@@ -26,7 +26,29 @@ export default class Api {
       // sr_detail
     };
 
-    this._get(`/r/${subreddit}/${sort}.json`, listingParams, next);
+    this._get(`/r/${subreddit}/${sort}.json`, listingParams, (err, responseData) => {
+      if (err) {
+        return next(err);
+      }
+
+      const items = [];
+
+      const info = JSON.parse(responseData.body);
+
+      if (!info.kind || info.kind !== 'Listing') {
+        return next(new Error('Invalid response kind'));
+      }
+
+      if (!info.data || !info.data.children) {
+        return next(new Error('No data in response'));
+      }
+
+      for (let item of info.data.children) { // eslint-disable-line prefer-const
+        items.push(item);
+      }
+
+      next(null, items);
+    });
   }
 
   _get(pathname, params, next) {
@@ -36,10 +58,11 @@ export default class Api {
     };
 
     options = Object.assign(options, Api.URL);
+    const url = urllib.format(options);
 
-    debug('Using URL options', options, urllib.format(options));
+    debug('Making reddit API request to ' + url);
 
-    this._getJSON(urllib.format(options), next);
+    this._getJSON(url, next);
   }
 
   _getJSON(url, next) {
