@@ -7,7 +7,7 @@ import Channel from './Channel.jsx';
  */
 export default class ChannelList extends React.Component {
   static propTypes = {
-    channels: React.PropTypes.arrayOf(React.PropTypes.object),
+    channels:        React.PropTypes.arrayOf(React.PropTypes.object),
     onChannelSelect: React.PropTypes.func.isRequired,
   };
 

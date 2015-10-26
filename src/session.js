@@ -18,12 +18,13 @@ export default (app, io, redis) => {
     clientID:     process.env.REDDIT_CONSUMER_KEY,
     clientSecret: process.env.REDDIT_CONSUMER_SECRET,
     callbackURL:  process.env.HOST + '/callback',
-    scope: 'read,vote',
+    scope:        'read,vote',
   }, (accessToken, refreshToken, profile, done) => {
     const data = {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-      reddit: profile,
+      accessToken:   accessToken,
+      refreshToken:  refreshToken,
+      authenticated: Date.now() / 1000,
+      reddit:        profile,
     };
 
     debug(data);

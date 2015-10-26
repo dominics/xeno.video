@@ -15,15 +15,24 @@ export default class Item extends React.Component {
     unwatched: 3,
   };
 
+  getRawEmbed() {
+    return {
+      __html: this.props.embed.content,
+    };
+  }
+
   render() {
     console.log(this.props);
 
     return (
-      <li className="list-group-item" id={'item-' + this.props.id} onClick={this.props.onClick.bind(undefined, this)}>
-        <span className="badge">{this.state.unwatched}</span>
+      <li className="media" id={'item-' + this.props.id} onClick={this.props.onClick.bind(undefined, this)}>
+        <div className="media-left media-top">
+          <img className="media-object" src={this.props.thumbnail} alt={this.props.title} />
+        </div>
 
-        {this.props.title}
-
+        <article className="media-body">
+          <h4>{this.props.title}</h4>
+        </article>
       </li>
     );
   }
