@@ -1,14 +1,16 @@
-const express      = require('express');
-const path         = require('path');
-const favicon      = require('serve-favicon');
-const logger       = require('morgan');
-import cookieParser from 'cookie-parser';
-const bodyParser   = require('body-parser');
-const compress     = require('compression');
-import Api from './reddit/Api';
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const compress = require('compression');
 const debug = require('debug')('xeno:app');
+const Promise = require('bluebird');
+
+import cookieParser from 'cookie-parser';
 import { ValidationError } from 'express-validation';
 
+import Api from './reddit/Api';
 import ChannelStore from './reddit/ChannelStore';
 import ItemStore from './reddit/ItemStore';
 
@@ -98,11 +100,19 @@ const http = require('http');
 const server = http.createServer(app);
 
 const redis = require('redis');
+Promise.promisifyAll(redis.RedisClient.prototype);
+Promise.promisifyAll(redis.Multi.prototype);
+
 const redisConnection = redis.createClient(
   process.env.REDIS_PORT,
   process.env.REDIS_HOST,
   {}
 );
+
+redisConnection.on('error', (err) => {
+  console.error('Redis client error: ' + err);
+  process.exit(1);
+});
 
 /**
  * Create socket.io server.
@@ -118,29 +128,29 @@ const passport = require('./../dist/session')(app, io, redisConnection);
  /**
  * API-based storages
  */
+const api = new Api();
+app.locals.redditApi = api;
+
+const stores = {
+  channel: new ChannelStore(api, redisConnection),
+  item:    new ItemStore(api, redisConnection),
+};
+app.locals.stores = stores;
 
 app.use((req, res, next) => {
-  if (!req.isAuthenticated() || !req.session.passport || !req.session.passport.user) {
-    app.locals.redditApi = null;
-    app.locals.stores = {
-      channel: null,
-      item: null,
-    };
-
-    return next();
+  if (
+    !req.isAuthenticated()
+    || !req.session.passport
+    || !req.session.passport.user
+    || !req.session.passport.user.accessToken
+  ) {
+    req.redditToken = null;
+  } else {
+    req.redditToken = req.session.passport.user.accessToken;
   }
-
-  const api = new Api(req.session.passport.user.accessToken);
-
-  app.locals.redditApi = api;
-  app.locals.stores = {
-    channel: new ChannelStore(api, redis),
-    item:    new ItemStore(api, redis),
-  };
 
   next();
 });
-
 
 /**
  * Common template vars

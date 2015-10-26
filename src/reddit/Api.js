@@ -9,13 +9,17 @@ export default class Api {
     host: 'oauth.reddit.com',
   };
 
-  constructor(token) {
-    this.token = token;
+  constructor(token = null) {
+    this.setToken(token);
+  }
 
+  setToken(token) {
     debug('Using token', token);
+    this.token = token;
   }
 
   listing(subreddit, sort, next) {
+    debug('getting listing for', subreddit);
     const listingParams = {
       raw_json: 1,
       // after
@@ -66,6 +70,10 @@ export default class Api {
   }
 
   _getJSON(url, next) {
+    if (!this.token) {
+      throw new Error('Cannot make unauthenticated Reddit request');
+    }
+
     const options = {
       url: url,
       method: 'GET',
