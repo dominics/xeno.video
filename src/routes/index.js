@@ -3,6 +3,7 @@ const validate = require('express-validation');
 import * as validation from './validation';
 const crypto = require('crypto');
 const debug = require('debug')('xeno:router');
+const redisCache = require('express-redis-cache');
 
 const auth = (req, res, next) => {
   if (!req.isAuthenticated() || !req.redditToken) {
@@ -14,6 +15,11 @@ const auth = (req, res, next) => {
 
 export default (app, passport) => {
   const router = express.Router();
+  const cache = redisCache({
+    client: app.locals.redis,
+    expire: 30,
+    prefix: 'index-controller/',
+  });
 
   router.get('/login', (req, res, next) => {
     req.session.state = crypto.randomBytes(32).toString('hex');
@@ -55,7 +61,7 @@ export default (app, passport) => {
     });
   });
 
-  router.get('/item/channel/:channel', auth, validate(validation.itemsForChannel), (req, res, next) => {
+  router.get('/item/channel/:channel', auth, validate(validation.itemsForChannel), cache.route({ cache: 5 }), (req, res, next) => {
     debug('Getting items for ' + req.params.channel);
 
     const channel = req.params.channel;
@@ -66,15 +72,17 @@ export default (app, passport) => {
 
     const itemStore = app.locals.stores.item;
 
-    itemStore.getByChannel(channel, req, (err, items) => {
-      if (err) return next(err);
+    itemStore.getByChannel(channel, req)
+      .then(items => {
+        res.json({
+          item: items,
+        });
 
-      res.json({
-        item: items,
+        res.end();
+      })
+      .catch(err => {
+        return next(err);
       });
-
-      res.end();
-    });
   });
 
   router.get('/401', (req, res) => {

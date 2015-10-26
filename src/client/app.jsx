@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   React.render(
-    <Container socket={ioClient} stores={stores} />,
+    window._tv = <Container socket={ioClient} stores={stores} />,
     document.getElementById('tv')
   );
 });
