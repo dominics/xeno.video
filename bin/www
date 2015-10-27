@@ -36,8 +36,5 @@ if (!fs.existsSync(__dirname + '/../dist')) {
 
 /**
  * Start the application
- *
- * We're requiring for the side-effects here. This won't return.
  */
-const app = require('./../dist/app');
-
+require('./../dist/app')();

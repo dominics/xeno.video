@@ -5,8 +5,8 @@ const bower = require('gulp-bower');
 const browserify = require('browserify');
 const buffer = require('vinyl-buffer');
 const del = require('del');
+const debug = require('gulp-debug');
 const eslint = require('gulp-eslint');
-const fs = require('fs');
 const gls = require('gulp-live-server');
 const gulp = require('gulp');
 const gulpif = require('gulp-if');
@@ -23,71 +23,7 @@ const sourcemaps = require('gulp-sourcemaps');
 /**
  * Configuration
  */
-const conf = __dirname + '/.env';
-
-if (fs.existsSync(conf)) {
-  console.log('Loading!');
-  require('node-env-file')(conf);
-} else {
-  console.log('No env file at ' + conf);
-}
-
-const logger = require('debug')('xeno:gulp');
-
-/*
- * Main Settings
- */
-
-const debug = (process.env.NODE_ENV === 'development');
-
-const config = {
-  linting: debug,
-  sourcemap: debug,
-  compress: !debug,
-
-  paths: {
-    server: {
-      entryPoint: 'bin/www',
-      src: {
-        js: ['src/**/*.js', 'src/*.js', '!src/client/**'],
-        jsx: ['src/**/*.jsx'],
-        jade: ['src/views/**/*.jade'],
-      },
-      output: './dist',
-    },
-
-    client: {
-      entryPoint: './src/client/app.jsx',
-      src: {
-        js: ['src/client/**/*.js'],
-        jsx: ['src/client/**/*.jsx'],
-      },
-      compiled: 'app.js',
-      output: './public/js/',
-    },
-
-    bower: './bower_components',
-
-    css: {
-      src: {
-        scss: ['./src/scss/style.scss'],
-      },
-      output: './public/css',
-    },
-  },
-
-  babelOptions: {
-    optional: ['es7.classProperties'],
-  },
-};
-
-config.outputs = [
-  config.paths.client.output,
-  config.paths.server.output,
-  config.paths.css.output,
-];
-
-logger('config', config);
+const config = require('./config');
 
 /*
  * Pipeline definitions
@@ -114,25 +50,22 @@ const pipes = {
 };
 
 const sources = {
-  jsClient: () => (
-    browserify({
-      entries: config.paths.client.entryPoint,
-      debug: debug,
-    }).transform(
-      babelify.configure(config.babelOptions)
-    )
-  ),
+  jsClient: () => browserify({
+    entries: config.paths.client.entryPoint,
+    debug: config.browserifyDebug,
+    transform: [babelify.configure(config.babelOptions.client)],
+  }).bundle(),
   jsClientSource: () => gulp.src(
     config.paths.client.src.js
       .concat(config.paths.client.src.jsx)
   ),
   jsServer: () => gulp.src(
     config.paths.server.src.js
-    .concat(config.paths.server.src.jsx)
+      .concat(config.paths.server.src.jsx)
   ),
   jsServerSource: () => gulp.src(
     config.paths.server.src.js
-    .concat(config.paths.server.src.jsx)
+      .concat(config.paths.server.src.jsx)
   ),
   scss: () =>
     gulp.src(config.paths.css.src.scss),
@@ -153,21 +86,21 @@ gulp.task('clean', () => {
 gulp.task('js', ['jsClient', 'jsServer']);
 
 gulp.task('jsBuild', ['jsClientBuild', 'jsServerBuild']);
-gulp.task('jsLint',  ['jsClientSource', 'jsServerSource']);
+gulp.task('jsLint', ['jsClientSource', 'jsServerSource']);
 
 gulp.task('jsClient', ['jsClientBuild', 'jsClientSource']);
 gulp.task('jsServer', ['jsServerBuild', 'jsServerSource']);
 
-gulp.task('docker', shell.task([
+gulp.task('docker', () => shell.task([
   'docker run --env-file=.env .',
 ]));
 
-gulp.task('shell', shell.task([
+gulp.task('shell', () => shell.task([
   config.paths.server.entryPoint,
 ]));
 
-gulp.task('pkill', shell.task([
-  'pkill -f node\\ bin/www || true',
+gulp.task('pkill', () => shell.task([
+  'pkill -f \' bin/www \' || true',
 ]));
 
 gulp.task('bower', () => {
@@ -182,13 +115,14 @@ gulp.task('font-awesome', () => {
 
 gulp.task('jsClientBuild', () => {
   return sources.jsClient()
-    .bundle()
     .pipe(source(config.paths.client.compiled))
+    .pipe(debug({title: 'client-build-input'}))
     .pipe(buffer())
     .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
-    .pipe(gulpif(config.compress, uglify({ mangle: false })))
+    .pipe(gulpif(config.compress, uglify({mangle: false})))
     .on('error', gutil.log)
-    .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
+    .pipe(gulpif(config.sourcemap, sourcemaps.write('.')))
+    .pipe(debug({title: 'client-build-output'}))
     .pipe(gulp.dest(config.paths.client.output));
 });
 
@@ -199,11 +133,12 @@ gulp.task('jsClientSource', () => {
 
 gulp.task('jsServerBuild', ['copyEsLintGenerated'], () => {
   return sources.jsServer()
-    .pipe(buffer())
-    .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
-    .pipe(babel(config.babelOptions))
+    .pipe(debug({title: 'server-build-input'}))
+    .pipe(gulpif(config.sourcemap, sourcemaps.init()))
+    .pipe(babel(config.babelOptions.server))
     .on('error', gutil.log)
-    .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
+    .pipe(gulpif(config.sourcemap, sourcemaps.write('.')))
+    .pipe(debug({title: 'server-build-output'}))
     .pipe(gulp.dest(config.paths.server.output));
 });
 
@@ -230,32 +165,38 @@ gulp.task('css', ['bower', 'font-awesome'], () => {
 
 gulp.task('watch', ['build'], () => {
   const server = gls(config.paths.server.entryPoint);
-
   server.start();
 
   const notify = (file) => {
-    server.notify.apply(server, [file]);
+    console.log('Notifying');
+    return server.notify.apply(server, [file]);
   };
 
   const restart = (file) => {
-    server.stop().then(() => server.start()).then(() => notify(file));
+    return server.stop().then(() => {
+      console.log('In callback after server stop');
+      return server.start();
+    }).then(() => {
+      console.log('In callback after server restarted?');
+      return notify(file);
+    });
   };
 
   // Restart the server when file changes
   gulp.watch(['public/*.html', 'public/images/*'], notify);
 
-  gulp.watch(config.paths.css.src.scss, ['css', notify]);
+  gulp.watch(config.paths.css.src.scss, ['css'], notify);
 
   gulp.watch([
     config.paths.client.src.js,
     config.paths.client.src.jsx,
-  ], ['jsClient', notify]);
+  ], ['jsClient'], notify);
 
   gulp.watch([
     config.paths.server.src.js,
     config.paths.server.src.jsx,
     config.paths.server.src.jade,
-  ], ['jsServer', restart]);
+  ], ['jsServer'], notify);
 
   gulp.watch([
     config.paths.server.output + '/**/*.js',

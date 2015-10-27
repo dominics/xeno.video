@@ -1,4 +1,6 @@
 import Store from './Store';
+import { mapSchema } from './../util';
+
 const Queue = require('../queue');
 const Promise = require('bluebird');
 const debug = require('debug')('xeno:store:item');
@@ -81,7 +83,7 @@ export default class ItemStore extends Store {
       (val) => {
         const now = Math.floor(Date.now() / 1000);
 
-        if (val && val > (now - ItemStore.CACHE_TTL_CHANNEL_ITEMS)) {
+        if (val && val > (now - ItemStore.CACHE_TTL_CHANNEL_ITEMS) && false) {
           debug('Skipped API refresh because of cool-down: ', val - (now - ItemStore.CACHE_TTL_CHANNEL_ITEMS));
           return Promise.resolve();
         }
@@ -93,9 +95,9 @@ export default class ItemStore extends Store {
           });
       }
     ).catch((err) => {
-      debug(err);
-      return Promise.reject(err);
-    });
+        debug(err);
+        return Promise.reject(err);
+      });
   }
 
   _processGetByChannel(channel, token) {
@@ -115,15 +117,22 @@ export default class ItemStore extends Store {
           })
           .map(item => item.data)
           .map(item => {
-            return {
-              id: item.id,
-              title: item.title,
-              url: item.url,
-              num_comments: item.num_comments,
-              permalink: item.permalink,
-              thumbnail: this._thumbnail(item),
-              embed: this._embed(item),
-            };
+            const view = mapSchema(item, {
+              id: true,
+              title: true,
+              url: true,
+              num_comments: true,
+              score: true,
+              author: true,
+              created_utc: true,
+              over_18: true,
+              embed: 'media_embed',
+            });
+
+            view.thumbnail = this._thumbnail(item);
+            view.embed = this._embed(item);
+
+            return view;
           });
 
         return Promise.each(mapped, (item, index) => {
@@ -138,12 +147,27 @@ export default class ItemStore extends Store {
     });
   }
 
-  _thumbnail(item) {
-    return item.thumbnail;
-  }
-
   _embed(item) {
     return item.media_embed;
   }
 
+  _thumbnail(item) {
+    const details = {};
+
+    if (typeof item.thumbnail === 'string' && item.thumbnail !== 'nsfw') {
+      details.url = item.thumbnail;
+    }
+
+    if (typeof item.media.oembed === 'object') {
+      for (let prop of Object.keys(item.media.oembed)) {  // eslint-disable-line prefer-const
+        const matches = prop.match(/^thumbnail_(.*)/);
+
+        if (matches) {
+          details[matches[1]] = item.media.oembed[prop];
+        }
+      }
+    }
+
+    return details;
+  }
 }

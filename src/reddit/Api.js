@@ -15,7 +15,9 @@ export default class Api {
   }
 
   setToken(token) {
-    debug('Using token', token);
+    if (token) {
+      debug('Using token', token);
+    }
     this.token = token;
   }
 
