@@ -2,7 +2,7 @@ const express = require('express');
 const validate = require('express-validation');
 import * as validation from './validation';
 const crypto = require('crypto');
-const debug = require('debug')('xeno:router');
+const debug = libdebug('xeno:router');
 const redisCache = require('express-redis-cache');
 
 const auth = (req, res, next) => {

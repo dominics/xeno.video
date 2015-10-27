@@ -1,17 +1,22 @@
-const React = require('react/addons');
-import ChannelList from './ChannelList.jsx';
+import { React, Component } from 'react/addons';
 import Channel from './Channel.jsx';
 import ItemList from './ItemList.jsx';
 import Item from './Item.jsx';
 import Viewer from './Viewer.jsx';
 import NavBar from './NavBar.jsx';
 import { Container as FluxContainer } from 'flux/utils';
-const debug = require('debug')('xeno:container');
+import libdebug from 'debug';
+import io from './../io';
 
-class ContainerComponent extends React.Component {
+import ItemStore from './store/ItemStore.js';
+import ChannelStore from './store/ChannelStore.js';
+import SettingStore from './store/SettingStore.js';
+
+const debug = libdebug('xeno:container');
+
+class ContainerComponent extends Component {
   static propTypes = {
     socket: React.PropTypes.object,
-    stores: React.PropTypes.object,
   };
 
   state = {
@@ -22,6 +27,18 @@ class ContainerComponent extends React.Component {
     selectedItem: null,
     settings: {},
   };
+
+  static getStores() {
+    const ioClient = io();
+
+    return [
+      new ItemStore(),
+      new ChannelStore(),
+      new SettingStore(),
+      new CurrentItemStore(),
+      new CurrentChannelStore(),
+    ];
+  }
 
   componentDidMount() {
     debug('Container did mount');

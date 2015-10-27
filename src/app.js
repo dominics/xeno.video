@@ -4,7 +4,7 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const compress = require('compression');
-const debug = require('debug')('xeno:app');
+const debug = libdebug('xeno:app');
 const Promise = require('bluebird');
 
 import cookieParser from 'cookie-parser';

@@ -1,8 +1,8 @@
-const React = require('react/addons');
-const debug = require('debug')('xeno:render');
+import { React, Component } from 'react/addons';
+const debug = libdebug('xeno:render');
 import Item from './Item.jsx';
 
-export default class Viewer extends React.Component {
+export default class Viewer extends Component {
   static propTypes = {
     item:  React.PropTypes.instanceOf(Item),
     ratio: React.PropTypes.oneOf(['free', '4by3', '16by9']),

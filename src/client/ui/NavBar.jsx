@@ -1,9 +1,9 @@
-const React = require('react/addons');
+import { React, Component } from 'react/addons';
 import ChannelList from './ChannelList.jsx';
-const debug = require('debug')('xeno:navbar');
+const debug = libdebug('xeno:navbar');
 const Channel = require('./Channel.jsx');
 
-export default class NavBar extends React.Component {
+export default class NavBar extends Component {
   static propTypes = {
     channels:        React.PropTypes.arrayOf(React.PropTypes.instanceOf(Channel)),
     onChannelSelect: React.PropTypes.func.isRequired,

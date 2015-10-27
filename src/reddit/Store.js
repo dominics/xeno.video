@@ -1,4 +1,4 @@
-const debug = require('debug')('xeno:store');
+const debug = libdebug('xeno:store');
 
 export default class Store {
   name = 'unknown';

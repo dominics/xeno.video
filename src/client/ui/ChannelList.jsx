@@ -1,11 +1,11 @@
-const React = require('react/addons');
+import { React, Component } from 'react/addons';
 
 import Channel from './Channel.jsx';
 
 /**
  * A channel-list is full of channels
  */
-export default class ChannelList extends React.Component {
+export default class ChannelList extends Component {
   static propTypes = {
     channels:        React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
     onChannelSelect: React.PropTypes.func.isRequired,
@@ -16,6 +16,8 @@ export default class ChannelList extends React.Component {
     channels: [],
     selected: null,
   };
+
+  static io = null;
 
   componentWillReceiveProps(nextProps) {
     if (!nextProps.selected && nextProps.channels.length > 0) {

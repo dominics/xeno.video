@@ -1,4 +1,4 @@
-const debug = require('debug')('xeno:emitter');
+const debug = libdebug('xeno:emitter');
 
 export default (app) => {
   const io = app.locals.io;
