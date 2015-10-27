@@ -19,6 +19,12 @@ export default class Viewer extends React.Component {
 
   state = {};
 
+  //getRawEmbed(item) {
+  //  return {
+  //    __html: item.embed.content,
+  //  };
+  //}
+
   render() {
     if (!this.props.item) {
       return null;

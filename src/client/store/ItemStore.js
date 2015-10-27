@@ -1,10 +1,13 @@
-import Store from './Store';
+import { MapStore } from 'flux/utils';
 
-export default class ItemStore extends Store {
-  constructor() {
-    super();
-
-    this.name = 'item';
+export default class ItemStore extends MapStore {
+  _multi(url) {
+    return new Promise((resolve, reject) => {
+      $.getJSON(url).then(
+        (data) => resolve(data.item),
+        (xhr, status, err) => reject(xhr, status, err)
+      );
+    });
   }
 
   getAllForChannel(channel) {

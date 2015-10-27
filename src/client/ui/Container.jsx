@@ -5,9 +5,10 @@ import ItemList from './ItemList.jsx';
 import Item from './Item.jsx';
 import Viewer from './Viewer.jsx';
 import NavBar from './NavBar.jsx';
+import { Container as FluxContainer } from 'flux/utils';
 const debug = require('debug')('xeno:container');
 
-export default class Container extends React.Component {
+class ContainerComponent extends React.Component {
   static propTypes = {
     socket: React.PropTypes.object,
     stores: React.PropTypes.object,
@@ -31,7 +32,7 @@ export default class Container extends React.Component {
       debug('Listening on tv socket');
     });
 
-    this.props.stores.settings.getAll().then(settings => {
+    this.props.stores.setting.getAll().then(settings => {
       this.setState(React.addons.update(this.state, {data: {settings: {$set: settings}}}));
     });
 
@@ -63,6 +64,7 @@ export default class Container extends React.Component {
     this.props.stores.item.getAllForChannel(channel).then(
       (items) => {
         this.setState(React.addons.update(this.state, {data: {items: {$set: items}}}));
+        debug('Initial load, setting as default item', items[0]);
         this.onItemSelect(items[0], { state: 'initial channel load, set as default item' });
       },
       (err) => {
@@ -90,7 +92,9 @@ export default class Container extends React.Component {
       return null;
     }
 
-    const items    = this.state.data.items;
+    const items = this.state.data.items;
+
+    debug(this.state.selectedChannel);
 
     return (
       <div id="container">
@@ -102,7 +106,7 @@ export default class Container extends React.Component {
 
         <div className="row">
           {this.state.selectedChannel
-            ? <h2>{this.state.selectedChannel.props.name}</h2>
+            ? <h2>{this.state.selectedChannel.props.title}</h2>
             : <p>Select a channel to get started</p>}
 
           <Viewer item={this.state.selectedItem} />
@@ -117,3 +121,5 @@ export default class Container extends React.Component {
     );
   }
 }
+
+export default FluxContainer.create(ContainerComponent);
