@@ -1,8 +1,10 @@
+import libdebug from 'debug';
+
 import Store from './Store';
 import { mapSchema } from './../util';
 
 const Queue = require('../queue');
-const Promise = require('bluebird');
+import Promise from 'bluebird';
 const debug = libdebug('xeno:store:item');
 const workerLog = libdebug('xeno:store:item:worker');
 

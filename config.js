@@ -18,10 +18,10 @@ if (process.env.DEBUG_PORT) {
 }
 
 const config = {
-  debug:           debug,
-  linting:         debug,
-  sourcemap:       debug,
-  compress:        !debug,
+  debug: debug,
+  linting: debug,
+  sourcemap: debug,
+  compress: !debug,
   browserifyDebug: debug,
 
   node: `${process.execPath} ${nodeOptions.join(' ')}`,
@@ -32,28 +32,28 @@ const config = {
 
     server: {
       entryPoint: 'bin/www',
-      src:        {
-        js:   ['src/**/*.js', 'src/*.js', '!src/client/**'],
-        jsx:  ['src/**/*.jsx'],
+      src: {
+        js: ['src/**/*.js', 'src/*.js', '!src/client/**'],
+        jsx: ['src/**/*.jsx'],
         jade: ['src/views/**/*.jade'],
       },
-      output:     'dist',
+      output: 'dist',
     },
 
     client: {
       entryPoint: './src/client/app.jsx',
-      src:        {
-        js:  ['src/client/**/*.js'],
+      src: {
+        js: ['src/client/**/*.js'],
         jsx: ['src/client/**/*.jsx'],
       },
-      compiled:   'app.js',
-      output:     'public/js/',
+      compiled: 'app.js',
+      output: 'public/js/',
     },
 
     bower: 'bower_components',
 
     css: {
-      src:    {
+      src: {
         scss: ['src/scss/style.scss'],
       },
       output: 'public/css',
@@ -62,10 +62,12 @@ const config = {
 
   babelOptions: {
     server: {
-      optional: ['es7.classProperties'],
+      optional: ['es7.classProperties', 'runtime'],
+      loose: ['es6.classes', 'es6.properties.computed', 'es6.modules', 'es6.forOf'],
     },
     client: {
-      optional:          ['es7.classProperties'],
+      optional: ['es7.classProperties', 'runtime'],
+      loose: ['es6.classes', 'es6.properties.computed', 'es6.modules', 'es6.forOf'],
       sourceMapRelative: path.join(__dirname, 'public/js'),
     },
   },

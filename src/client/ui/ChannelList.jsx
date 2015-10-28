@@ -1,6 +1,9 @@
-import { React, Component } from 'react/addons';
+import { default as React, Component } from 'react/addons';
 
-import Channel from './Channel.jsx';
+import Channel from './Channel';
+import libdebug from 'debug';
+
+const debug = libdebug('xeno:component:channelList');
 
 /**
  * A channel-list is full of channels
@@ -8,7 +11,6 @@ import Channel from './Channel.jsx';
 export default class ChannelList extends Component {
   static propTypes = {
     channels:        React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-    onChannelSelect: React.PropTypes.func.isRequired,
     selected:        React.PropTypes.instanceOf(Channel),
   };
 
@@ -16,8 +18,6 @@ export default class ChannelList extends Component {
     channels: [],
     selected: null,
   };
-
-  static io = null;
 
   componentWillReceiveProps(nextProps) {
     if (!nextProps.selected && nextProps.channels.length > 0) {
@@ -29,13 +29,15 @@ export default class ChannelList extends Component {
     return channels.map(
       (channel) => {
         return (
-          <Channel key={channel.id} id={channel.id} title={channel.title} onSelect={this.props.onChannelSelect}/>
+          <Channel key={channel.id} id={channel.id} title={channel.title} />
         );
       }
     );
   }
 
   render() {
+    debug('Rendering channel list');
+
     return (
       <ol className="channel-list nav nav-tabs">
         {this.channelNodes(this.props.channels)}

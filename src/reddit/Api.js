@@ -1,8 +1,11 @@
-const rq = require('request');
-const urllib = require('url');
-const debug = libdebug('xeno:reddit:api');
+import rq from 'request';
+import urllib from 'url';
+
+import libdebug from 'debug';
+import Promise from 'bluebird';
+
 const pkg = require('./../../package.json');
-const Promise = require('bluebird');
+const debug = libdebug('xeno:reddit:api');
 
 export default class Api {
   static URL = {

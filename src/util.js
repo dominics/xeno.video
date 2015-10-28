@@ -1,3 +1,4 @@
+
 export function mapSchema(obj, schema) {
   const mapped = {};
 
@@ -7,4 +8,16 @@ export function mapSchema(obj, schema) {
   }
 
   return mapped;
+}
+
+export function* entries(obj) {
+  for (const key of Object.keys(obj)) {
+    yield [key, obj[key]];
+  }
+}
+
+export function* values(obj) {
+  for (const key of Object.keys(obj)) {
+    yield obj[key];
+  }
 }

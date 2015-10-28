@@ -1,5 +1,5 @@
-import { React } from 'react/addons';
-import Container from './ui/Container.jsx';
+import React from 'react/addons';
+import Container from './ui/Container';
 
 window.dbg = require('debug');
 

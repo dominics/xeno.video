@@ -54,6 +54,7 @@ const sources = {
     entries: config.paths.client.entryPoint,
     debug: config.browserifyDebug,
     transform: [babelify.configure(config.babelOptions.client)],
+    extensions: ['.jsx'],
   }).bundle(),
   jsClientSource: () => gulp.src(
     config.paths.client.src.js

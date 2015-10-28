@@ -1,4 +1,4 @@
-const Queue = require('bull');
+import Queue from 'bull';
 
 export default (name) => {
   return Queue(

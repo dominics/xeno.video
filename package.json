@@ -24,6 +24,7 @@
     "tv"
   ],
   "dependencies": {
+    "babel-runtime": "^5.8.25",
     "bluebird": "^2.10.2",
     "body-parser": "~1.13.3",
     "bull": "^0.6.0",

@@ -1,11 +1,14 @@
-import { React, Component } from 'react/addons';
+import { default as React, Component } from 'react/addons';
+import libdebug from 'debug';
+import { default as actions, creators } from '../actions';
+
+const debug = libdebug('xeno:component:item');
 
 export default class Item extends Component {
   static propTypes = {
     id: React.PropTypes.string.isRequired,
     url: React.PropTypes.string.isRequired,
     title: React.PropTypes.string.isRequired,
-    onClick: React.PropTypes.func.isRequired,
     selected: React.PropTypes.bool.isRequired,
     thumbnail: React.PropTypes.object.isRequired,
     embed: React.PropTypes.object.isRequired,
@@ -25,7 +28,7 @@ export default class Item extends Component {
     console.log(this.props);
 
     return (
-      <li className="item" id={'item-' + this.props.id} onClick={this.props.onClick.bind(undefined, this)}>
+      <li className="item" onClick={creators[actions.selectItem]}>
         <a href="#" className="thumbnail">
           <img
             className="media-object"

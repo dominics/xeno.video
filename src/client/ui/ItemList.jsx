@@ -1,9 +1,10 @@
-import { React, Component } from 'react/addons';
-import Item from './Item.jsx';
-import Channel from './Channel.jsx';
+import { default as React, Component } from 'react/addons';
+import Item from './Item';
+import Channel from './Channel';
 
 import libdebug from 'debug';
 const debug = libdebug('xeno:item-list');
+
 
 /**
  * An item-list is full of items
@@ -13,14 +14,13 @@ export default class ItemList extends Component {
     channel: React.PropTypes.instanceOf(Channel),
     selected: React.PropTypes.instanceOf(Item),
     items: React.PropTypes.arrayOf(React.PropTypes.object),
-    onItemSelect: React.PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     items: [],
   };
 
-  itemNodes(items, selectedId, callback) {
+  itemNodes(items, selectedId) {
     return items.map(
       (item) => {
         return (
@@ -33,7 +33,6 @@ export default class ItemList extends Component {
                 num_comments={item.num_comments}
                 permalink={item.permalink}
                 embed={item.embed}
-                onClick={callback}
                 selected={(item.id === selectedId)}/>
         );
       }
@@ -50,7 +49,7 @@ export default class ItemList extends Component {
     return (
       <nav className="col-md-4 col-xs-6 pull-right">
         <ol className="media-list">
-          {this.itemNodes(this.props.items, selectedId, this.props.onItemSelect)}
+          {this.itemNodes(this.props.items, selectedId)}
         </ol>
       </nav>
     );
