@@ -5,7 +5,7 @@ const fs = require('fs');
 if (fs.existsSync(conf)) {
   require('node-env-file')(conf);
 } else {
-  gutil.log('No env file found', conf);
+  require('debug')('xeno:env')('No env file found', conf);
 }
 
 const debug = (process.env.NODE_ENV === 'development');
