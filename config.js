@@ -33,8 +33,7 @@ const config = {
     server: {
       entryPoint: 'bin/www',
       src: {
-        js: ['src/**/*.js', 'src/*.js', '!src/client/**'],
-        jsx: ['src/**/*.jsx'],
+        js: ['src/**/*.js?(x)', '!src/client/**'],
         jade: ['src/views/**/*.jade'],
       },
       output: 'dist',
@@ -43,8 +42,7 @@ const config = {
     client: {
       entryPoint: './src/client/app.jsx',
       src: {
-        js: ['src/client/**/*.js'],
-        jsx: ['src/client/**/*.jsx'],
+        js: ['src/client/**/*.js?(x)'],
       },
       compiled: 'app.js',
       output: 'public/js/',

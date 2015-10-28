@@ -1,32 +1,23 @@
 import { MapStore } from 'flux/utils';
 import libdebug from 'debug';
+import { receiveChannels } from './../action';
 
 const debug = libdebug('xeno:store:channel');
 
 export default class ChannelStore extends MapStore {
-  getAll() {
-    return this._multi('/channel/all');
-  }
-
-  something() {
-    this.getAll().then(
-      (channels) => {
-        debug('Setting data.channels to', channels);
-        this.setState(React.addons.update(this.state, {data: {channels: {$set: channels}}}));
-        this.onChannelSelect(channels[0], { state: 'initial mount, set as default channel' });
-      },
-      (err) => {
-        debug(err);
-      }
-    );
-  }
-
-  _multi(url) {
-    return new Promise((resolve, reject) => {
-      $.getJSON(url).then(
-        (data) => resolve(data.channel),
-        (xhr, status, err) => reject(xhr, status, err)
-      );
-    });
+  /**
+   * @param {Immutable.Map} state
+   * @param {string|Symbol} action
+   * @returns {*}
+   */
+  reduce(state, action) {
+    switch (action.type) {
+      case receiveChannels:
+        debug('Channel store received channel data!', action.data);
+        debug('Reducing channel state', state);
+        return state.set(action.data.id, action.data);
+      default:
+        return state;
+    }
   }
 }

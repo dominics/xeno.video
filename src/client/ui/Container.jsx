@@ -1,20 +1,21 @@
 import { default as React, Component } from 'react/addons';
-import Channel from './Channel';
 import ItemList from './ItemList';
-import Item from './Item';
 import Viewer from './Viewer';
 import NavBar from './NavBar';
 import { Container as FluxContainer } from 'flux/utils';
-
 import libdebug from 'debug';
-
+import stores from './../store';
+import { default as actions, initialize } from '../action';
 const debug = libdebug('xeno:container');
 
-import stores from './../stores';
-
 class ContainerComponent extends Component {
-  static propTypes = {
-  };
+  componentDidMount() {
+    debug('Dispatching the first initialize event!');
+
+    actions.get(initialize)({
+      status: 'starting up the app!',
+    });
+  }
 
   static getStores() {
     return stores.toArray();
@@ -23,9 +24,13 @@ class ContainerComponent extends Component {
   static calculateState(prevState) {
     debug('Got previous state', prevState);
 
-    return stores.map((value) => {
+    const state = stores.map((value) => {
       return value.getState();
     });
+
+    debug('New state', state);
+
+    return state;
   }
 
   render() {
@@ -37,7 +42,7 @@ class ContainerComponent extends Component {
           currentChannel={this.state.currentChannel} />
 
         <div className="row">
-          <Viewer item={this.state.currentItem} socket={this.state.socketStore} />
+          <Viewer item={this.state.currentItem} socket={this.state.socket} />
 
           <ItemList
             item={this.state.item}

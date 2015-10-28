@@ -17,4 +17,11 @@ export default class SocketStore extends MapStore {
       debug('Received message on TV channel', m);
     });
   }
+
+  reduce(state, action) {
+    switch (action.type) {
+      default:
+        return state;
+    }
+  }
 }

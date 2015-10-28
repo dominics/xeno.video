@@ -8,8 +8,6 @@ export default class CurrentChannelStore extends ReduceStore
 
   reduce(state, action) {
     switch (action.type) {
-      case 'select-channel':
-        return action.id;
       default:
         return state;
     }
