@@ -28,7 +28,7 @@ export default class Item extends Component {
     console.log(this.props);
 
     return (
-      <li className="item" onClick={actions.get(selectItem)}>
+      <li className="item" id={'item-' + this.props.id} onClick={actions.get(selectItem)}>
         <a href="#" className="thumbnail">
           <img
             className="media-object"

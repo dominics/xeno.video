@@ -53,6 +53,16 @@ export default (app, passport) => {
     });
   });
 
+  router.get('/setting/all', auth, (req, res) => {
+    res.json({
+      type: 'setting',
+      data: [
+        { id: 'nsfw', value: true },
+        { id: 'ratio', value: 'free' },
+      ],
+    });
+  });
+
   router.get('/channel/all', auth, (req, res) => {
     res.json({
       type: 'channel',

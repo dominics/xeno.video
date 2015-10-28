@@ -97,9 +97,9 @@ export default class ItemStore extends Store {
           });
       }
     ).catch((err) => {
-        debug(err);
-        return Promise.reject(err);
-      });
+      debug(err);
+      return Promise.reject(err);
+    });
   }
 
   _processGetByChannel(channel, token) {

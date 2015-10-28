@@ -1,6 +1,6 @@
 import { MapStore } from 'flux/utils';
-import libdebug from 'debug';
 import { receiveChannels } from './../action';
+import libdebug from 'debug';
 
 const debug = libdebug('xeno:store:channel');
 
