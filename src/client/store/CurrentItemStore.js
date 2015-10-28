@@ -1,5 +1,5 @@
 import { ReduceStore } from 'flux/utils';
-import { default as actions, selectItem } from './../action';
+import { default as _actions, selectItem } from './../action';
 
 export default class CurrentItemStore extends ReduceStore
 {

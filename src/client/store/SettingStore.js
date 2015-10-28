@@ -1,5 +1,4 @@
 import { MapStore } from 'flux/utils';
-import Promise from 'bluebird';
 import libdebug from 'debug';
 
 const debug = libdebug('xeno:store:setting');
