@@ -13,9 +13,17 @@ export default class ChannelStore extends MapStore {
   reduce(state, action) {
     switch (action.type) {
       case receiveChannels:
-        debug('Channel store received channel data!', action.data);
-        debug('Reducing channel state', state);
-        return state.set(action.data.id, action.data);
+        debug('Channel store received channel data', action.data);
+
+        return state.withMutations(map => {
+          let mutated = map;
+
+          for (const channel of action.data) {
+            debug('Mutating state', channel.id, channel);
+            mutated = mutated.set(channel.id, channel);
+          }
+        });
+
       default:
         return state;
     }

@@ -6,6 +6,7 @@ import { Container as FluxContainer } from 'flux/utils';
 import libdebug from 'debug';
 import stores from './../store';
 import { default as actions, initialize } from '../action';
+import { Map } from 'immutable';
 const debug = libdebug('xeno:container');
 
 class ContainerComponent extends Component {
@@ -22,33 +23,46 @@ class ContainerComponent extends Component {
   }
 
   static calculateState(prevState) {
-    debug('Got previous state', prevState);
+    let state = (!(prevState instanceof Map) ? new Map() : prevState);
+    debug('Got previous state', state.toJS());
 
-    const state = stores.map((value) => {
-      return value.getState();
+    state = state.withMutations(map => {
+      let mutated = map;
+
+      for (const [key, value] of stores.entries()) {
+        debug('Mutating store state', key, value.getState());
+        mutated = mutated.set(key, value.getState());
+      }
+
+      return mutated;
     });
 
-    debug('New state', state);
+    debug('New state', state.toJS());
 
     return state;
   }
 
   render() {
+    const state = this.state;
+    debug('Rendering container, using state like', state.toJS());
+
     return (
       <div id="container">
         <NavBar
-          setting={this.state.setting}
-          channel={this.state.channel}
-          currentChannel={this.state.currentChannel} />
+          setting={this.state.get('setting')}
+          channel={this.state.get('channel')}
+          currentChannel={this.state.get('currentChannel')} />
 
         <div className="row">
-          <Viewer item={this.state.currentItem} socket={this.state.socket} />
+          <Viewer
+            item={this.state.get('currentItem')}
+            socket={this.state.get('socket')} />
 
           <ItemList
-            item={this.state.item}
-            viewedItem={this.state.viewedItem}
-            currentChannel={this.state.currentChannel}
-            currentItem={this.state.currentItem} />
+            item={this.state.get('item')}
+            viewedItem={this.state.get('viewedItem')}
+            currentChannel={this.state.get('currentChannel')}
+            currentItem={this.state.get('currentItem')} />
         </div>
       </div>
     );
