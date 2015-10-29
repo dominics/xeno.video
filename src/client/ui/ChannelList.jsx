@@ -12,7 +12,7 @@ const debug = libdebug('xeno:component:channelList');
 export default class ChannelList extends Component {
   static propTypes = {
     channel:        React.PropTypes.instanceOf(Map).isRequired,
-    currentChannel: React.PropTypes.string,
+    currentChannel: React.PropTypes.object,
   };
 
   /**
@@ -24,12 +24,17 @@ export default class ChannelList extends Component {
       return [];
     }
 
+    const currentId = this.props.currentChannel
+      ? this.props.currentChannel.id
+      : null;
+
     return channels.map(
       (channel) => {
         return (
           <Channel
             key={channel.id}
-            id={'channel-' + channel.id}
+            id={channel.id}
+            selected={channel.id === currentId}
             title={channel.title} />
         );
       }

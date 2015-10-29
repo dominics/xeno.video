@@ -5,32 +5,24 @@ import Item from './Item';
 
 export default class Viewer extends Component {
   static propTypes = {
-    item:  React.PropTypes.instanceOf(Item),
-    ratio: React.PropTypes.oneOf(['free', '4by3', '16by9']),
+    setting:  React.PropTypes.instanceOf(Map).isRequired,
+    currentItem:  React.PropTypes.object,
+    socket: React.PropTypes.any,
   };
-
-  static defaultProps = {
-    item:  null,
-    ratio: 'free',
-  };
-
-  constructor() {
-    super();
-  }
-
-  state = {};
 
   render() {
-    debug('Rendering viewer');
+    const item  = this.props.currentItem;
+    debug('Rendering viewer', item);
 
-    if (!this.props.item) {
+    if (!item) {
       debug('Viewer disabled');
       return null;
     }
 
-    const item            = this.props.item.props;
-    const rawEmbed        = this.props.item.getRawEmbed();
-    const responsiveRatio = (this.props.ratio === 'free' ? '' : `embed-responsive embed-responsive-${this.props.ratio}`);
+    const ratio = this.props.setting.get('ratio');
+
+    const rawEmbed        = item.embed;
+    const responsiveRatio = (ratio === 'free' ? '' : `embed-responsive embed-responsive-${ratio}`);
 
     return (
       <article id="viewer" className="panel col-md-9 pull-left">

@@ -9,7 +9,7 @@ export default class NavBar extends Component {
   static propTypes = {
     setting: React.PropTypes.instanceOf(Map).isRequired,
     channel: React.PropTypes.instanceOf(Map).isRequired,
-    currentChannel: React.PropTypes.string,
+    currentChannel: React.PropTypes.object,
   };
 
   render() {

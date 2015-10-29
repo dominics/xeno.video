@@ -25,10 +25,10 @@ export default class Item extends Component {
   }
 
   render() {
-    console.log(this.props);
+    const click = actions.getHandler(selectItem).bind(undefined, this.props.id);
 
     return (
-      <li className="item" id={'item-' + this.props.id} onClick={actions.getHandler(selectItem)}>
+      <li className="item" id={'item-' + this.props.id} onClick={click}>
         <a href="#" className="thumbnail">
           <img
             className="media-object"

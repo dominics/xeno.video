@@ -54,7 +54,8 @@ class ContainerComponent extends Component {
 
         <div className="row">
           <Viewer
-            item={currentItem}
+            setting={state.setting}
+            currentItem={currentItem}
             socket={state.socket} />
 
           <ItemList
@@ -65,6 +66,7 @@ class ContainerComponent extends Component {
       </div>
     );
   }
+
 }
 
 const container = FluxContainer.create(ContainerComponent);

@@ -30,14 +30,16 @@ export default class Api {
    * @returns {*}
    */
   get(url, pending, complete) {
-    debug('Dispatching pending action with data', url);
+    debug('API request pending', url);
     const token = pending(null, url);
 
     this.getJSON(url)
       .then(data => {
+        debug('API request success', data);
         complete(null, data);
       })
       .catch(err => {
+        debug('API request error', err);
         complete(err, null);
       });
 
