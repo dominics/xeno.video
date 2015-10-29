@@ -5,23 +5,42 @@ const debug = libdebug('xeno:api');
 export default class Api {
   /**
    * @param {string} url
+
+   * @returns Promise which, when resolved/rejected, provides the response data, or an error
+   */
+  getJSON(url) {
+    return new Promise((resolve, reject) => {
+      $.getJSON(url)
+        .then(
+          (data) => {
+            resolve(data.data);
+          },
+          (xhr, status, error) => {
+            reject(error);
+          }
+        );
+    });
+  }
+
+  /**
+   *
+   * @param url
    * @param {function(object): string} pending  Action creator
    * @param {function(object): string} complete Action creator
-   * @returns Promise which, when resolved, provides a dispatcher token for the complete action
+   * @returns {*}
    */
-  get(url, pending, complete, failure = null) {
+  get(url, pending, complete) {
     debug('Dispatching pending action with data', url);
-    pending(url);
+    const token = pending(null, url);
 
-    return $.getJSON(url)
-      .then(
-        (data) => {
-          debug('Dispatching complete action with data', data);
-          return Promise.resolve(complete(data.data));
-        },
-        (xhr, status, error) => {
-          return Promise.reject(new Error(xhr, status, error));
-        }
-      );
+    this.getJSON(url)
+      .then(data => {
+        complete(null, data);
+      })
+      .catch(err => {
+        complete(err, null);
+      });
+
+    return token;
   }
 }

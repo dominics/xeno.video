@@ -6,18 +6,18 @@ import api from './api';
 const debug = libdebug('xeno:actions');
 
 // Action symbols
-export const initialize             = Symbol('initialize');
-export const pending                = Symbol('pending');
-export const receiveItemsForChannel = Symbol('receiveItems');
-export const receiveChannels        = Symbol('receiveChannels');
-export const receiveSettings        = Symbol('receiveSettings');
-export const selectItem             = Symbol('selectItem');
-export const selectChannel          = Symbol('selectChannel');
-export const updateSetting          = Symbol('updateSetting');
-export const viewStart              = Symbol('viewStart');
-export const viewEnd                = Symbol('viewEnd');
+export const initialize             = 'initialize';
+export const pending                = 'pending';
+export const receiveItemsForChannel = 'receiveItemsForChannel';
+export const receiveChannels        = 'receiveChannels';
+export const receiveSettings        = 'receiveSettings';
+export const selectItem             = 'selectItem';
+export const selectChannel          = 'selectChannel';
+export const updateSetting          = 'updateSetting';
+export const viewStart              = 'viewStart';
+export const viewEnd                = 'viewEnd';
 
-const registry = new Registry(activeDispatcher, [
+export const registry = new Registry(activeDispatcher, [
   pending,
   initialize,
   receiveItemsForChannel,
@@ -31,21 +31,27 @@ const registry = new Registry(activeDispatcher, [
 ]);
 
 // On initialize action, start API requests
-registry.wrap(initialize, (previous, data) => {
+registry.wrap(initialize, (previous, err = null, data = null) => {
+  if (err) {
+    return previous(err);
+  }
+
   api.channel.refresh();
   api.setting.refresh();
 
-  return previous(data);
+  return previous(err, data);
 });
 
 // On selecting a channel, refresh items in channel
-registry.wrap(selectChannel, (previous, data) => {
+registry.wrap(selectChannel, (previous, err = null, data = null) => {
+  if (err) {
+    return previous(err);
+  }
+
+  debug('Action creating for get all data for channel with', data);
   api.item.getAllForChannel(data);
 
-  return previous(data);
+  return previous(err, data);
 });
 
-export {
-  registry as default,
-  registry,
-};
+export default registry;

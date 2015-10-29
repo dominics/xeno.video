@@ -9,8 +9,8 @@ export default class Item extends Api
   getAllForChannel(channelId) {
     return this.get(
       `/item/channel/${channelId}`,
-      registry.get(pending),
-      registry.get(receiveItemsForChannel)
+      registry.getCreator(pending),
+      registry.getCreator(receiveItemsForChannel)
     );
   }
 }

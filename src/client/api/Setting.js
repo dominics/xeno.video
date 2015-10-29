@@ -9,8 +9,8 @@ export default class Setting extends Api
   refresh() {
     return this.get(
       '/setting/all',
-      registry.get(pending),
-      registry.get(receiveSettings)
+      registry.getCreator(pending),
+      registry.getCreator(receiveSettings)
     );
   }
 }
