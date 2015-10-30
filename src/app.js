@@ -13,6 +13,10 @@ import { ValidationError } from 'express-validation';
 import Api from './reddit/Api';
 import ChannelStore from './reddit/ChannelStore';
 import ItemStore from './reddit/ItemStore';
+import session from './session';
+import socket from 'socket.io';
+import indexRouter from './routes/index';
+import emitter from './emitter';
 
 const debug = libdebug('xeno:app');
 
@@ -118,18 +122,19 @@ export default () => {
   /**
    * Create socket.io server.
    */
-  const io = require('socket.io')(server);
+  const io = socket(server);
   app.locals.io = io;
 
   /**
-   * Session
+   * passport
    */
-  const passport = require('./../dist/session')(app, io, redisConnection);
+  const passport = session(app, io, redisConnection);
 
    /**
    * API-based storages
    */
   const api = new Api();
+
   app.locals.redditApi = api;
 
   app.locals.stores = {
@@ -137,26 +142,11 @@ export default () => {
     item:    new ItemStore(api, redisConnection),
   };
 
-  app.use((req, res, next) => {
-    if (
-      !req.isAuthenticated()
-      || !req.session.passport
-      || !req.session.passport.user
-      || !req.session.passport.user.accessToken
-    ) {
-      req.redditToken = null;
-    } else {
-      req.redditToken = req.session.passport.user.accessToken;
-    }
-
-    next();
-  });
-
   /**
    * Common template vars
    */
   app.use((req, res, next) => {
-    res.locals.session = req.session;
+    res.locals.passport = req.passport;
     res.locals.isAuthenticated = req.isAuthenticated();
     res.locals.env = app.get('env');
     res.locals.host = process.env.HOST;
@@ -169,13 +159,13 @@ export default () => {
   /**
    * Routes
    */
-  const index = require('./../dist/routes/index')(app, passport);
+  const index = indexRouter(app, passport);
   app.use('/', index);
 
   /**
    * Start emitter
    */
-  require('./../dist/emitter')(app);
+  emitter(app);
 
   /**
    * Listen on provided port, on all network interfaces.

@@ -1,23 +1,18 @@
 import { default as React, Component } from 'react/addons';
 import Item from './Item';
-import Channel from './Channel';
+import { Map } from 'immutable';
 
 import libdebug from 'debug';
 const debug = libdebug('xeno:item-list');
-
 
 /**
  * An item-list is full of items
  */
 export default class ItemList extends Component {
   static propTypes = {
-    channel: React.PropTypes.instanceOf(Channel),
-    selected: React.PropTypes.instanceOf(Item),
-    items: React.PropTypes.arrayOf(React.PropTypes.object),
-  };
-
-  static defaultProps = {
-    items: [],
+    currentItemId: React.PropTypes.string,
+    currentChannelItems: React.PropTypes.array,
+    viewedItem: React.PropTypes.instanceOf(Map).isRequired,
   };
 
   itemNodes(items, selectedId) {
@@ -40,17 +35,17 @@ export default class ItemList extends Component {
   }
 
   render() {
-    if (!this.props.channel) {
+    if (!(this.props.currentChannelItems instanceof Array) || this.props.currentChannelItems.length === 0) {
+      debug('Rendering disabled: no current items', this.props.currentChannelItems);
       return null;
     }
 
-    const selectedId = (this.props.selected) ? this.props.selected.props.id : null;
+    debug('Rendering with current items', typeof this.props.currentChannelItems, this.props.currentChannelItems);
+    const items = this.itemNodes(this.props.currentChannelItems, this.props.currentItemId);
 
     return (
-      <nav className="col-md-4 col-xs-6 pull-right">
-        <ol className="media-list">
-          {this.itemNodes(this.props.items, selectedId)}
-        </ol>
+      <nav className="item-list pull-right">
+        {items}
       </nav>
     );
   }

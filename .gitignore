@@ -4,7 +4,7 @@ node_modules
 bower_components
 public/css
 public/fonts
-public/js/app.js
+public/js/**/*.js
 public/js/**/*.map
 .sass-cache
 xeno.video.iml

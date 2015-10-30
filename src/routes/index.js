@@ -3,16 +3,10 @@ import validate from 'express-validation';
 import * as validation from './validation';
 import crypto from 'crypto';
 import libdebug from 'debug';
+import { auth } from './../session';
+
 const debug = libdebug('xeno:router');
 import redisCache from 'express-redis-cache';
-
-const auth = (req, res, next) => {
-  if (!req.isAuthenticated() || !req.redditToken) {
-    return res.redirect('/login');
-  }
-
-  return next();
-};
 
 export default (app, passport) => {
   const router = express.Router();

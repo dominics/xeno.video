@@ -2,11 +2,11 @@ const session        = require('express-session');
 const RedisStore     = require('connect-redis')(session);
 const RedditStrategy = require('passport-reddit').Strategy;
 const passport       = require('passport');
-const _              = require('lodash');
 import libdebug from 'debug';
+import _ from 'lodash';
 const debug          = libdebug('xeno:session');
 
-export default (app, io, redis) => {
+export default function(app, io, redis) {
   passport.serializeUser((user, done) => {
     done(null, user);
   });
@@ -27,8 +27,6 @@ export default (app, io, redis) => {
       authenticated: Date.now() / 1000,
       reddit:        profile,
     };
-
-    debug(data);
 
     process.nextTick(() => {
       return done(null, data);
@@ -62,4 +60,52 @@ export default (app, io, redis) => {
   });
 
   return passport;
-};
+}
+
+function authFail(req, res, next, reason) {
+  debug('Failed session validation!', reason);
+  req.logout();
+  res.redirect('/login');
+  res.end();
+}
+
+/**
+ * @todo Refresh tokens
+ */
+function authRefresh(req, res, next, reason) {
+  debug('Refresh tokens not implemented', reason);
+  return authFail(req, res);
+}
+
+export function auth(req, res, next) {
+  if (!req.isAuthenticated()) {
+    return res.redirect('/login');
+  }
+
+  const accessToken = _.get(req, 'session.passport.user.accessToken', null);
+  const refreshToken = _.get(req, 'session.passport.user.accessToken', null);
+  const authenticated = _.get(req, 'session.passport.user.authenticated', null);
+  const age = (Date.now() / 1000) - authenticated;
+
+  if (!accessToken) {
+    if (refreshToken) {
+      return authRefresh(req, res, next, 'No access token, refreshing to get one');
+    }
+
+    return authFail(req, res, next, 'No access token, and no refresh token to get one');
+  }
+
+  debug('Session age', age);
+
+  if (age > 50 * 60 && refreshToken) {
+    return authRefresh(req, res, next, 'Access token almost expired, attempt to refresh');
+  }
+
+  if (age > 60 * 60) {
+    return authFail(req, res, next, 'Access token expired, cannot refresh');
+  }
+
+  debug('Passed session validation!');
+
+  return next();
+}
