@@ -6,7 +6,7 @@ import { Container as FluxContainer } from 'flux/utils';
 import libdebug from 'debug';
 import stores from './../store';
 import { registry, initialize } from '../action';
-const debug = libdebug('xeno:container');
+const debug = libdebug('xeno:component:container');
 
 class ContainerComponent extends Component {
   componentDidMount() {
@@ -83,5 +83,5 @@ class ContainerComponent extends Component {
 
 }
 
-const container = FluxContainer.create(ContainerComponent);
+const container = FluxContainer.create(ContainerComponent, { pure: true });
 export default container;

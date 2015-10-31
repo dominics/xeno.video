@@ -3,7 +3,7 @@ import Item from './Item';
 import { Map } from 'immutable';
 
 import libdebug from 'debug';
-const debug = libdebug('xeno:item-list');
+const debug = libdebug('xeno:component:itemList');
 
 /**
  * An item-list is full of items
