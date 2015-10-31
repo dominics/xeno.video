@@ -15,7 +15,7 @@ export const channelSelected = 'channelSelected';
 export const channelReceive  = 'channelReceive';
 export const settingReceive = 'settingReceive';
 export const settingUpdate = 'settingUpdate';
-export const itemSelect = 'selectItem';
+export const itemSelect = 'itemSelect';
 export const viewStart = 'viewStart';
 export const viewEnd = 'viewEnd';
 

@@ -35,14 +35,15 @@ class ContainerComponent extends Component {
 
   render() {
     const state = this.state;
-
     const item = state.item;
     const itemByChannel = state.itemByChannel;
-
     const channel = state.channel;
-
     const currentItemId = state.currentItem;
-    const currentChannelId = state.currentChannel;
+
+    const currentChannelId = state.currentChannel.get(
+      'selected',
+      state.currentChannel.get('pending', null)
+    );
 
     const currentItem = currentItemId
       ? item.get(currentItemId, null)
@@ -53,7 +54,7 @@ class ContainerComponent extends Component {
       : null;
 
     const currentChannelItems = currentChannelId
-      ? itemByChannel.get(currentChannelId, []).map(itemId => item.get(itemId))
+      ? itemByChannel.get(currentChannelId, []).map(itemId => item.get(itemId)).filter(v => !!v)
       : null;
 
     debug('Rendering using state', state);

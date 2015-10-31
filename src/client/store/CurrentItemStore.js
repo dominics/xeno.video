@@ -1,28 +1,27 @@
 import libdebug from 'debug';
-import BasicReduceStore from './BasicReduceStore';
+import { ReduceStore } from 'flux/utils';
 import { itemSelect, channelSelected } from '../action';
 import _ from 'lodash';
 const debug = libdebug('xeno:store:currentItem');
 
-export default class CurrentItemStore extends BasicReduceStore
+export default class CurrentItemStore extends ReduceStore
 {
   getInitialState() {
     return null;
   }
 
-  getReducers() {
-    const reducers = super.getReducers();
+  reduce(state, action) {
+    switch (action.type) {
+      case itemSelect:
+        return action.isError() ? null : action.data;
+      case channelSelected:
+        if (state !== null) {
+          return state;
+        }
 
-    reducers[itemSelect] = true;
-    reducers[channelSelected] = (state, data) => {
-      if (state === null) {
+        return _.get(action.data, 'items[0].id', null);
+      default:
         return state;
-      }
-
-      const id = _.get(data, 'items[0].id');
-      return (id !== null) ? id : state;
-    };
-
-    return reducers;
+    }
   }
 }
