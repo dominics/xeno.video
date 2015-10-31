@@ -38,5 +38,11 @@
   margin: $grid-gutter-width;
   background-color: #fefefe;
   border: 1px solid black;
+  position: fixed;
 }
 
+.embed-responsive-free {
+  // Just a 16by9 default, we calculate the actual padding per-item
+  padding-bottom: 56.25%;
+  max-height: 100%;
+}

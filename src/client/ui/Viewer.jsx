@@ -27,8 +27,11 @@ export default class Viewer extends Component {
     debug('Rendering viewer', item);
 
     const rawEmbed = this._getRawEmbed(item);
-    const ratio = this.props.setting.get('ratio');
-    const responsiveRatio = (ratio === 'free' ? '' : `embed-responsive embed-responsive-${ratio}`);
+    const ratio = this.props.setting.get('ratio', 'free');
+
+    const containerStyle = ratio === 'free'
+      ? { paddingBottom: `${(item.embed.height / item.embed.width) * 100}%` }
+      : {};
 
     return (
       <article id="viewer" className="panel col-md-8 pull-left">
@@ -37,7 +40,7 @@ export default class Viewer extends Component {
         </header>
 
         <section className="panel-body text-center">
-          <div className={responsiveRatio} dangerouslySetInnerHTML={rawEmbed}/>
+          <div className={`embed-responsive embed-responsive-${ratio}`} style={containerStyle} dangerouslySetInnerHTML={rawEmbed}/>
         </section>
 
         <section>
