@@ -63,6 +63,7 @@ const sources = {
     return bowerFiles({
       overrides: config.paths.bower.overrides,
     })
+    .self()
     .camelCase(false)
     .join({
       font: ['eot', 'otf', 'woff', 'woff2', 'ttf', 'svg'],
@@ -78,6 +79,30 @@ const sources = {
       .pipe(buffer());
   },
 };
+
+function buildClient(_watch) {
+  const watch = (typeof _watch !== 'undefined')
+    ? _watch
+    : false;
+
+  const source = !watch
+    ? sources.jsClient()
+    : watchify(sources.jsClient());
+
+  if (watch) {
+    source.on('update', (files) => {
+      console.log(files);
+    });
+  }
+
+  return sources.bundle(source, config.paths.client.compiled)
+    .pipe(debug({title: 'client-build-input'}))
+    .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
+    .pipe(gulpif(config.compress, uglify({mangle: false})))
+    .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
+    .pipe(debug({title: 'client-build-output'}))
+    .pipe(gulp.dest(config.paths.client.output));
+}
 
 /*
  * And finally, our task definitions
@@ -254,24 +279,6 @@ gulp.task('watch', ['build'], () => {
   ], restart);
 });
 
-gulp.task('watchify', () => {
-  return buildClient(true);
+gulp.task('watchify', (_done) => {
+  buildClient(true);
 });
-
-function buildClient(_watch) {
-  const watch = (typeof _watch !== 'undefined')
-    ? _watch
-    : false;
-
-  const source = !watch
-    ? sources.jsClient()
-    : watchify(sources.jsClient());
-
-  return sources.bundle(source, config.paths.client.compiled)
-    .pipe(debug({title: 'client-build-input'}))
-    .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
-    .pipe(gulpif(config.compress, uglify({mangle: false})))
-    .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
-    .pipe(debug({title: 'client-build-output'}))
-    .pipe(gulp.dest(config.paths.client.output));
-}

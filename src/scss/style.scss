@@ -1,5 +1,6 @@
 @import "bootstrap";
 @import "font-awesome";
+@import "icomoon";
 
 .channel-list {
   background-color: #fefefe;
@@ -57,4 +58,10 @@
   // Just a 16by9 default, we calculate the actual padding per-item
   padding-bottom: 56.25%;
   max-height: 100%;
+}
+
+nav.navbar.navbar-default {
+  .navbar-brand h1 {
+    display: none;
+  }
 }
