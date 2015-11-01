@@ -25,6 +25,7 @@ const source = require('vinyl-source-stream');
 const uglify = require('gulp-uglify');
 const sourcemaps = require('gulp-sourcemaps');
 const sourcemapify = require('sourcemapify');
+const watchify = require('watchify');
 
 /**
  * Configuration
@@ -47,11 +48,7 @@ const sources = {
     debug: config.browserifyDebug,
     transform: [babelify.configure(config.babelOptions.client)],
     extensions: ['.jsx'],
-  }).plugin(sourcemapify, { base: 'public/js' })
-    .bundle()
-    .on('error', gutil.log.bind(gutil, 'Browserify error'))
-    .pipe(source(config.paths.client.compiled))
-    .pipe(buffer()),
+  }).plugin(sourcemapify, { base: 'public/js' }),
   jsClientSource: () => gulp.src(
     config.paths.client.src.js, { base: 'src' }
   ),
@@ -72,6 +69,14 @@ const sources = {
       font: ['eot', 'otf', 'woff', 'woff2', 'ttf', 'svg'],
       js: ['js', 'jsx'],
     });
+  },
+  bundle: (bundler, output) => {
+    return bundler
+      .bundle()
+      .on('error', gutil.log.bind(gutil, 'Browserify error'))
+      .pipe(debug({title: 'browserify-bundle-output'}))
+      .pipe(source(output))
+      .pipe(buffer());
   },
 };
 
@@ -141,7 +146,7 @@ gulp.task('bowerFont', ['bowerInstall'], () => {
 });
 
 gulp.task('jsClientBuild', () => {
-  return sources.jsClient()
+  return sources.bundle(sources.jsClient(), config.paths.client.compiled)
     .pipe(debug({title: 'client-build-input'}))
     .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
     .pipe(gulpif(config.compress, uglify({mangle: false})))
@@ -230,7 +235,14 @@ gulp.task('watch', ['build'], () => {
     config.paths.server.src.jade,
   ], ['jsServer'], restart);
 
-  // gulp.watch([
-  //   config.paths.server.output + '/**/*.js',
-  // ], restart);
+   gulp.watch([
+     config.paths.server.output + '/**/*.js',
+   ], restart);
+});
+
+gulp.task('watchify', () => {
+  return watchify(sources.bundle(sources.jsClient(), config.paths.client.compiled))
+    .on('update', (filenames) => {
+      debug('Received ', filenames);
+    });
 });

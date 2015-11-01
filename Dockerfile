@@ -5,7 +5,7 @@ RUN groupadd -r app-tv && useradd -r -d /app -g app-tv app-tv
 
 # Cache NPM dependencies by doing them first
 ADD package.json /tmp/package.json
-RUN echo "23.235.39.162 registry.npmjs.org" >> /etc/hosts; cd /tmp && npm install --loglevel verbose
+RUN cd /tmp && npm install --loglevel verbose
 RUN cp -a /tmp/node_modules /app
 
 ENV PATH $PATH:/app/node_modules/.bin
