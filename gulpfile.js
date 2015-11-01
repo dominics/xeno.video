@@ -23,7 +23,7 @@ const rename = require('gulp-rename');
 const sequence = require('gulp-sequence');
 const sass = require('gulp-sass');
 const shell = require('gulp-shell');
-const source = require('vinyl-source-stream');
+const vinylSource = require('vinyl-source-stream');
 const uglify = require('gulp-uglify');
 const sourcemaps = require('gulp-sourcemaps');
 const sourcemapify = require('sourcemapify');
@@ -73,8 +73,8 @@ const sources = {
     return bundler
       .bundle()
       .on('error', gutil.log.bind(gutil, 'Browserify error'))
+      .pipe(vinylSource(output))
       .pipe(debug({title: 'browserify-bundle-output'}))
-      .pipe(source(output))
       .pipe(buffer());
   },
 };
@@ -149,13 +149,7 @@ gulp.task('bowerFont', ['bowerInstall'], () => {
 });
 
 gulp.task('jsClientBuild', () => {
-  return sources.bundle(sources.jsClient(), config.paths.client.compiled)
-    .pipe(debug({title: 'client-build-input'}))
-    .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
-    .pipe(gulpif(config.compress, uglify({mangle: false})))
-    .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
-    .pipe(debug({title: 'client-build-output'}))
-    .pipe(gulp.dest(config.paths.client.output));
+  return buildClient(false);
 });
 
 gulp.task('jsClientSource', () => {
@@ -255,14 +249,29 @@ gulp.task('watch', ['build'], () => {
     config.paths.server.src.jade,
   ], ['jsServer'], restart);
 
-   gulp.watch([
-     config.paths.server.output + '/**/*.js',
-   ], restart);
+  gulp.watch([
+    config.paths.server.output + '/**/*.js',
+  ], restart);
 });
 
 gulp.task('watchify', () => {
-  return watchify(sources.bundle(sources.jsClient(), config.paths.client.compiled))
-    .on('update', (filenames) => {
-      debug('Received ', filenames);
-    });
+  return buildClient(true);
 });
+
+function buildClient(_watch) {
+  const watch = (typeof _watch !== 'undefined')
+    ? _watch
+    : false;
+
+  const source = !watch
+    ? sources.jsClient()
+    : watchify(sources.jsClient());
+
+  return sources.bundle(source, config.paths.client.compiled)
+    .pipe(debug({title: 'client-build-input'}))
+    .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
+    .pipe(gulpif(config.compress, uglify({mangle: false})))
+    .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
+    .pipe(debug({title: 'client-build-output'}))
+    .pipe(gulp.dest(config.paths.client.output));
+}
