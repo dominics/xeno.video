@@ -1,4 +1,5 @@
 const path = require('path');
+const babelify = require('babelify');
 const conf = __dirname + '/.env';
 const fs = require('fs');
 
@@ -37,6 +38,7 @@ const config = {
       src: {
         js: ['src/**/*.js?(x)', '!src/client/**'],
         jade: ['src/views/**/*.jade'],
+        test: ['test/**/*.js', '!test/client/**'],
       },
       output: 'dist',
     },
@@ -45,6 +47,7 @@ const config = {
       entryPoint: './src/client/app.jsx',
       src: {
         js: ['src/client/**/*.js?(x)'],
+        test: ['test/client/**/*.js'],
       },
       compiled: 'app.js',
       output: 'public/js/',
@@ -99,5 +102,12 @@ config.outputs = [
   config.paths.css.output,
   config.paths.bower.output.font,
 ];
+
+config.browserifyOptions = {
+  entries: config.paths.client.entryPoint,
+  debug: config.browserifyDebug,
+  transform: [babelify.configure(config.babelOptions.client)],
+  extensions: ['.jsx'],
+};
 
 module.exports = config;
