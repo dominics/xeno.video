@@ -1,6 +1,6 @@
-import { default as React, Component } from '../../../node_modules/react/addons';
+import { default as React, Component } from 'react/addons';
 import libdebug from 'debug';
-import { registry, channelSelect } from '../action';
+import { registry, channelSelect } from '../../action';
 const debug = libdebug('xeno:component:channel');
 
 export default class Channel extends Component {

@@ -1,6 +1,6 @@
-import { default as React, Component } from '../../../node_modules/react/addons';
+import { default as React, Component } from 'react/addons';
 import libdebug from 'debug';
-import { registry, itemSelect } from '../action';
+import { registry, itemSelect } from '../../action';
 
 const debug = libdebug('xeno:component:item');
 
