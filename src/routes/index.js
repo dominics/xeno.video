@@ -3,7 +3,7 @@ import validate from 'express-validation';
 import * as validation from './validation';
 import crypto from 'crypto';
 import libdebug from 'debug';
-import { auth } from './../session';
+import { authInteractive, authApi } from './../session';
 
 const debug = libdebug('xeno:router');
 import redisCache from 'express-redis-cache';
@@ -41,13 +41,13 @@ export default (app, passport) => {
     }
   });
 
-  router.get('/', auth, (req, res) => {
+  router.get('/', authInteractive, (req, res) => {
     res.render('index', {
       title: 'xeno.video',
     });
   });
 
-  router.get('/setting/all', auth, (req, res) => {
+  router.get('/setting/all', authApi, (req, res) => {
     res.json({
       type: 'setting',
       data: [
@@ -57,7 +57,7 @@ export default (app, passport) => {
     });
   });
 
-  router.get('/channel/all', auth, (req, res) => {
+  router.get('/channel/all', authApi, (req, res) => {
     res.json({
       type: 'channel',
       data: [
@@ -67,7 +67,7 @@ export default (app, passport) => {
     });
   });
 
-  router.get('/item/channel/:channel', auth, validate(validation.itemsForChannel), cache.route({ cache: 5 }), (req, res, next) => {
+  router.get('/item/channel/:channel', authApi, validate(validation.itemsForChannel), cache.route({ cache: 5 }), (req, res, next) => {
     debug('Getting items for ' + req.params.channel);
 
     const channel = req.params.channel;
