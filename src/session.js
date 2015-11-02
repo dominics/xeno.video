@@ -74,7 +74,7 @@ function _forbidden(req, res, _next) {
   res.end();
 }
 
-function _strategy(req) {
+export function validate(req) {
   if (!req.isAuthenticated()) {
     return 'fail.auth';
   }
@@ -104,7 +104,7 @@ function _strategy(req) {
 
 
 export function authInteractive(req, res, next) {
-  switch (_strategy(req)) {
+  switch (validate(req)) {
     case 'refresh.first': // @todo Refresh tokens
     case 'refresh.proactive':
     case 'fail.access_token':
@@ -119,7 +119,7 @@ export function authInteractive(req, res, next) {
 }
 
 export function authApi(req, res, next) {
-  switch (_strategy(req)) {
+  switch (validate(req)) {
     case 'refresh.first': // @todo Refresh tokens
     case 'refresh.proactive':
     case 'fail.access_token':
