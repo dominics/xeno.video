@@ -47,14 +47,25 @@ export default (app, passport) => {
     });
   });
 
-  router.get('/setting/all', authApi, (req, res) => {
-    res.json({
-      type: 'setting',
-      data: [
-        { id: 'nsfw', value: true },
-        { id: 'ratio', value: 'free' },
-      ],
-    });
+  router.get('/setting/all', (req, res, next) => {
+    debug('Getting settings');
+
+    if (!app.locals.stores || !app.locals.stores.setting) {
+      return next(new Error('Could not find setting store'));
+    }
+
+    const settingStore = app.locals.stores.setting;
+
+    settingStore.getAll(req)
+      .then(settings => {
+        res.json({
+          type: 'setting',
+          data: settings,
+        });
+
+        res.end();
+      })
+      .catch(err => next(err));
   });
 
   router.get('/channel/all', authApi, (req, res) => {
@@ -73,7 +84,7 @@ export default (app, passport) => {
     const channel = req.params.channel;
 
     if (!app.locals.stores || !app.locals.stores.item) {
-      return next(new Error(400));
+      return next(new Error('Could not find item store'));
     }
 
     const itemStore = app.locals.stores.item;
@@ -87,9 +98,7 @@ export default (app, passport) => {
 
         res.end();
       })
-      .catch(err => {
-        return next(err);
-      });
+      .catch(err => next(err));
   });
 
   router.get('/401', (req, res) => {
