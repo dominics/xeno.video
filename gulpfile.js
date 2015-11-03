@@ -197,6 +197,7 @@ gulp.task('jsServerSource', () => {
 
 gulp.task('css', ['bowerInstall'], () => {
   return sources.scss()
+    .pipe(debug({title: 'css-build'}))
     .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
     .pipe(sass({
       outputStyle: config.compress ? 'compressed' : 'expanded',

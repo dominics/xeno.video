@@ -1,6 +1,7 @@
 @import "bootstrap";
 @import "font-awesome";
 @import "icomoon";
+@import "components/item-list";
 
 body {
   padding-top: 50px;
@@ -21,61 +22,6 @@ nav.navbar.navbar-default {
   border: 1px solid black;
 }
 
-.item-list {
-  width: 240px;
-  background-color: #fefefe;
-  border: 1px solid black;
-  @media (min-width: $screen-md-min) {
-    width: 480px;
-  }
-}
-
-.item {
-  border: 1px solid #bbb;
-  position: relative;
-
-  h4 {
-    display: inline;
-    background-color: black;
-    padding: 5px;
-    opacity: 0.7;
-    color: white;
-    position: absolute;
-    bottom: 0;
-
-    .playing-indicator {
-      margin-right: 0.4em;
-    }
-  }
-
-  .item-thumbnail {
-    img {
-      min-height: 100%;
-      min-width: 100%;
-      opacity: 0;
-    }
-
-    overflow: hidden;
-    background: no-repeat center center;
-    @media (min-width: $screen-md-min) {
-      max-height: 270px;
-    }
-    max-height: 200px;
-  }
-
-  &.active {
-    h4 {
-      color: orangered;
-    }
-  }
-
-  &:hover, &:active {
-    h4 {
-      opacity: 1.0;
-      background-color: #111;
-    }
-  }
-}
 
 #viewer-container {
   position: fixed;
