@@ -127,6 +127,7 @@ export default class ItemStore extends Store {
               author: true,
               created_utc: true,
               over_18: true,
+              permalink: true,
               embed: 'media_embed',
             });
 

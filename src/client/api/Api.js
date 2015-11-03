@@ -1,11 +1,11 @@
 import libdebug from 'debug';
+import _ from 'lodash';
 
 const debug = libdebug('xeno:api');
 
 export default class Api {
   /**
    * @param {string} url
-
    * @returns Promise which, when resolved/rejected, provides the response data, or an error
    */
   getJSON(url) {
@@ -19,6 +19,16 @@ export default class Api {
             reject(error);
           }
         );
+    });
+  }
+
+  filterId(dataPromise) {
+    return dataPromise.then(data => {
+      if (!Array.isArray(data)) {
+        return Promise.resolve(data);
+      }
+
+      return Promise.resolve(data.filter(item => _.has(item, 'id')));
     });
   }
 

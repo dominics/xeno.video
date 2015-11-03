@@ -1,7 +1,9 @@
 import { default as React, Component } from 'react/addons';
 import libdebug from 'debug';
-const debug = libdebug('xeno:component:viewer');
 import { Map } from 'immutable';
+import moment from 'moment';
+
+const debug = libdebug('xeno:component:viewer');
 
 /*
  * global: $
@@ -60,42 +62,68 @@ export default class Viewer extends Component {
     const item = this.props.currentItem;
 
     if (!item) {
-      debug('Viewer disabled');
       return null;
     }
 
+    if (this.state.headerHeight === null || this.state.footerHeight === null) {
+      window.setTimeout(() => { // hacky mchackity
+        this.handleResize({});
+      }, 0);
+    }
+
+
+    const permalink = 'https://www.reddit.com' + item.permalink;
+    const relativeDate = moment(item.created_utc * 1000).fromNow();
     const height = Viewer._height(this.state);
     const rawEmbed = this._getRawEmbed(item);
     const ratio = this.props.setting.get('ratio', 'free');
-
-    // calculate size in px
-
     const containerHeight = `${height}px`;
-
-    const _containerStyle = ratio === 'free'
+    const containerClass = `embed-responsive embed-responsive-${ratio}`;
+    const containerStyle = ratio === 'free'
       ? { paddingBottom: containerHeight }
       : {};
-
-    const _containerClass = `embed-responsive embed-responsive-${ratio}`;
-
-    debug('Rendering viewer', item, _containerStyle, _containerClass);
-
-    if (this.state.headerHeight === null || this.state.footerHeight === null) {
-      window.setTimeout(() => {
-        this.handleResize({});
-      }, 20);
-    }
 
     return (
       <article id="viewer">
         <header>
-          <h2>{item.title}</h2>
+          <h2>
+            <a href={permalink}>
+              {item.title}
+            </a>
+          </h2>
         </header>
 
-        <section className={_containerClass} style={_containerStyle} dangerouslySetInnerHTML={rawEmbed} />
+        <section className={containerClass} style={containerStyle} dangerouslySetInnerHTML={rawEmbed} />
 
         <footer>
-          <a href={'https://www.reddit.com' + item.permalink}>{item.num_comments} comments</a>
+          <a href="#" rel="next" className="btn btn-default goto-next pull-right">
+            Next <span className="fa fa-arrow-right"></span>
+          </a>
+
+          <a href="#" rel="prev" className="btn btn-default goto-prev pull-left">
+            <span className="fa fa-arrow-left"></span> Previous
+          </a>
+
+          <section className="info">
+            <ul>
+              <li>
+                <a href={item.url}>
+                  <span className="fa fa-external-link"></span>
+                  {item.url}
+                </a>
+              </li>
+              <li>
+                <span className="fa fa-clock-o"></span>
+                {relativeDate}
+              </li>
+              <li>
+                <a href={permalink}>
+                  <span className="fa fa-reddit"></span>
+                  {item.num_comments} comments
+                </a>
+              </li>
+            </ul>
+          </section>
         </footer>
       </article>
     );

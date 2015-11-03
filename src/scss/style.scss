@@ -30,10 +30,8 @@ nav.navbar.navbar-default {
   }
 }
 
-
-
 .item {
-  border: 1px solid #222;
+  border: 1px solid #bbb;
   position: relative;
 
   h4 {
@@ -44,6 +42,10 @@ nav.navbar.navbar-default {
     color: white;
     position: absolute;
     bottom: 0;
+
+    .playing-indicator {
+      margin-right: 0.4em;
+    }
   }
 
   .item-thumbnail {
@@ -56,9 +58,9 @@ nav.navbar.navbar-default {
     overflow: hidden;
     background: no-repeat center center;
     @media (min-width: $screen-md-min) {
-      max-height: 300px;
+      max-height: 270px;
     }
-    max-height: 150px;
+    max-height: 200px;
   }
 
   &.active {
@@ -92,12 +94,32 @@ nav.navbar.navbar-default {
     h2 {
       font-size: 1.6em;
       margin: 0;
-      padding: 0.8em;
+      padding: 0.7em;
     }
 
     footer {
-      height: 47px;
-      padding: 1em;
+      height: 55px;
+      padding: 0.7em;
+
+      section.info {
+        text-align: center;
+        padding-top: 0.5em;
+
+        ul {
+          display: inline-block;
+          margin: 0;
+          padding: 0;
+
+          li {
+            .fa {
+              padding-right: 0.3em;
+            }
+
+            display: inline;
+            padding: 0 2em;
+          }
+        }
+      }
     }
   }
 }
