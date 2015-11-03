@@ -6,6 +6,7 @@ import { Container as FluxContainer } from 'flux/utils';
 import libdebug from 'debug';
 import stores from './../store';
 import { registry, initialize } from '../action';
+import _ from 'lodash';
 const debug = libdebug('xeno:component:container');
 
 class ContainerComponent extends Component {
@@ -57,7 +58,15 @@ class ContainerComponent extends Component {
       ? itemByChannel.get(currentChannelId, []).map(itemId => item.get(itemId)).filter(v => !!v)
       : null;
 
-    debug('Rendering using state', state);
+    let hasNext = false;
+    let hasPrevious = false;
+
+    if (currentItem && currentChannelItems) {
+      const currentItemIndex = _.findIndex(currentChannelItems, (v) => v.id === currentItemId);
+
+      hasPrevious = currentItemIndex > 0;
+      hasNext = currentItemIndex < (currentChannelItems.length - 1);
+    }
 
     return (
       <section className="container-fluid">
@@ -75,7 +84,9 @@ class ContainerComponent extends Component {
           <Viewer
             setting={state.setting}
             currentItem={currentItem}
-            socket={state.socket} />
+            socket={state.socket}
+            hasNext={hasNext}
+            hasPrevious={hasPrevious} />
         </section>
       </section>
     );
