@@ -1,13 +1,13 @@
 import { MapStore } from 'flux/utils';
 import libdebug from 'debug';
-import { settingReceiveAll } from '../action';
+import types from '../action/types';
 
 const debug = libdebug('xeno:store:setting');
 
 export default class SettingStore extends MapStore {
   reduce(state, action) {
     switch (action.type) {
-      case settingReceiveAll:
+      case types.settingReceiveAll:
         if (action.isError()) {
           debug('Setting store received error updating');
           return state;

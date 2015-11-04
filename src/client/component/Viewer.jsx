@@ -2,6 +2,8 @@ import { default as React, Component } from 'react/addons';
 import libdebug from 'debug';
 import { Map } from 'immutable';
 import moment from 'moment';
+import registry from './../action';
+import types from './../action/types';
 
 const debug = libdebug('xeno:component:viewer');
 
@@ -61,13 +63,16 @@ export default class Viewer extends Component {
   }
 
   static _pagerButtons(hasNext, hasPrevious) {
+    const next = registry.getHandler(types.itemSelectRelative).bind(undefined, 'next');
+    const previous = registry.getHandler(types.itemSelectRelative).bind(undefined, 'previous');
+
     return (
       <nav>
-        <a href="#" rel="next" className={'btn btn-default goto-next pull-right' + (hasNext ? '' : ' disabled')}>
+        <a href="#" rel="next" className={'btn btn-default goto-next pull-right' + (hasNext ? '' : ' disabled')} onClick={hasNext ? next : null}>
           Next <span className="fa fa-arrow-right"></span>
         </a>
 
-        <a href="#" rel="prev" className={'btn btn-default goto-prev pull-left' + (hasPrevious ? '' : ' disabled')}>
+        <a href="#" rel="prev" className={'btn btn-default goto-prev pull-left' + (hasPrevious ? '' : ' disabled')} onClick={hasPrevious ? previous : null}>
           <span className="fa fa-arrow-left"></span> Previous
         </a>
       </nav>

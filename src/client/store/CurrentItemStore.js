@@ -1,6 +1,6 @@
 import libdebug from 'debug';
 import { ReduceStore } from 'flux/utils';
-import { itemSelect, channelSelected } from '../action';
+import types from '../action/types';
 import _ from 'lodash';
 const debug = libdebug('xeno:store:currentItem');
 
@@ -12,9 +12,9 @@ export default class CurrentItemStore extends ReduceStore
 
   reduce(state, action) {
     switch (action.type) {
-      case itemSelect:
+      case types.itemSelect:
         return action.isError() ? null : action.data;
-      case channelSelected:
+      case types.channelSelected:
         if (state !== null) {
           return state;
         }

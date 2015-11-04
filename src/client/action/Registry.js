@@ -21,8 +21,8 @@ export default class ActionRegistry {
   constructor(dispatcher, types) {
     this.dispatcher = dispatcher;
 
-    types.forEach(type => {
-      this.creators[type] = this._creator(type);
+    Object.keys(types).forEach(type => {
+      this.creators[types[type]] = this._creator(types[type]);
     });
   }
 
