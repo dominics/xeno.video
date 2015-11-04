@@ -58,7 +58,7 @@ const sources = {
     config.paths.server.src.js, { base: 'src' }
   ),
   scss: () =>
-    gulp.src(config.paths.css.src.scss),
+    gulp.src(config.paths.css.entryPoint),
   bower: () => {
     return bowerFiles({
       overrides: config.paths.bower.overrides,
