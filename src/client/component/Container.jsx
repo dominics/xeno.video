@@ -89,14 +89,12 @@ class ContainerComponent extends Component {
           viewedItem={this.state.viewedItem}
           currentItemId={current.itemId} />
 
-        <section id="viewer-container">
-          <Viewer
-            setting={this.state.setting}
-            currentItem={current.item}
-            socket={this.state.socket}
-            next={current.next}
-            previous={current.previous} />
-        </section>
+        <Viewer
+          setting={this.state.setting}
+          currentItem={current.item}
+          socket={this.state.socket}
+          next={current.next}
+          previous={current.previous} />
       </section>
     );
   }
