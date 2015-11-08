@@ -1,0 +1,9 @@
+*.log
+build
+node_modules
+public/css
+public/js/tv.js
+public/js/*.map
+.sass-cache
+xeno.video.iml
+.env
