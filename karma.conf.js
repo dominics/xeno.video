@@ -1,6 +1,7 @@
 const config = require('./config.js');
 const isparta = require('isparta');
 const _ = require('lodash');
+const path = require('path');
 
 const browserify = _.clone(config.browserifyOptions);
 
@@ -18,13 +19,22 @@ module.exports = (prev) => {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'browserify'],
+    frameworks: ['mocha', 'browserify'],
 
     // list of files / patterns to load in the browser
     files: [
       'node_modules/babel-core/browser-polyfill.js',
-      config.paths.client.src.test[0],
+      path.join(config.bower.output.js, config.bower.compiled),
+      config.client.src.test[0],
+      config.server.src.test[0],
     ],
+
+    client: {
+      mocha: {
+        reporter: 'html',
+        ui: 'bdd',
+      },
+    },
 
     // list of files to exclude
     exclude: [],
@@ -38,9 +48,9 @@ module.exports = (prev) => {
 
     browserify: config.browserifyOptions,
 
-    /* babelPreprocessor: {
+    babelPreprocessor: {
       options: config.babelOptions.client,
-    }, */
+    },
 
     coverageReporter: {
       instrumenters: {
@@ -67,7 +77,7 @@ module.exports = (prev) => {
     colors: true,
     logLevel: prev.LOG_DEBUG,
     autoWatch: true,
-    browsers: ['Chrome', 'PhantomJS'],
+    browsers: config.karma.browsers,
     singleRun: false,
   });
 };

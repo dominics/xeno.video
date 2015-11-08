@@ -1,0 +1,15 @@
+{
+  "expr": true,
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+  "globals": {
+    "chai": false,
+    "expect": false,
+    "describe": false
+  },
+  "rules": {
+    "no-unused-expressions": 0
+  }
+}
