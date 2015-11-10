@@ -93,9 +93,15 @@ export default class ActionRegistry {
    */
   getHandler(type) {
     this._validateType(type);
-    return (data, _event) => {
-      debug(`Handling ${_event} as ${type}`, _event, data);
-      return this.getCreator(type)(null, data);
+
+    // The actual event handler that will be called
+    return (data, event) => {
+      debug(`Handling event as ${type}`, event, data);
+      this.getCreator(type)(null, data);
+
+      event.preventDefault();
+      event.stopPropagation();
+      return false;
     };
   }
 
