@@ -7,12 +7,6 @@ build:
     - hgen/gulp:
         tasks: build
 
-    - script:
-        name: echo nodejs information
-        code: |
-          echo "node version $(node -v) running"
-          echo "npm version $(npm -v) running"
-
     - npm-test
 
 dev:
@@ -25,14 +19,6 @@ dev:
 
 deploy:
   steps:
-    - internal/docker-push:
-        username: $DOCKER_USERNAME
-        password: $DOCKER_PASSWORD
-        tag: $WERCKER_GIT_COMMIT
-        repository: dominics/xeno.video
-        registry: https://registry.hub.docker.com
-
-  production:
     - internal/docker-push:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
@@ -52,8 +38,16 @@ deploy:
         name: deploy task
         code: |
           echo "Deploying to $WERCKER_DEPLOYTARGET_NAME"
-          echo "ssh -p $DEPLOYMENT_PORT $DEPLOYMENT_USER@$DEPLOYMENT_HOST uname -a"
-          ssh -vvv -p $DEPLOYMENT_PORT $DEPLOYMENT_USER@$DEPLOYMENT_HOST uname -a
+          echo "ssh -p $DEPLOYMENT_PORT $DEPLOYMENT_USER@$DEPLOYMENT_HOST deploy-xeno $WERCKER_DEPLOYTARGET_NAME"
+          ssh -p $DEPLOYMENT_PORT $DEPLOYMENT_USER@$DEPLOYMENT_HOST deploy-xeno $WERCKER_DEPLOYTARGET_NAME
+
+  autodeploy:
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        tag: $WERCKER_GIT_COMMIT
+        repository: dominics/xeno.video
+        registry: https://registry.hub.docker.com
 
 services:
   - redis
