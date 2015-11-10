@@ -1,4 +1,17 @@
-module.exports = function(app) {
-    console.log('Within emitter');
-    app.locals.io.emit('tv', 'Hello, world');
+const debug = require('debug')('emitter');
+
+module.exports = (app) => {
+  const io = app.locals.io;
+
+  debug('Inside emitter', io);
+
+  io.emit('tv', 'Hello, world');
+
+  io.on('connection', (ws) => {
+    debug('A client connected', ws);
+  });
+
+  io.on('helo', (req) => {
+    debug('Helo received from', req);
+  });
 };

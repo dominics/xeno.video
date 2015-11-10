@@ -1,24 +1,59 @@
-"use strict";
+const React = require('react/addons');
+const Item = require('./Item.jsx');
+const Channel = require('./Channel.jsx');
+const debug = require('debug');
 
-var React = require('react');
-var Item  = require('./Item.jsx');
+/**
+ * An item-list is full of items
+ */
+module.exports = class ItemList extends React.Component {
+  static propTypes = {
+    channel: React.PropTypes.instanceOf(Channel),
+    selected: React.PropTypes.instanceOf(Item),
+    children: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Item)),
+    onItemSelect: React.PropTypes.func.isRequired,
+  }
 
-module.exports = React.createClass({
-    propTypes: {
-        children: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Item))
-    },
+  static defaultProps = {
+    children: [],
+  }
 
-    getInitialState: function () {
-        return {
-            children: []
-        };
-    },
+  constructor() {
+    super();
 
-    render: function () {
+    this.debug = debug('item-list');
+  }
+
+  itemNodes(items, selectedId, callback) {
+    return items.map(
+      (item) => {
+        if (item.id === selectedId) {
+          this.debug('Got selected ID', item);
+        }
+
         return (
-            <ol class="item-list">
-                {this.state.children}
-            </ol>
-        )
+          <Item key={item.id} id={item.id} url={item.url} onClick={callback}/>
+        );
+      }
+    );
+  }
+
+  render() {
+    if (!this.props.channel) {
+      return null;
     }
-});
+
+    const name = this.props.channel.props.name;
+    const selectedId = (this.props.selected) ? this.props.selected.props.id : null;
+
+    return (
+      <div className="item-list">
+        <h3>Items for {name}</h3>
+
+        <ol className="item-list">
+          {this.itemNodes(this.props.children, selectedId, this.props.onItemSelect)}
+        </ol>
+      </div>
+    );
+  }
+};
