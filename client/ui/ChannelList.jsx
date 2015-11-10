@@ -19,7 +19,7 @@ module.exports = class ChannelList extends React.Component {
     return channels.map(
       (channel) => {
         return (
-          <Channel key={channel.id} name={channel.id} title={channel.title} onSelect={this.props.onChannelSelect}/>
+          <Channel key={channel.id} id={channel.id} title={channel.title} onSelect={this.props.onChannelSelect}/>
         );
       }
     );

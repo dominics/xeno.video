@@ -1,61 +1,43 @@
 const React = require('react/addons');
-
 const ChannelList = require('./ChannelList.jsx');
 const Channel = require('./Channel.jsx');
 const ItemList = require('./ItemList.jsx');
 const Item = require('./Item.jsx');
 const Viewer = require('./Viewer.jsx');
-const debug = require('debug');
+const debug = require('debug')('container');
 
 module.exports = class Container extends React.Component {
   static propTypes = {
-    url: React.PropTypes.string.isRequired,
-    io: React.PropTypes.func,
+    socket: React.PropTypes.object,
+    stores: React.PropTypes.object,
   };
 
-  constructor() {
-    super();
-
-    this.debug = debug('container');
-
-    this.state = {
-      data: {
-        channels: [
-          {id: 'all', title: 'All'},
-        ],
-      },
-      selectedChannel: null,
-      selectedItem: null,
-    };
-  }
+  state = {
+    data: {
+      channels: [],
+    },
+    selectedChannel: null,
+    selectedItem: null,
+  };
 
   componentDidMount() {
-    this.debug('Container did mount');
+    debug('Container did mount');
 
-    this.io = this.props.io();
+    this.props.socket.emit('helo', navigator.userAgent);
 
-    this.io.emit('helo', navigator.userAgent);
-
-    this.io.on('tv', () => {
-      this.debug('Listening on tv socket');
+    this.props.socket.on('tv', () => {
+      debug('Listening on tv socket');
     });
 
-    this.getConfig();
-  }
-
-  getConfig() {
-    $.ajax({
-      url: this.props.url,
-      dataType: 'json',
-      cache: false,
-      success: (data) => {
-        this.debug('Mutating container state with updated data', data);
-        this.setState(React.addons.update(this.state, {data: {$set: data}}));
+    this.props.stores.channel.getAll().then(
+      (channels) => {
+        debug('Setting data.channels to', channels);
+        this.setState(React.addons.update(this.state, {data: {channels: {$set: channels}}}));
       },
-      error: (xhr, status, err) => {
-        this.debug(this.props.url, status, err.toString());
-      },
-    });
+      (err) => {
+        debug(err);
+      }
+    );
   }
 
   /**
@@ -70,6 +52,15 @@ module.exports = class Container extends React.Component {
     this.setState(React.addons.update(this.state, {
       selectedChannel: {$set: channel},
     }));
+
+    this.props.stores.item.getAllForChannel(channel).then(
+      (items) => {
+        this.setState(React.addons.update(this.state, {data: {items: {$set: items}}}));
+      },
+      (err) => {
+        debug('Error', err);
+      }
+    );
   }
 
   /**
@@ -92,12 +83,16 @@ module.exports = class Container extends React.Component {
     }
 
     const channels = this.state.data.channels;
+    const items    = this.state.data.items;
+
+    const selChan = this.state.selectedChannel;
+    const selItem = this.state.selectedItem;
 
     return (
       <div id="container">
-        <ChannelList channels={channels} selected={this.state.selectedChannel} onChannelSelect={this.onChannelSelect.bind(this)} />
-        <ItemList channel={this.state.selectedChannel} selected={this.state.selectedItem} onItemSelect={this.onItemSelect.bind(this)} />
-        <Viewer item={this.state.selectedItem} />
+        <ChannelList channels={channels} selected={selChan} onChannelSelect={this.onChannelSelect.bind(this)} />
+        <ItemList items={items} channel={selChan} selected={selItem} onItemSelect={this.onItemSelect.bind(this)} />
+        <Viewer item={selItem} />
       </div>
     );
   }
