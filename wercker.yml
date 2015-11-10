@@ -15,13 +15,6 @@ build:
 
     - npm-test
 
-    - internal/docker-push:
-        username: $DOCKER_USERNAME
-        password: $DOCKER_PASSWORD
-        tag: $WERCKER_GIT_BRANCH
-        repository: dominics/xeno.video
-        registry: https://registry.hub.docker.com
-
 dev:
   steps:
     - npm-install
@@ -32,17 +25,25 @@ dev:
 
 deploy:
   steps:
-    - add-to-known_hosts:
-        hostname:    $DEPLOYMENT_HOST
-        port:        $DEPLOYMENT_PORT
-        fingerprint: $DEPLOYMENT_FINGERPRINT
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        tag: $WERCKER_GIT_COMMIT
+        repository: dominics/xeno.video
+        registry: https://registry.hub.docker.com
 
+  production:
     - internal/docker-push:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
         tag: $WERCKER_DEPLOYTARGET_NAME
         repository: dominics/xeno.video
         registry: https://registry.hub.docker.com
+
+    - add-to-known_hosts:
+        hostname:    $DEPLOYMENT_HOST
+        port:        $DEPLOYMENT_PORT
+        fingerprint: $DEPLOYMENT_FINGERPRINT
 
     - add-ssh-key:
         keyname: DEPLOYMENT_SSH
