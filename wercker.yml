@@ -44,17 +44,15 @@ deploy:
         repository: dominics/xeno.video
         registry: https://registry.hub.docker.com
 
+    - add-ssh-key:
+        keyname: DEPLOYMENT_SSH
+
     - script:
         name: deploy task
         code: |
           echo "Deploying to $WERCKER_DEPLOYTARGET_NAME"
-
-          echo "$DEPLOYMENT_SSH_PRIVATE" > private.key
-          echo "$DEPLOYMENT_SSH_PUBLIC" > public.key
-          chmod 600 private.key
-
-          echo "ssh -i private.key -p $DEPLOYMENT_PORT $DEPLOYMENT_USER@$DEPLOYMENT_HOST uname -a"
-          ssh -vvv -i private.key -p $DEPLOYMENT_PORT $DEPLOYMENT_USER@$DEPLOYMENT_HOST uname -a
+          echo "ssh -p $DEPLOYMENT_PORT $DEPLOYMENT_USER@$DEPLOYMENT_HOST uname -a"
+          ssh -vvv -p $DEPLOYMENT_PORT $DEPLOYMENT_USER@$DEPLOYMENT_HOST uname -a
 
 services:
   - redis
