@@ -3,7 +3,7 @@ import libdebug from 'debug';
 const debug = libdebug('xeno:store');
 
 export default class Store {
-  name = 'unknown';
+  type = 'unknown';
   api = null;
   redis = null;
 
