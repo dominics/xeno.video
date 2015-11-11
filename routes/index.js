@@ -58,8 +58,8 @@ module.exports = (passport) => {
 
     res.json({
       item: [
-        {id: 'foo', url: 'http://example.com', title: 'Some Video'},
-        {id: 'foo2', url: 'http://example.com/2', title: 'And another'},
+        {id: 'foo', url: 'https://www.youtube.com/watch?v=uPC9qMhAKjQ', title: 'Some Video'},
+        {id: 'foo2', url: 'https://youtu.be/6UM28Ygkg1I', title: 'And another'},
       ],
     });
   });
