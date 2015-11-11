@@ -10,7 +10,7 @@ module.exports = class Item extends React.Component {
 
   render() {
     return (
-      <li className="item" id={'item-' + this.props.id} onClick={this.props.onClick}>
+      <li className="item" id={'item-' + this.props.id} onClick={this.props.onClick.bind(undefined, this)}>
         {this.props.url}
         {this.props.title}
       </li>
