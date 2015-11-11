@@ -12,6 +12,15 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+if (app.get('env') === 'development') {
+  app.disable('etag');
+
+  app.use((req, res, next) => {
+    req.headers['if-none-match'] = 'no-match-for-this';
+    next();
+  });
+}
+
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
 app.use(logger('dev'));
 app.use(bodyParser.json());

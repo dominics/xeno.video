@@ -1,29 +1,12 @@
 @import "bootstrap";
 @import "font-awesome";
 
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: #111;
-  color: white;
-}
 
 .channel-list {
-  background-color: red;
-  width: 100%;
-  min-height: 100px;
 }
 
 .item-list {
-  background-color: green;
-  width: 100%;
-  min-height: 100px;
 }
 
 #viewer {
-  background-color: blue;
-  min-height: 100px;
-  width: 100%;
-  border: 1px solid #333;
 }
