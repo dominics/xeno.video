@@ -1,5 +1,6 @@
 const React = require('react/addons');
 const Item = require('./Item.jsx');
+const VideoRenderer = require('./render/VideoRenderer.jsx');
 
 module.exports = class Viewer extends React.Component {
   static propTypes = {
@@ -12,16 +13,26 @@ module.exports = class Viewer extends React.Component {
 
   state = {};
 
+  constructor() {
+    super();
+
+    this.renderer = new VideoRenderer(this);
+  }
+
   render() {
     if (!this.props.item) {
       return null;
     }
 
-    return (
-      <div id="viewer">
-        <h2>Viewer</h2>
+    const item = this.props.item.props;
 
-        <a href={this.props.item.props.url}>{this.props.item.props.url}</a>
+    return (
+      <div className="row">
+        <div id="viewer" className="col-md-12">
+          <h1>{item.title}</h1>
+
+          {this.renderer.render(item.url)}
+        </div>
       </div>
     );
   }
