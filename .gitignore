@@ -1,7 +1,9 @@
 *.log
 build
 node_modules
+bower_components
 public/css
+public/fonts
 public/js/app.js
 public/js/**/*.map
 .sass-cache
