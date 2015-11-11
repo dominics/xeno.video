@@ -9,11 +9,11 @@ module.exports = class ChannelList extends React.Component {
   static propTypes = {
     channels: React.PropTypes.arrayOf(React.PropTypes.object),
     onChannelSelect: React.PropTypes.func.isRequired,
-  }
+  };
 
   static defaultProps = {
     channels: [],
-  }
+  };
 
   channelNodes(channels) {
     return channels.map(

@@ -4,17 +4,13 @@ const Item = require('./Item.jsx');
 module.exports = class Viewer extends React.Component {
   static propTypes = {
     item: React.PropTypes.instanceOf(Item),
-  }
+  };
 
   static defaultProps = {
     item: null,
-  }
+  };
 
-  constructor() {
-    super();
-
-    this.state = {};
-  }
+  state = {};
 
   render() {
     if (!this.props.item) {
@@ -24,6 +20,8 @@ module.exports = class Viewer extends React.Component {
     return (
       <div id="viewer">
         <h2>Viewer</h2>
+
+        <a href={this.props.item.props.url}>{this.props.item.props.url}</a>
       </div>
     );
   }

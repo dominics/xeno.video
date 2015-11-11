@@ -5,7 +5,7 @@ module.exports = class Channel extends React.Component {
     id: React.PropTypes.string.isRequired,
     title: React.PropTypes.string.isRequired,
     onSelect: React.PropTypes.func.isRequired,
-  }
+  };
 
   render() {
     return (
