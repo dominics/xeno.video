@@ -87,7 +87,7 @@ export default class GeneralStategy extends Strategy {
     debug('Final URL', embedUrl);
 
     return (
-      <iframe width="600" height="400" src={embedUrl} frameBorder="0" allowFullScreen></iframe>
+      <iframe src={embedUrl} allowFullScreen></iframe>
     );
   }
 }
