@@ -10,7 +10,7 @@ const auth = (req, res, next) => {
   return next();
 };
 
-module.exports = (passport) => {
+export default (passport) => {
   const router = express.Router();
 
   router.get('/login', (req, res, next) => {

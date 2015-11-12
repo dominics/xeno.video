@@ -1,9 +1,9 @@
-exports.youtube = [
+export const youtube = [
   'youtube.com',
   'youtu.be',
 ];
 
-exports.general = [
+export const general = [
   '5min.com',
   'animal.discovery.com',
   'animoto.com',
@@ -81,10 +81,10 @@ exports.general = [
   'zapiks.com',
 ];
 
-exports.match = (domain, category) => {
+export function match(domain, category) {
   return (
     (category.indexOf(domain) !== -1) // Exact match
     ||
     (category.indexOf(domain.split('.').slice(-2).join('.')) !== -1) // Last-two-parts exact match
   );
-};
+}

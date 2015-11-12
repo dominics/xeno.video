@@ -1,11 +1,11 @@
 const React = require('react/addons');
 
-const Channel = require('./Channel.jsx');
+import Channel from './Channel.jsx';
 
 /**
  * A channel-list is full of channels
  */
-module.exports = class ChannelList extends React.Component {
+export default class ChannelList extends React.Component {
   static propTypes = {
     channels: React.PropTypes.arrayOf(React.PropTypes.object),
     onChannelSelect: React.PropTypes.func.isRequired,
@@ -27,9 +27,9 @@ module.exports = class ChannelList extends React.Component {
 
   render() {
     return (
-      <ol className="channel-list">
+      <ol className="channel-list nav nav-tabs">
         {this.channelNodes(this.props.channels)}
       </ol>
     );
   }
-};
+}

@@ -1,27 +1,11 @@
 const React = require('react/addons');
-const Strategy = require('./Strategy.jsx');
+import Strategy from './Strategy.jsx';
 const liburl = require('url');
 const debug = require('debug')('render');
 const Immutable = require('immutable');
 const querystring = require('querystring');
 
-module.exports = class GeneralStategy extends Strategy {
-  render(viewer, url) {
-    const parsed = Immutable.OrderedMap(liburl.parse(url));
-
-    const embedUrl = liburl.format(
-      this.transformUrlParts(
-        parsed
-      ).toJS()
-    );
-
-    debug('Final URL', embedUrl);
-
-    return (
-      <iframe width="600" height="400" src={embedUrl} frameBorder="0" allowFullScreen></iframe>
-    );
-  }
-
+export default class GeneralStategy extends Strategy {
   /**
    * @param initialUrl Immutable.Map of parsed url details, from url.parse
    * @returns Immutable.Map of parsed url details, for url.format
@@ -90,4 +74,20 @@ module.exports = class GeneralStategy extends Strategy {
   embedPath(id) {
     return '/embed/' + id;
   }
-};
+
+  render(viewer, url) {
+    const parsed = Immutable.OrderedMap(liburl.parse(url));
+
+    const embedUrl = liburl.format(
+      this.transformUrlParts(
+        parsed
+      ).toJS()
+    );
+
+    debug('Final URL', embedUrl);
+
+    return (
+      <iframe width="600" height="400" src={embedUrl} frameBorder="0" allowFullScreen></iframe>
+    );
+  }
+}

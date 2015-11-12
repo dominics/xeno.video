@@ -1,12 +1,13 @@
-const domains = require('./domains.dat.js');
+import * as domains from './../data/domains.dat.js';
+
 const parseUrl = require('url').parse;
 const debug = require('debug')('render');
 
-const UnsupportedStrategy = require('./strategy/UnsupportedStrategy.jsx');
-const GeneralStrategy = require('./strategy/GeneralStrategy.jsx');
-const YoutubeStrategy = require('./strategy/YoutubeStrategy.jsx');
+import UnsupportedStrategy from './strategy/UnsupportedStrategy.jsx';
+import GeneralStrategy from './strategy/GeneralStrategy.jsx';
+import YoutubeStrategy from './strategy/YoutubeStrategy.jsx';
 
-module.exports = class VideoRenderer {
+export default class VideoRenderer {
   constructor(viewer) {
     this.viewer = viewer;
   }
@@ -36,4 +37,4 @@ module.exports = class VideoRenderer {
 
     return new UnsupportedStrategy();
   }
-};
+}

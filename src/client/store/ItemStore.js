@@ -1,6 +1,6 @@
-const Store = require('./Store');
+import Store from './Store';
 
-module.exports = class ItemStore extends Store {
+export default class ItemStore extends Store {
   constructor() {
     super();
 
@@ -11,4 +11,4 @@ module.exports = class ItemStore extends Store {
     const url = `/item/channel/${channel.props.id}`;
     return this._multi(url);
   }
-};
+}

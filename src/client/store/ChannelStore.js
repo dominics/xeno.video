@@ -1,6 +1,6 @@
-const Store = require('./Store');
+import Store from './Store';
 
-module.exports = class ChannelStore extends Store {
+export default class ChannelStore extends Store {
   constructor() {
     super();
 
@@ -10,4 +10,4 @@ module.exports = class ChannelStore extends Store {
   getAll() {
     return this._multi('/channel/all');
   }
-};
+}

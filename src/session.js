@@ -5,7 +5,7 @@ const passport       = require('passport');
 const _              = require('lodash');
 const debug          = require('debug')('session');
 
-module.exports = (app, io, redis) => {
+export default (app, io, redis) => {
   passport.serializeUser((user, done) => {
     done(null, user);
   });

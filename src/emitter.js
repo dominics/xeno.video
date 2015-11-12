@@ -1,6 +1,6 @@
 const debug = require('debug')('emitter');
 
-module.exports = (app) => {
+export default (app) => {
   const io = app.locals.io;
 
   debug('Inside emitter', io);
