@@ -1,8 +1,8 @@
-import Store from './Store';
+import Store from './../../util/Store';
 
 export default class ItemStore extends Store {
-  constructor() {
-    super();
+  constructor(request) {
+    super(request);
 
     this.name = 'item';
   }

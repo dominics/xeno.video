@@ -1,11 +1,12 @@
 export default class Store {
-  constructor() {
+  constructor(request) {
     this.name = null;
+    this.request = request;
   }
 
   _multi(url) {
     return new Promise((resolve, reject) => {
-      $.getJSON(url).then(
+      this.request.getJSON(url).then(
         (data) => resolve(this._payload(data)),
         (xhr, status, err) => reject(err)
       );
