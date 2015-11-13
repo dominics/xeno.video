@@ -10,6 +10,6 @@ export default (app) => {
   });
 
   io.on('helo', (req) => {
-    debug('Helo received');
+    debug('Helo received', req);
   });
 };

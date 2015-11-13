@@ -1,5 +1,6 @@
 import Store from './Store';
 const debug = require('debug')('xeno:store:item');
+const itemQueue = require('../queue')('item');
 
 export default class ItemStore extends Store {
   constructor(api, redis) {
@@ -8,31 +9,13 @@ export default class ItemStore extends Store {
     this.name = 'item';
   }
 
-  getForChannel(channel, next) {
+  getForChannel(channel, req, next) {
     debug('Getting items for channel', channel);
 
-    this.api.listing(channel, 'hot', (err, responseData) => {
-      if (err) {
-        return next(err);
-      }
+    itemQueue.send();
 
-      const items = [];
-
-      const info = JSON.parse(responseData.body);
-
-      if (!info.kind || info.kind !== 'Listing') {
-        return next(new Error('Invalid response kind'));
-      }
-
-      if (!info.data || !info.data.children) {
-        return next(new Error('No data in response'));
-      }
-
-      for (let item of info.data.children) {
-        items.push(item);
-      }
-
-      next(null, items);
+    this.api.listing(channel, 'hot', (err, items) => {
+      next(err, items);
     });
   }
 }
