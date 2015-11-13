@@ -31,7 +31,7 @@ const config = {
   nodeOptions: nodeOptions,
   vendorRegex: /(node_modules|bower_components)/,
 
-  socket: './node_modules/socket.io/node_modules/socket.io-client/socket.io.js',
+  socket: './node_modules/socket.io-client/socket.io.js',
 
   build: {
     output: output,

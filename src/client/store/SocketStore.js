@@ -1,13 +1,18 @@
 import { MapStore } from 'flux/utils';
 import io from './../io';
 import libdebug from 'debug';
+import types from './../action/types';
 
 const debug = libdebug('xeno:store:socket');
 
 export default class SocketStore extends MapStore {
+  io = null;
+
   constructor(dispatcher) {
     super(dispatcher);
+  }
 
+  connect() {
     this.io = io();
 
     debug('Emitting HELO');
@@ -20,6 +25,9 @@ export default class SocketStore extends MapStore {
 
   reduce(state, action) {
     switch (action.type) {
+      case types.initialize:
+        this.connect();
+        return state;
       default:
         return state;
     }
