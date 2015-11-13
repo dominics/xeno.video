@@ -19,7 +19,9 @@
     "url": "https://github.com/dominics/xeno.video/issues"
   },
   "keywords": [
-    "reddit", "video", "tv"
+    "reddit",
+    "video",
+    "tv"
   ],
   "dependencies": {
     "bluebird": "^2.10.2",
@@ -31,6 +33,7 @@
     "express": "~4.13.3",
     "express-session": "^1.11.2",
     "express-validation": "^0.4.5",
+    "flux": "^2.1.1",
     "immutable": "^3.7.5",
     "jade": "~1.11.0",
     "joi": "^6.9.0",

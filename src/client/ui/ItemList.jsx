@@ -46,7 +46,7 @@ export default class ItemList extends React.Component {
     const selectedId = (this.props.selected) ? this.props.selected.props.id : null;
 
     return (
-      <nav className="col-md-3 pull-right">
+      <nav className="col-md-4 col-xs-6 pull-right">
         <ol className="media-list">
           {this.itemNodes(this.props.items, selectedId, this.props.onItemSelect)}
         </ol>

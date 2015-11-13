@@ -1,6 +1,7 @@
-import Store from './Store';
+import { MapStore } from 'flux/utils';
+const Promise = require('bluebird');
 
-export default class SettingStore extends Store {
+export default class SettingStore extends MapStore {
   constructor() {
     super();
 
@@ -8,8 +9,8 @@ export default class SettingStore extends Store {
   }
 
   getAll() {
-    return {
+    return Promise.resolve({
       nsfw: true,
-    };
+    });
   }
 }

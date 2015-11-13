@@ -7,7 +7,7 @@ export default class Item extends React.Component {
     title: React.PropTypes.string.isRequired,
     onClick: React.PropTypes.func.isRequired,
     selected: React.PropTypes.bool.isRequired,
-    thumbnail: React.PropTypes.string.isRequired,
+    thumbnail: React.PropTypes.object.isRequired,
     embed: React.PropTypes.object.isRequired,
   };
 
@@ -25,14 +25,20 @@ export default class Item extends React.Component {
     console.log(this.props);
 
     return (
-      <li className="media" id={'item-' + this.props.id} onClick={this.props.onClick.bind(undefined, this)}>
-        <div className="media-left media-top">
-          <img className="media-object" src={this.props.thumbnail} alt={this.props.title} />
-        </div>
+      <li className="item" id={'item-' + this.props.id} onClick={this.props.onClick.bind(undefined, this)}>
+        <a href="#" className="thumbnail">
+          <img
+            className="media-object"
+            src={this.props.thumbnail.url}
+            alt={this.props.title}
+            width={this.props.thumbnail.width}
+            height={this.props.thumbnail.height}
+          />
 
-        <article className="media-body">
-          <h4>{this.props.title}</h4>
-        </article>
+          <article className="caption">
+            <h4>{this.props.title}</h4>
+          </article>
+        </a>
       </li>
     );
   }
