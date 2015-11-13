@@ -1,7 +1,7 @@
 const React = require('react/addons');
 import Strategy from './Strategy.jsx';
 const liburl = require('url');
-const debug = require('debug')('render');
+const debug = require('debug')('xeno:render');
 const Immutable = require('immutable');
 const querystring = require('querystring');
 

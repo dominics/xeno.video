@@ -1,5 +1,5 @@
 import GeneralStrategy from './GeneralStrategy.jsx';
-const debug = require('debug')('render');
+const debug = require('debug')('xeno:render');
 
 export default class UnsupportedStrategy extends GeneralStrategy {
   render(viewer, url) {

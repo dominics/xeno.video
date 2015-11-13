@@ -3,7 +3,7 @@ const RedisStore     = require('connect-redis')(session);
 const RedditStrategy = require('passport-reddit').Strategy;
 const passport       = require('passport');
 const _              = require('lodash');
-const debug          = require('debug')('session');
+const debug          = require('debug')('xeno:session');
 
 export default (app, io, redis) => {
   passport.serializeUser((user, done) => {
@@ -18,11 +18,18 @@ export default (app, io, redis) => {
     clientID:     process.env.REDDIT_CONSUMER_KEY,
     clientSecret: process.env.REDDIT_CONSUMER_SECRET,
     callbackURL:  process.env.HOST + '/callback',
+    scope: 'read,vote',
   }, (accessToken, refreshToken, profile, done) => {
-    debug(profile);
+    const data = {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      reddit: profile,
+    };
+
+    debug(data);
 
     process.nextTick(() => {
-      return done(null, profile);
+      return done(null, data);
     });
   }));
 

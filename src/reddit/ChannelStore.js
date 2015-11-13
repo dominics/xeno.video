@@ -1,12 +1,13 @@
-import Store from './../util/Store';
+import Store from './Store';
 
 export default class ChannelStore extends Store {
-  constructor(request) {
-    super(request);
+  constructor(api, redis) {
+    super(api, redis);
 
     this.name = 'channel';
   }
 
   getAll() {
+
   }
 }

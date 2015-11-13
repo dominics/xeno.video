@@ -1,7 +1,7 @@
 import * as domains from './../../data/domains.dat.js';
 
 const parseUrl = require('url').parse;
-const debug = require('debug')('render');
+const debug = require('debug')('xeno:render');
 
 import UnsupportedStrategy from './strategy/UnsupportedStrategy.jsx';
 import GeneralStrategy from './strategy/GeneralStrategy.jsx';

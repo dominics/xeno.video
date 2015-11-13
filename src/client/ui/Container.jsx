@@ -4,7 +4,7 @@ import Channel from './Channel.jsx';
 import ItemList from './ItemList.jsx';
 import Item from './Item.jsx';
 import Viewer from './Viewer.jsx';
-const debug = require('debug')('container');
+const debug = require('debug')('xeno:container');
 
 export default class Container extends React.Component {
   static propTypes = {

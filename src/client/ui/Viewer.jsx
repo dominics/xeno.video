@@ -1,5 +1,5 @@
 const React = require('react/addons');
-const debug = require('debug')('render');
+const debug = require('debug')('xeno:render');
 import Item from './Item.jsx';
 import VideoRenderer from './../../video/VideoRenderer.jsx';
 
