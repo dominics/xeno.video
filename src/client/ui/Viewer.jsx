@@ -1,21 +1,20 @@
 const React = require('react/addons');
 const debug = require('debug')('xeno:render');
 import Item from './Item.jsx';
-import VideoRenderer from './../../video/VideoRenderer.jsx';
 
 export default class Viewer extends React.Component {
   static propTypes = {
-    item: React.PropTypes.instanceOf(Item),
+    item:  React.PropTypes.instanceOf(Item),
+    ratio: React.PropTypes.oneOf(['free', '4by3', '16by9']),
   };
 
   static defaultProps = {
-    item: null,
+    item:  null,
+    ratio: 'free',
   };
 
   constructor() {
     super();
-
-    this.renderer = new VideoRenderer(this);
   }
 
   state = {};
@@ -25,21 +24,22 @@ export default class Viewer extends React.Component {
       return null;
     }
 
-    const item = this.props.item.props;
-    const rendered = this.renderer.render(item.url);
-
-    debug('viewewr render', rendered);
+    const item            = this.props.item.props;
+    const rawEmbed        = this.props.item.getRawEmbed();
+    const responsiveRatio = (this.props.ratio === 'free' ? '' : `embed-responsive embed-responsive-${this.props.ratio}`);
 
     return (
       <article id="viewer" className="panel col-md-9 pull-left">
         <header className="panel-heading">
-          <h1>{item.title}</h1>
+          <h2>{item.title}</h2>
         </header>
 
-        <section className="panel-body">
-          <div className="embed-responsive embed-responsive-16by9">
-            {rendered}
-          </div>
+        <section className="panel-body text-center">
+          <div className={responsiveRatio} dangerouslySetInnerHTML={rawEmbed}/>
+        </section>
+
+        <section>
+          <a href={'https://www.reddit.com' + item.permalink}>{item.num_comments} comments</a>
         </section>
       </article>
     );

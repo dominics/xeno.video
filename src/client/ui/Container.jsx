@@ -33,6 +33,7 @@ export default class Container extends React.Component {
       (channels) => {
         debug('Setting data.channels to', channels);
         this.setState(React.addons.update(this.state, {data: {channels: {$set: channels}}}));
+        this.onChannelSelect(channels[0], { state: 'initial mount, set as default channel' });
       },
       (err) => {
         debug(err);
@@ -93,6 +94,10 @@ export default class Container extends React.Component {
         <ChannelList channels={channels} selected={selChan} onChannelSelect={this.onChannelSelect.bind(this)} />
 
         <div className="row">
+          {selChan
+            ? <h2>{selChan.props.name}</h2>
+            : <p>Select a channel to get started</p>}
+
           <Viewer item={selItem} />
           <ItemList items={items} channel={selChan} selected={selItem} onItemSelect={this.onItemSelect.bind(this)} />
         </div>
