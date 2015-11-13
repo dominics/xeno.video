@@ -1,6 +1,6 @@
 const rq = require('request');
 const urllib = require('url');
-const debug = require('debug')('xeno:reddit:api');
+const debug = libdebug('xeno:reddit:api');
 const pkg = require('./../../package.json');
 const Promise = require('bluebird');
 

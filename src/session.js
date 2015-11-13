@@ -3,7 +3,7 @@ const RedisStore     = require('connect-redis')(session);
 const RedditStrategy = require('passport-reddit').Strategy;
 const passport       = require('passport');
 const _              = require('lodash');
-const debug          = require('debug')('xeno:session');
+const debug          = libdebug('xeno:session');
 
 export default (app, io, redis) => {
   passport.serializeUser((user, done) => {

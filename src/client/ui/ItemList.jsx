@@ -1,12 +1,14 @@
-const React = require('react/addons');
+import { React, Component } from 'react/addons';
 import Item from './Item.jsx';
 import Channel from './Channel.jsx';
-// const debug = require('debug')('xeno:item-list');
+
+import libdebug from 'debug';
+const debug = libdebug('xeno:item-list');
 
 /**
  * An item-list is full of items
  */
-export default class ItemList extends React.Component {
+export default class ItemList extends Component {
   static propTypes = {
     channel: React.PropTypes.instanceOf(Channel),
     selected: React.PropTypes.instanceOf(Item),

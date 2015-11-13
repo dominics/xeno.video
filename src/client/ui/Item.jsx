@@ -1,6 +1,6 @@
-const React = require('react/addons');
+import { React, Component } from 'react/addons';
 
-export default class Item extends React.Component {
+export default class Item extends Component {
   static propTypes = {
     id: React.PropTypes.string.isRequired,
     url: React.PropTypes.string.isRequired,
