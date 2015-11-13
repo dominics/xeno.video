@@ -4,6 +4,7 @@ import Channel from './Channel.jsx';
 import ItemList from './ItemList.jsx';
 import Item from './Item.jsx';
 import Viewer from './Viewer.jsx';
+import NavBar from './NavBar.jsx';
 const debug = require('debug')('xeno:container');
 
 export default class Container extends React.Component {
@@ -18,6 +19,7 @@ export default class Container extends React.Component {
     },
     selectedChannel: null,
     selectedItem: null,
+    settings: {},
   };
 
   componentDidMount() {
@@ -27,6 +29,10 @@ export default class Container extends React.Component {
 
     this.props.socket.on('tv', () => {
       debug('Listening on tv socket');
+    });
+
+    this.props.stores.settings.getAll().then(settings => {
+      this.setState(React.addons.update(this.state, {data: {settings: {$set: settings}}}));
     });
 
     this.props.stores.channel.getAll().then(
@@ -57,6 +63,7 @@ export default class Container extends React.Component {
     this.props.stores.item.getAllForChannel(channel).then(
       (items) => {
         this.setState(React.addons.update(this.state, {data: {items: {$set: items}}}));
+        this.onItemSelect(items[0], { state: 'initial channel load, set as default item' });
       },
       (err) => {
         debug('Error', err);
@@ -83,23 +90,28 @@ export default class Container extends React.Component {
       return null;
     }
 
-    const channels = this.state.data.channels;
     const items    = this.state.data.items;
-
-    const selChan = this.state.selectedChannel;
-    const selItem = this.state.selectedItem;
 
     return (
       <div id="container">
-        <ChannelList channels={channels} selected={selChan} onChannelSelect={this.onChannelSelect.bind(this)} />
+        <NavBar
+          settings={this.state.data.settings}
+          channels={this.state.data.channels}
+          selected={this.state.selectedChannel}
+          onChannelSelect={this.onChannelSelect.bind(this)}/>
 
         <div className="row">
-          {selChan
-            ? <h2>{selChan.props.name}</h2>
+          {this.state.selectedChannel
+            ? <h2>{this.state.selectedChannel.props.name}</h2>
             : <p>Select a channel to get started</p>}
 
-          <Viewer item={selItem} />
-          <ItemList items={items} channel={selChan} selected={selItem} onItemSelect={this.onItemSelect.bind(this)} />
+          <Viewer item={this.state.selectedItem} />
+
+          <ItemList
+            items={items}
+            channel={this.state.selectedChannel}
+            selected={this.state.selectedItem}
+            onItemSelect={this.onItemSelect.bind(this)} />
         </div>
       </div>
     );

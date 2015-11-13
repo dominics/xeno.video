@@ -43,7 +43,6 @@ export default class ItemList extends React.Component {
       return null;
     }
 
-    const name = this.props.channel.props.title;
     const selectedId = (this.props.selected) ? this.props.selected.props.id : null;
 
     return (
