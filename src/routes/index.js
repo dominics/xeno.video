@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const debug = require('debug')('xeno:router');
 
 const auth = (req, res, next) => {
-  if (!req.isAuthenticated() || !req.session.passport.user.accessToken) {
+  if (!req.isAuthenticated() || !req.redditToken) {
     return res.redirect('/login');
   }
 
@@ -55,7 +55,7 @@ export default (app, passport) => {
     });
   });
 
-  router.get('/item/channel/:channel', auth, validate(validation.itemsForChannel), (req, res) => {
+  router.get('/item/channel/:channel', auth, validate(validation.itemsForChannel), (req, res, next) => {
     debug('Getting items for ' + req.params.channel);
 
     const channel = req.params.channel;
@@ -66,7 +66,7 @@ export default (app, passport) => {
 
     const itemStore = app.locals.stores.item;
 
-    itemStore.getForChannel(channel, req, (err, items) => {
+    itemStore.getByChannel(channel, req, (err, items) => {
       if (err) return next(err);
 
       res.json({

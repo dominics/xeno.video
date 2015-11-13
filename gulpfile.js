@@ -12,6 +12,7 @@ const gulp = require('gulp');
 const gulpif = require('gulp-if');
 const gutil = require('gulp-util');
 const lazypipe = require('lazypipe');
+const rename = require('gulp-rename');
 const sequence = require('gulp-sequence');
 const sass = require('gulp-sass');
 const shell = require('gulp-shell');
@@ -152,7 +153,7 @@ gulp.task('clean', () => {
 gulp.task('js', ['jsClient', 'jsServer']);
 
 gulp.task('jsBuild', ['jsClientBuild', 'jsServerBuild']);
-gulp.task('jsLint',  ['jsBuild', 'jsClientSource', 'jsServerSource']);
+gulp.task('jsLint',  ['jsClientSource', 'jsServerSource']);
 
 gulp.task('jsClient', ['jsClientBuild', 'jsClientSource']);
 gulp.task('jsServer', ['jsServerBuild', 'jsServerSource']);
@@ -208,7 +209,10 @@ gulp.task('jsServerBuild', ['copyEsLintGenerated'], () => {
 
 gulp.task('copyEsLintGenerated', () => {
   return gulp.src('./.eslintrc-generated')
-    .pipe(gulp.dest('./dist/.eslintrc'));
+    .pipe(rename({
+      basename: '.eslintrc',
+    }))
+    .pipe(gulp.dest(config.paths.server.output));
 });
 
 gulp.task('jsServerSource', () => {

@@ -10,6 +10,7 @@
     "prepublish": "gulp lint"
   },
   "dependencies": {
+    "bluebird": "^2.10.2",
     "body-parser": "~1.13.3",
     "bull": "^0.6.0",
     "compression": "^1.5.2",
@@ -50,6 +51,7 @@
     "gulp-if": "^1.2.5",
     "gulp-jsbeautify": "^0.1.1",
     "gulp-live-server": "0.0.28",
+    "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.0.1",
     "gulp-sequence": "^0.4.1",
     "gulp-shell": "^0.4.1",
