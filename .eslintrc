@@ -1,4 +1,5 @@
 {
+  "root": true,
   "extends": "airbnb",
   "rules": {
     "react/jsx-quotes": 0,

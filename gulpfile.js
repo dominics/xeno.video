@@ -196,7 +196,7 @@ gulp.task('jsClientSource', () => {
     .pipe(gulpif(config.linting, pipes.jsLint()));
 });
 
-gulp.task('jsServerBuild', () => {
+gulp.task('jsServerBuild', ['copyEsLintGenerated'], () => {
   return sources.jsServer()
     .pipe(buffer())
     .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
@@ -204,6 +204,11 @@ gulp.task('jsServerBuild', () => {
     .on('error', gutil.log)
     .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
     .pipe(gulp.dest(config.paths.server.output));
+});
+
+gulp.task('copyEsLintGenerated', () => {
+  return gulp.src('./.eslintrc-generated')
+    .pipe(gulp.dest('./dist/.eslintrc'));
 });
 
 gulp.task('jsServerSource', () => {
@@ -246,7 +251,7 @@ gulp.task('watch', ['build'], () => {
     config.paths.server.src.js,
     config.paths.server.src.jsx,
     config.paths.server.src.jade,
-  ], ['jsServer']);
+  ], ['jsServer', restart]);
 
   gulp.watch([
     config.paths.server.output + '/**/*.js',
