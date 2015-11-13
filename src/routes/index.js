@@ -47,6 +47,12 @@ export default (app, passport) => {
     });
   });
 
+  router.get('/about', authInteractive, (req, res) => {
+    res.render('about', {
+      title: 'about xeno.video',
+    });
+  });
+
   router.get('/setting/all', (req, res, next) => {
     debug('Getting settings');
 
