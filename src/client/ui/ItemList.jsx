@@ -26,6 +26,11 @@ export default class ItemList extends React.Component {
                 id={item.id}
                 url={item.url}
                 title={item.title}
+                score={item.score}
+                thumbnail={item.thumbnail}
+                num_comments={item.num_comments}
+                permalink={item.permalink}
+                embed={item.embed}
                 onClick={callback}
                 selected={(item.id === selectedId)}/>
         );

@@ -2,6 +2,7 @@ const rq = require('request');
 const urllib = require('url');
 const debug = require('debug')('xeno:reddit:api');
 const pkg = require('./../../package.json');
+const Promise = require('bluebird');
 
 export default class Api {
   static URL = {
@@ -18,8 +19,14 @@ export default class Api {
     this.token = token;
   }
 
-  listing(subreddit, sort, next) {
+  /**
+   * @param subreddit string
+   * @param sort string
+   * @returns Promise.<Array>
+   */
+  listing(subreddit, sort) {
     debug('getting listing for', subreddit);
+
     const listingParams = {
       raw_json: 1,
       // after
@@ -30,32 +37,34 @@ export default class Api {
       // sr_detail
     };
 
-    this._get(`/r/${subreddit}/${sort}.json`, listingParams, (err, responseData) => {
-      if (err) {
-        return next(err);
-      }
-
+    return this._get(`/r/${subreddit}/${sort}.json`, listingParams).then((responseData) => {
       const items = [];
 
       const info = JSON.parse(responseData.body);
 
       if (!info.kind || info.kind !== 'Listing') {
-        return next(new Error('Invalid response kind'));
+        throw new Error('Invalid response kind');
       }
 
       if (!info.data || !info.data.children) {
-        return next(new Error('No data in response'));
+        throw new Error('No data in response');
       }
 
       for (let item of info.data.children) { // eslint-disable-line prefer-const
         items.push(item);
       }
 
-      next(null, items);
+      return Promise.resolve(items);
     });
   }
 
-  _get(pathname, params, next) {
+  /**
+   * @param pathname
+   * @param params
+   * @returns Promise.<Object>
+   * @private
+   */
+  _get(pathname, params) {
     let options = {
       pathname: pathname,
       query: params,
@@ -66,12 +75,17 @@ export default class Api {
 
     debug('Making reddit API request to ' + url);
 
-    this._getJSON(url, next);
+    return this._getJSON(url);
   }
 
-  _getJSON(url, next) {
+  /**
+   * @param url
+   * @returns Promise.<Object>
+   * @private
+   */
+  _getJSON(url) {
     if (!this.token) {
-      throw new Error('Cannot make unauthenticated Reddit request');
+      return Promise.reject(new Error('Cannot make unauthenticated Reddit request'));
     }
 
     const options = {
@@ -83,21 +97,25 @@ export default class Api {
       },
     };
 
-    return rq(options, (err, response, body) => {
-      if (err) {
-        return next(err);
-      }
+    return new Promise((resolve, reject) => {
+      rq(options, (err, response, body) => {
+        if (err) {
+          reject(err);
+          return;
+        }
 
-      if (response.statusCode !== 200) {
-        return next(new Error(response.statusCode));
-      }
+        if (response.statusCode !== 200) {
+          reject(new Error(response.statusCode));
+          return;
+        }
 
-      const data = {
-        response: response,
-        body:     body,
-      };
+        const data = {
+          response: response,
+          body:     body,
+        };
 
-      next(null, data);
+        resolve(data);
+      });
     });
   }
 }

@@ -110,9 +110,10 @@ const redisConnection = redis.createClient(
 );
 
 redisConnection.on('error', (err) => {
-  console.error('Redis client error: ' + err);
-  process.exit(1);
+  console.error(err);
 });
+
+app.locals.redis = redisConnection;
 
 /**
  * Create socket.io server.
