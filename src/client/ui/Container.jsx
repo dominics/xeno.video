@@ -6,12 +6,12 @@ import { Container as FluxContainer } from 'flux/utils';
 import libdebug from 'debug';
 import stores from './../store';
 import { default as actions, initialize } from '../action';
-import { Map } from 'immutable';
 const debug = libdebug('xeno:container');
 
 class ContainerComponent extends Component {
   componentDidMount() {
-    actions.get(initialize)({
+    debug('Initializing the app');
+    actions.getCreator(initialize)(null, {
       status: 'starting up the app!',
     });
   }
@@ -30,7 +30,7 @@ class ContainerComponent extends Component {
       state[key] = stores[key].getState();
     });
 
-    return state; //
+    return state;
   }
 
   render() {

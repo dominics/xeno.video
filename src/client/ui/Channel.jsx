@@ -14,7 +14,7 @@ export default class Channel extends Component {
 
     return (
       <li className="channel" id={'channel-' + this.props.id}>
-        <a href="#" onClick={actions.get(selectChannel).bind(undefined, this.props.id)} role="button">
+        <a href="#" onClick={actions.getHandler(selectChannel).bind(undefined, this.props.id)} role="button">
           {this.props.title}
         </a>
       </li>

@@ -19,11 +19,9 @@ export default class ChannelStore extends MapStore {
           let mutated = map;
 
           for (const channel of action.data) {
-            debug('Mutating state', channel.id, channel);
             mutated = mutated.set(channel.id, channel);
           }
         });
-
       default:
         return state;
     }

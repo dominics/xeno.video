@@ -1,4 +1,5 @@
 import libdebug from 'debug';
+import Action from './Action';
 
 const debug = libdebug('xeno:action:registry');
 
@@ -15,7 +16,7 @@ export default class ActionRegistry {
 
   /**
    * @param {Dispatcher} dispatcher
-   * @param {Array.<Symbol.<String>>} types
+   * @param {Array.<string>} types
    */
   constructor(dispatcher, types) {
     this.dispatcher = dispatcher;
@@ -26,51 +27,44 @@ export default class ActionRegistry {
   }
 
   /**
-   * @returns {Array.<Symbol.<String>>}
+   * @returns {Array.<string>}
    */
   get types() {
     return Object.keys(this.creators);
   }
 
   /**
-   * @param {Symbol.<String>} type
+   * @param {string} type
    * @returns {function(Object): string}
    */
-  get(type) {
+  getCreator(type) {
     return this.creators[type];
   }
 
   /**
-   * @param {Symbol.<String>} type
+   * @param {string} type
    * @param {function(Object): string} creator
    */
-  set(type, creator) {
+  setCreator(type, creator) {
     this.creators[type] = creator;
   }
 
+  getHandler(type) {
+    return (event) => {
+      this.creators[type](null, event);
+    }
+  }
+
   /**
-   * @param {Symbol.<String>} type
-   * @param {function({?function(Object): string}): function(Object): string} fn
+   * @param {string} type
+   * @param {function({?function(*, Object): string}): function(*, Object): string} fn
    */
   wrap(type, fn) {
-    this.creators[type] = fn.bind(undefined, this.creators[type] || null);
+    this.setCreator(type, fn.bind(undefined, this.getCreator(type) || null));
   }
 
   /**
-   * @param {Symbol.<String>} type
-   * @param {object} data
-   * @returns {{type: Symbol.<String>, data: Object, created: number}}
-   */
-  _payload(type, data) {
-    return {
-      type: type.valueOf(),
-      data: data,
-      created: Date.now() / 1000,
-    };
-  }
-
-  /**
-   * @param {Object} action
+   * @param {Action} action
    * @return {string}
    * @private
    */
@@ -81,12 +75,15 @@ export default class ActionRegistry {
 
   /**
    * @param {string} type
-   * @returns {function(Object):string|null}
+   * @returns {function(*, Object):string|null}
    */
   _creator(type) {
-    return (data, err = null) => {
-      debug('Creating action', type, data);
-      return this._dispatch(this._payload(type, data));
+    return (err = null, data = null) => {
+      debug('Creating action', type, err, data);
+      const action = new Action(type, err, data);
+
+      debug('Action is', action);
+      return this._dispatch(action);
     };
   }
 }
