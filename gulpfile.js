@@ -19,6 +19,7 @@ const shell = require('gulp-shell');
 const source = require('vinyl-source-stream');
 const uglify = require('gulp-uglify');
 const sourcemaps = require('gulp-sourcemaps');
+const sourcemapify = require('sourcemapify');
 
 /**
  * Configuration
@@ -55,18 +56,19 @@ const sources = {
     debug: config.browserifyDebug,
     transform: [babelify.configure(config.babelOptions.client)],
     extensions: ['.jsx'],
-  }).bundle(),
+  }).plugin(sourcemapify, { base: 'public/js' })
+    .bundle()
+    .on('error', gutil.log.bind(gutil, 'Browserify error'))
+    .pipe(source(config.paths.client.compiled))
+    .pipe(buffer()),
   jsClientSource: () => gulp.src(
-    config.paths.client.src.js
-      .concat(config.paths.client.src.jsx)
+    config.paths.client.src.js, { base: 'src' }
   ),
   jsServer: () => gulp.src(
-    config.paths.server.src.js
-      .concat(config.paths.server.src.jsx)
+    config.paths.server.src.js, { base: 'src' }
   ),
   jsServerSource: () => gulp.src(
-    config.paths.server.src.js
-      .concat(config.paths.server.src.jsx)
+    config.paths.server.src.js, { base: 'src' }
   ),
   scss: () =>
     gulp.src(config.paths.css.src.scss),
@@ -116,13 +118,10 @@ gulp.task('font-awesome', () => {
 
 gulp.task('jsClientBuild', () => {
   return sources.jsClient()
-    .pipe(source(config.paths.client.compiled))
     .pipe(debug({title: 'client-build-input'}))
-    .pipe(buffer())
     .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
     .pipe(gulpif(config.compress, uglify({mangle: false})))
-    .on('error', gutil.log)
-    .pipe(gulpif(config.sourcemap, sourcemaps.write('.')))
+    .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
     .pipe(debug({title: 'client-build-output'}))
     .pipe(gulp.dest(config.paths.client.output));
 });
@@ -135,10 +134,9 @@ gulp.task('jsClientSource', () => {
 gulp.task('jsServerBuild', ['copyEsLintGenerated'], () => {
   return sources.jsServer()
     .pipe(debug({title: 'server-build-input'}))
-    .pipe(gulpif(config.sourcemap, sourcemaps.init()))
+    .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
     .pipe(babel(config.babelOptions.server))
-    .on('error', gutil.log)
-    .pipe(gulpif(config.sourcemap, sourcemaps.write('.')))
+    .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
     .pipe(debug({title: 'server-build-output'}))
     .pipe(gulp.dest(config.paths.server.output));
 });
@@ -158,9 +156,9 @@ gulp.task('jsServerSource', () => {
 
 gulp.task('css', ['bower', 'font-awesome'], () => {
   return sources.scss()
-    .pipe(gulpif(config.sourcemap, sourcemaps.init()))
+    .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
     .pipe(pipes.scss())
-    .pipe(gulpif(config.sourcemap, sourcemaps.write()))
+    .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
     .pipe(gulp.dest(config.paths.css.output));
 });
 
@@ -190,12 +188,10 @@ gulp.task('watch', ['build'], () => {
 
   gulp.watch([
     config.paths.client.src.js,
-    config.paths.client.src.jsx,
   ], ['jsClient'], notify);
 
   gulp.watch([
     config.paths.server.src.js,
-    config.paths.server.src.jsx,
     config.paths.server.src.jade,
   ], ['jsServer'], notify);
 
