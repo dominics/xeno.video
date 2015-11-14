@@ -1,9 +1,10 @@
-const express = require('express');
-const validate = require('express-validation');
+import express from 'express';
+import validate from 'express-validation';
 import * as validation from './validation';
-const crypto = require('crypto');
+import crypto from 'crypto';
+import libdebug from 'debug';
 const debug = libdebug('xeno:router');
-const redisCache = require('express-redis-cache');
+import redisCache from 'express-redis-cache';
 
 const auth = (req, res, next) => {
   if (!req.isAuthenticated() || !req.redditToken) {

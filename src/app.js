@@ -1,18 +1,20 @@
-const express = require('express');
-const path = require('path');
-const favicon = require('serve-favicon');
-const logger = require('morgan');
-const bodyParser = require('body-parser');
-const compress = require('compression');
-const debug = libdebug('xeno:app');
-const Promise = require('bluebird');
-
+import express from 'express';
+import path from 'path';
+import favicon from 'serve-favicon';
+import logger from 'morgan';
+import bodyParser from 'body-parser';
+import compress from 'compression';
+import libdebug from 'debug';
+import Promise from 'bluebird';
+import redis from 'redis';
+import http from 'http';
 import cookieParser from 'cookie-parser';
 import { ValidationError } from 'express-validation';
-
 import Api from './reddit/Api';
 import ChannelStore from './reddit/ChannelStore';
 import ItemStore from './reddit/ItemStore';
+
+const debug = libdebug('xeno:app');
 
 export default () => {
   const app = express();
@@ -93,14 +95,11 @@ export default () => {
    */
   app.set('env', process.env.NODE_ENV);
 
-  const http = require('http');
-
   /**
    * Create HTTP server.
    */
   const server = http.createServer(app);
 
-  const redis = require('redis');
   Promise.promisifyAll(redis.RedisClient.prototype);
   Promise.promisifyAll(redis.Multi.prototype);
 
@@ -133,11 +132,10 @@ export default () => {
   const api = new Api();
   app.locals.redditApi = api;
 
-  const stores = {
+  app.locals.stores = {
     channel: new ChannelStore(api, redisConnection),
     item:    new ItemStore(api, redisConnection),
   };
-  app.locals.stores = stores;
 
   app.use((req, res, next) => {
     if (

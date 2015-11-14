@@ -1,6 +1,7 @@
-import { React, Component } from 'react/addons';
+import { default as React, Component } from 'react/addons';
+import libdebug from 'debug';
 const debug = libdebug('xeno:render');
-import Item from './Item.jsx';
+import Item from './Item';
 
 export default class Viewer extends Component {
   static propTypes = {
@@ -19,14 +20,11 @@ export default class Viewer extends Component {
 
   state = {};
 
-  //getRawEmbed(item) {
-  //  return {
-  //    __html: item.embed.content,
-  //  };
-  //}
-
   render() {
+    debug('Rendering viewer');
+
     if (!this.props.item) {
+      debug('Viewer disabled');
       return null;
     }
 

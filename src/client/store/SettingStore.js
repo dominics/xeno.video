@@ -1,16 +1,25 @@
 import { MapStore } from 'flux/utils';
-const Promise = require('bluebird');
+import Promise from 'bluebird';
+import libdebug from 'debug';
+
+const debug = libdebug('xeno:store:setting');
 
 export default class SettingStore extends MapStore {
-  constructor() {
-    super();
+  _old() {
+    this.props.stores.setting.getAll().then(settings => {
+      this.setState(React.addons.update(this.state, {data: {settings: {$set: settings}}}));
+    });
 
-    this.name = 'setting';
-  }
-
-  getAll() {
     return Promise.resolve({
       nsfw: true,
+      ratio: 'free',
     });
+  }
+
+  reduce(state, action) {
+    switch (action.type) {
+      default:
+        return state;
+    }
   }
 }

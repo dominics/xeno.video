@@ -1,3 +1,5 @@
+import libdebug from 'debug';
+
 const debug = libdebug('xeno:emitter');
 
 export default (app) => {

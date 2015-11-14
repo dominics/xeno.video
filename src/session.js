@@ -3,6 +3,7 @@ const RedisStore     = require('connect-redis')(session);
 const RedditStrategy = require('passport-reddit').Strategy;
 const passport       = require('passport');
 const _              = require('lodash');
+import libdebug from 'debug';
 const debug          = libdebug('xeno:session');
 
 export default (app, io, redis) => {
