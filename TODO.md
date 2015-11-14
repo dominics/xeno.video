@@ -2,7 +2,6 @@
 
 ## Required for MVP
 
-* Tests
 * Stateful settings
 * Autoplay
 * 18+ filter
@@ -19,3 +18,4 @@
 
 * Handling of anonymous sessions
 * Logo and styling
+* Initial tests
