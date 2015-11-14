@@ -253,4 +253,6 @@ gulp.task('watch', ['build'], () => {
   gulp.watch([
     config.server.output + '/**/*.js',
   ], restart);
+
+  gulp.watch(config.test.src, ['jsTestBuild']);
 });

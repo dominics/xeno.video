@@ -2,6 +2,7 @@
 
 ## Required for MVP
 
+* Tests
 * Stateful settings
 * Autoplay
 * 18+ filter

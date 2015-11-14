@@ -173,11 +173,6 @@ export default () => {
    */
   emitter(app);
 
-  /**
-   * Listen on provided port, on all network interfaces.
-   */
-  server.listen(app.get('port'));
-
   server.on('error', (error) => {
     if (error.syscall !== 'listen') {
       throw error;
@@ -210,4 +205,6 @@ export default () => {
 
     debug('Listening on ' + bind);
   });
+
+  return [app, server];
 };

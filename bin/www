@@ -37,4 +37,11 @@ function requiredParameter(param) {
 /**
  * Start the application
  */
-require('./../dist/app')();
+const _ = require('./../dist/app')();
+const app = _[0];
+const server = _[1];
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+server.listen(app.get('port'));
