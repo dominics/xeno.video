@@ -27,7 +27,7 @@ export default class Item extends Component {
     return (
       <article className={'item' + (this.props.selected ? ' active' : '')} id={'item-' + this.props.id} onClick={click}>
         <h4>
-          {this.props.selected ? <span className="playing-indicator fa fa-arrow-left"></span> : null}
+          {this.props.selected ? <span className="playing-indicator fa "></span> : null}
           {this.props.title}
         </h4>
         <div className="item-thumbnail" style={{ backgroundImage: 'url("' + this.props.thumbnail.url + '")' }}>
