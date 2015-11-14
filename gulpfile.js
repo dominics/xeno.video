@@ -50,18 +50,15 @@ function mkdirp(dir) {
 /*
  * Meta tasks
  */
-gulp.task('default', sequence('build', ['test', 'jsLint', 'watch']));
-gulp.task('build', sequence('clean', ['jsBuild', 'css']));
+// Abstract
+gulp.task('default', sequence('build', ['test', 'lint']));
+gulp.task('build', sequence('clean', ['lib', 'css']));
+gulp.task('lib', sequence('js', 'coverage'));
 
-gulp.task('js', ['jsClient', 'jsServer']);
-
-gulp.task('jsBuild', ['bower', 'jsClientBuild', 'jsServerBuild', 'jsTestBuild']);
-gulp.task('jsLint', ['jsClientSource', 'jsServerSource']);
-
-gulp.task('jsClient', ['bower', 'jsClientBuild', 'jsClientSource']);
-gulp.task('jsServer', ['jsServerBuild', 'jsServerSource']);
-
-gulp.task('bower', ['bowerInstall', 'bowerJs', 'bowerFont']);
+// Concrete
+gulp.task('lint', ['lintClient', 'lintServer']);
+gulp.task('js', ['bower', 'jsClient', 'jsServer', 'jsTest']);
+gulp.task('bower', sequence('bowerInstall', 'bowerJs', 'bowerFont'));
 
 /*
  * And finally, our task definitions
@@ -125,7 +122,7 @@ gulp.task('bowerFont', ['bowerInstall'], () => {
     .pipe(gulp.dest(config.bower.output.font));
 });
 
-gulp.task('jsClientBuild', () => {
+gulp.task('jsClient', () => {
   return browserify(config.browserifyOptions)
     .plugin(sourcemapify, { base: 'public/js' })
     .bundle()
@@ -141,13 +138,13 @@ gulp.task('jsClientBuild', () => {
     .pipe(gulp.dest(config.client.output));
 });
 
-gulp.task('jsClientSource', () => {
+gulp.task('lintClient', () => {
   return gulp.src(config.client.src.js)
     .pipe(gulpif(config.linting, eslint()))
     .pipe(gulpif(config.linting, eslint.format()));
 });
 
-gulp.task('jsServerBuild', () => {
+gulp.task('jsServer', () => {
   return gulp.src(config.server.src.js)
     .pipe(debug({title: 'server-build'}))
     .pipe(gulpif(config.sourcemap, sourcemaps.init()))
@@ -156,13 +153,13 @@ gulp.task('jsServerBuild', () => {
     .pipe(gulp.dest(config.server.output));
 });
 
-gulp.task('jsServerSource', () => {
+gulp.task('lintServer', () => {
   return gulp.src(config.server.src.js)
     .pipe(gulpif(config.linting, eslint()))
     .pipe(gulpif(config.linting, eslint.format()));
 });
 
-gulp.task('jsTestBuild', () => {
+gulp.task('jsTest', () => {
   return gulp.src(config.test.src)
     .pipe(debug({title: 'test-build'}))
     .pipe(gulpif(config.sourcemap, sourcemaps.init()))
@@ -171,7 +168,7 @@ gulp.task('jsTestBuild', () => {
     .pipe(gulp.dest(config.test.output));
 });
 
-gulp.task('buildCoverage', () => {
+gulp.task('coverage', () => {
   return gulp.src(config.test.coverage)
     .pipe(istanbul({instrumenter: isparta.Instrumenter}))
     .pipe(istanbul.hookRequire());
@@ -199,7 +196,7 @@ gulp.task('css', ['bowerInstall'], () => {
 });
 
 /* Test tasks */
-gulp.task('test', ['buildCoverage'], () => {
+gulp.task('test', ['coverage'], () => {
   mkdirp(config.build.output);
 
   return gulp.src(config.test.tests, {read: false})
@@ -254,5 +251,5 @@ gulp.task('watch', ['build'], () => {
     config.server.output + '/**/*.js',
   ], restart);
 
-  gulp.watch(config.test.src, ['jsTestBuild']);
+  gulp.watch(config.test.src, ['jsTest']);
 });

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-export default function loadConfiguration(additionalSearchPath = null) {
+module.exports = function loadConfiguration(additionalSearchPath) {
   const configPaths = [
     '/etc/xeno/env',
     path.join(__dirname, '/../.env'),
@@ -37,4 +37,4 @@ export default function loadConfiguration(additionalSearchPath = null) {
     'REDIS_PORT',
     'REDIS_HOST',
   ].forEach(requiredParameter);
-}
+};

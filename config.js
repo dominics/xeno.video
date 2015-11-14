@@ -1,6 +1,6 @@
 const path = require('path');
 const babelify = require('babelify');
-const loadConfiguration = require('./dist/config');
+const loadConfiguration = require('./src/config');
 
 loadConfiguration();
 
