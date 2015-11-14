@@ -1,6 +1,6 @@
 import { default as React, Component } from 'react/addons';
 import libdebug from 'debug';
-import { default as actions, creators } from '../actions';
+import { default as actions, selectItem } from '../action';
 
 const debug = libdebug('xeno:component:item');
 
@@ -28,7 +28,7 @@ export default class Item extends Component {
     console.log(this.props);
 
     return (
-      <li className="item" onClick={creators[actions.selectItem]}>
+      <li className="item" onClick={actions.get(selectItem)}>
         <a href="#" className="thumbnail">
           <img
             className="media-object"

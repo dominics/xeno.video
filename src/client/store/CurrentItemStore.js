@@ -1,5 +1,5 @@
 import { ReduceStore } from 'flux/utils';
-import actions from './../actions';
+import { default as actions, selectItem } from './../action';
 
 export default class CurrentItemStore extends ReduceStore
 {
@@ -9,8 +9,8 @@ export default class CurrentItemStore extends ReduceStore
 
   reduce(state, action) {
     switch (action.type) {
-      case actions.selectItem:
-        return action.id;
+      case selectItem:
+        return action.data.id;
       default:
         return state;
     }
