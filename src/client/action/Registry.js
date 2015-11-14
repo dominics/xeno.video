@@ -49,10 +49,21 @@ export default class ActionRegistry {
     this.creators[type] = creator;
   }
 
+  /**
+   * Use like:
+   *   registry.getHandler('foo').bind(undefined, {
+   *    'foo' => 'bar'
+   *   });
+   * to send data
+   *
+   * @param {string} type
+   * @returns {function(*, Event): string}
+   */
   getHandler(type) {
-    return (event) => {
-      this.creators[type](null, event);
-    }
+    return (data, _event) => {
+      debug(`Handling ${_event} as ${type}`, _event, data);
+      return this.getCreator(type)(null, data);
+    };
   }
 
   /**

@@ -1,3 +1,4 @@
+import { Set } from 'immutable';
 
 export function mapSchema(obj, schema) {
   const mapped = {};
@@ -21,3 +22,12 @@ export function* values(obj) {
     yield obj[key];
   }
 }
+
+export const predicates = {
+  keyIn(...args) {
+    const keys = Set(args);
+    return (v, k) => {
+      return keys.has(k);
+    };
+  },
+};

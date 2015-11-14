@@ -7,6 +7,7 @@ const debug = libdebug('xeno:api:item');
 export default class Item extends Api
 {
   getAllForChannel(channelId) {
+    debug('Getting all items for channel', channelId);
     return this.get(
       `/item/channel/${channelId}`,
       registry.getCreator(pending),
