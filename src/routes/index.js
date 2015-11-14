@@ -55,7 +55,8 @@ export default (app, passport) => {
 
   router.get('/channel/all', auth, (req, res) => {
     res.json({
-      channel: [
+      type: 'channel',
+      data: [
         {id: 'all', title: 'All'},
         {id: 'videos', title: 'Videos'},
       ],
@@ -76,7 +77,8 @@ export default (app, passport) => {
     itemStore.getByChannel(channel, req)
       .then(items => {
         res.json({
-          item: items,
+          type: 'item',
+          data: items,
         });
 
         res.end();

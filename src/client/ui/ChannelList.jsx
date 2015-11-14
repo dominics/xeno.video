@@ -2,6 +2,7 @@ import { default as React, Component } from 'react/addons';
 
 import Channel from './Channel';
 import libdebug from 'debug';
+import { Map } from 'immutable';
 
 const debug = libdebug('xeno:component:channelList');
 
@@ -10,37 +11,37 @@ const debug = libdebug('xeno:component:channelList');
  */
 export default class ChannelList extends Component {
   static propTypes = {
-    channels:        React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-    selected:        React.PropTypes.instanceOf(Channel),
+    channel:        React.PropTypes.instanceOf(Map).isRequired,
+    currentChannel: React.PropTypes.string,
   };
 
-  static defaultProps = {
-    channels: [],
-    selected: null,
-  };
-
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.selected && nextProps.channels.length > 0) {
-      nextProps.selected = nextProps.channels[0];
-    }
-  }
-
+  /**
+   * @param {Array} channels
+   * @returns {Array.<Channel>}
+   */
   channelNodes(channels) {
+    if (!channels) {
+      return [];
+    }
+
     return channels.map(
       (channel) => {
         return (
-          <Channel key={channel.id} id={channel.id} title={channel.title} />
+          <Channel
+            key={channel.id}
+            id={'channel-' + channel.id}
+            title={channel.title} />
         );
       }
     );
   }
 
   render() {
-    debug('Rendering channel list');
+    debug('Rendering channel list', this.props.channel);
 
     return (
       <ol className="channel-list nav nav-tabs">
-        {this.channelNodes(this.props.channels)}
+        {this.channelNodes(this.props.channel)}
       </ol>
     );
   }

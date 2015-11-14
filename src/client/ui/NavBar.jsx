@@ -1,21 +1,22 @@
 import { default as React, Component } from 'react/addons';
 import libdebug from 'debug';
 import ChannelList from './ChannelList';
+import { Map } from 'immutable';
+
 const debug = libdebug('xeno:navbar');
-const Channel = require('./Channel.jsx');
 
 export default class NavBar extends Component {
   static propTypes = {
-    channels: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Channel)),
-    settings: React.PropTypes.object,
-    selected: React.PropTypes.instanceOf(Channel),
+    setting: React.PropTypes.instanceOf(Map).isRequired,
+    channel: React.PropTypes.instanceOf(Map).isRequired,
+    currentChannel: React.PropTypes.string,
   };
 
   render() {
     return (
       <ChannelList
-        channels={this.props.channels}
-        selected={this.props.selected} />
+        channel={this.props.channel}
+        currentChannel={this.props.currentChannel} />
     );
   }
 }

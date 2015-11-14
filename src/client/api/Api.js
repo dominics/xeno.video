@@ -17,7 +17,7 @@ export default class Api {
       .then(
         (data) => {
           debug('Dispatching complete action with data', data);
-          return Promise.resolve(complete(data));
+          return Promise.resolve(complete(data.data));
         },
         (xhr, status, error) => {
           throw new Error(xhr, status, error);

@@ -193,9 +193,9 @@ gulp.task('watch', ['build'], () => {
   gulp.watch([
     config.paths.server.src.js,
     config.paths.server.src.jade,
-  ], ['jsServer'], notify);
+  ], ['jsServer'], restart);
 
-  gulp.watch([
-    config.paths.server.output + '/**/*.js',
-  ], restart);
+  //gulp.watch([
+  //  config.paths.server.output + '/**/*.js',
+  //], restart);
 });
