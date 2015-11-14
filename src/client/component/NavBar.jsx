@@ -1,4 +1,4 @@
-import { default as React, Component } from 'react/addons';
+import { default as React, Component } from 'react';
 import libdebug from 'debug';
 import ChannelList from './channel/List';
 // import ChannelSearch from './channel/Search';

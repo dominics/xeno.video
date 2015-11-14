@@ -1,14 +1,9 @@
 const path = require('path');
 const babelify = require('babelify');
 const fs = require('fs');
+const loadConfiguration = require('./dist/config');
 
-const conf = __dirname + '/.env';
-
-if (fs.existsSync(conf)) {
-  require('node-env-file')(conf);
-} else {
-  require('debug')('xeno:env')('No env file found', conf);
-}
+loadConfiguration();
 
 const debug = (process.env.NODE_ENV === 'development');
 const output = path.join(__dirname, 'build');
@@ -100,7 +95,9 @@ const config = {
       loose: ['es6.classes', 'es6.properties.computed', 'es6.modules', 'es6.forOf'],
     },
     client: {
-      optional: ['es7.classProperties', 'runtime'],
+      optional: debug
+        ? ['es7.classProperties', 'runtime']
+        : ['es7.classProperties', 'runtime', 'optimisation.react.inlineElements', 'optimisation.react.constantElements'],
       loose: ['es6.classes', 'es6.properties.computed', 'es6.modules', 'es6.forOf'],
       sourceMapRelative: path.join(__dirname, 'public/js'),
     },

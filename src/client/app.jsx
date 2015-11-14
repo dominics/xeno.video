@@ -1,10 +1,11 @@
-import React from 'react/addons';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import Container from './component/Container';
 
 window.dbg = require('debug');
 
 document.addEventListener('DOMContentLoaded', () => {
-  React.render(
+  ReactDOM.render(
     window._tv = <Container />,
     document.getElementById('tv')
   );

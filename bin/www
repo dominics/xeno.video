@@ -1,38 +1,6 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-
-/**
- * Configuration
- */
-const configPaths = ['/etc/xeno/env', __dirname + '/../.env'];
-
-configPaths.forEach(function(path) {
-  if (fs.existsSync(path)) {
-    require('node-env-file')(path);
-  }
-});
-
-if (!fs.existsSync(__dirname + '/../dist')) {
-  throw new Error('You must run the server-side transpile build first (usually, gulp build)');
-}
-
-function requiredParameter(param) {
-  if (!process.env[param]) {
-    throw new Error('You must define ' + param + ' as an environment variable, or in .env');
-  }
-}
-
-[
-  'NODE_ENV',
-  'HOST',
-  'PORT',
-  'SESSION_SECRET',
-  'REDDIT_CONSUMER_KEY',
-  'REDDIT_CONSUMER_SECRET',
-  'REDIS_PORT',
-  'REDIS_HOST',
-].forEach(requiredParameter);
+require('./../dist/config')();
 
 /**
  * Start the application
