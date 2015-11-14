@@ -1,7 +1,11 @@
 const fs = require('fs');
 const path = require('path');
+const _ = require('lodash');
 
 module.exports = function loadConfiguration(additionalSearchPath) {
+  // Save, because actual env vars win the merge
+  const previous = _.cloneDeep(process.env);
+
   const configPaths = [
     '/etc/xeno/env',
     path.join(__dirname, '/../.env'),
@@ -16,6 +20,8 @@ module.exports = function loadConfiguration(additionalSearchPath) {
       require('node-env-file')(configPath);
     }
   });
+
+  process.env = Object.assign({}, process.env, previous);
 
   function requiredParameter(param) {
     if (!process.env[param]) {
