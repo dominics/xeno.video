@@ -8,9 +8,19 @@ build:
     - npm-install
 
     - script:
-        name: Provide testing defaults
+        name: copy .env.dist to .env
         code: |
           cp $WERCKER_SOURCE_DIR/.env.dist $WERCKER_SOURCE_DIR/.env
+
+    - script:
+        name: export linked container details
+        code: |
+          export REDIS_HOST=REDIS_PORT_6379_TCP_HOST
+          export REDIS_PORT=REDIS_PORT_6379_TCP_PORT
+
+    - script:
+         name: env
+         code: env
 
     - hgen/gulp:
         tasks: build
@@ -28,7 +38,7 @@ dev:
 deploy:
   steps:
     - script:
-        name: Remove testing defaults
+        name: rm .env
         code: |
           rm $WERCKER_SOURCE_DIR/.env
 
