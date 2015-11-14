@@ -27,12 +27,13 @@ export default class ItemStore extends Store {
    *
    * @param channel
    * @param req
+   * @param res
    * @return Promise.<Array.<Object>>
    */
-  getByChannel(channel, req) {
+  getByChannel(channel, req, res) {
     debug('Getting items by channel', channel);
 
-    const addToQueue = this.queues.byChannel.add({
+    const addToQueue = res.locals.sessionValidation === 'pass' ? this.queues.byChannel.add({
       channel: channel,
       token: req.session.passport.user.accessToken,
     }, {
@@ -43,13 +44,13 @@ export default class ItemStore extends Store {
         delay: 10000,
       },
       timeout: 20000,
-    });
+    }) : Promise.resolve('Skipping enqueue because not fully authenticated');
 
     const getFromDb = this.redis.lrangeAsync(
       this._key('by-channel', channel), 0, 100
     );
 
-    return Promise.join(addToQueue, getFromDb, (queue, ids) => {
+    return Promise.join(addToQueue, getFromDb, (_queue, ids) => {
       if (!ids || !ids.length) {
         return Promise.resolve([]);
       }

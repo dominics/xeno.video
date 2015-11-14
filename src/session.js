@@ -62,18 +62,6 @@ export default function(app, io, redis) {
   return passport;
 }
 
-function _logout(req, res, _next) {
-  debug('Failed session validation!, logging out');
-  req.logout();
-  res.redirect('/login');
-  res.end();
-}
-
-function _forbidden(req, res, _next) {
-  res.sendStatus(401);
-  res.end();
-}
-
 export function validate(req) {
   if (!req.isAuthenticated()) {
     return 'fail.auth';
@@ -103,14 +91,26 @@ export function validate(req) {
 }
 
 
+function _logout(req, res, _next) {
+  debug('Failed session validation!, logging out');
+  req.logout();
+  res.redirect('/login');
+  res.end();
+}
+
+function _forbidden(req, res, _next) {
+  res.sendStatus(401);
+  res.end();
+}
+
 export function authInteractive(req, res, next) {
-  switch (validate(req)) {
+  switch (res.locals.sessionValidation) {
     case 'refresh.first': // @todo Refresh tokens
     case 'refresh.proactive':
     case 'fail.access_token':
     case 'fail.session_age':
-    case 'fail.auth':
       return _logout(req, res, next);
+    case 'fail.auth':
     case 'pass':
       return next();
     default:
@@ -119,13 +119,13 @@ export function authInteractive(req, res, next) {
 }
 
 export function authApi(req, res, next) {
-  switch (validate(req)) {
+  switch (res.locals.sessionValidation) {
     case 'refresh.first': // @todo Refresh tokens
     case 'refresh.proactive':
     case 'fail.access_token':
     case 'fail.session_age':
-    case 'fail.auth':
       return _forbidden(req, res, next);
+    case 'fail.auth':
     case 'pass':
       return next();
     default:

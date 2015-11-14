@@ -41,19 +41,19 @@ export default (app, passport) => {
     }
   });
 
-  router.get('/', (req, res) => {
+  router.get('/', authInteractive, (req, res) => {
     res.render('index', {
       title: 'xeno.video',
     });
   });
 
-  router.get('/about', (req, res) => {
+  router.get('/about', authInteractive, (req, res) => {
     res.render('about', {
       title: 'about xeno.video',
     });
   });
 
-  router.get('/setting/all', (req, res, next) => {
+  router.get('/setting/all', authApi, (req, res, next) => {
     debug('Getting settings');
 
     if (!app.locals.stores || !app.locals.stores.setting) {
@@ -62,7 +62,7 @@ export default (app, passport) => {
 
     const settingStore = app.locals.stores.setting;
 
-    settingStore.getAll(req)
+    settingStore.getAll(req, res)
       .then(settings => {
         res.json({
           type: 'setting',
@@ -74,7 +74,7 @@ export default (app, passport) => {
       .catch(err => next(err));
   });
 
-  router.get('/channel/all', (req, res) => {
+  router.get('/channel/all', authApi, (req, res) => {
     res.json({
       type: 'channel',
       data: [
@@ -84,7 +84,7 @@ export default (app, passport) => {
     });
   });
 
-  router.get('/item/channel/:channel', validate(validation.itemsForChannel), cache.route({ cache: 5 }), (req, res, next) => {
+  router.get('/item/channel/:channel', authApi, validate(validation.itemsForChannel), cache.route({ cache: 5 }), (req, res, next) => {
     debug('Getting items for ' + req.params.channel);
 
     const channel = req.params.channel;
@@ -95,7 +95,7 @@ export default (app, passport) => {
 
     const itemStore = app.locals.stores.item;
 
-    itemStore.getByChannel(channel, req)
+    itemStore.getByChannel(channel, req, res)
       .then(items => {
         res.json({
           type: 'item',
