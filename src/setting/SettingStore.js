@@ -9,11 +9,12 @@ export default class SettingStore {
     this.redis = redis;
   }
 
-  getAll(req) {
-    return new Promise((resolve, reject) => {
+  getAll(req, _res) {
+    return new Promise((resolve, _reject) => {
       const state = new Map({
-        nsfw: true,
         authenticated: req.isAuthenticated(),
+        nsfw: _.get(req, 'session.setting.nsfw', false),
+        autoplay: _.get(req, 'session.setting.autoplay', true),
         userId: _.get(req, 'session.passport.user.reddit.id', null),
         name: _.get(req, 'session.passport.user.reddit.name', null),
       });

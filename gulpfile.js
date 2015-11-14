@@ -187,6 +187,7 @@ gulp.task('css', ['bowerInstall'], () => {
         './scss',
         path.join(config.bower.src, 'bootstrap-sass/assets/stylesheets'),
         path.join(config.bower.src, 'font-awesome/scss'),
+        path.join(config.bower.src, 'awesome-bootstrap-checkbox'),
       ],
     }))
     .pipe(autoprefixer({

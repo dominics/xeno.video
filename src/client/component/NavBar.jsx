@@ -38,7 +38,8 @@ export default class NavBar extends Component {
 
             {/* <ChannelSearch /> */}
 
-            <UserMenu />
+            <UserMenu
+              setting={this.props.setting} />
           </div>
         </section>
       </nav>
