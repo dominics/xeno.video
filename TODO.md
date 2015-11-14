@@ -7,6 +7,7 @@
 * 18+ filter
 * Better list of channels
 * Check caching behaviour
+* Autoplay
 
 ## First iteration
 
