@@ -1,8 +1,14 @@
 const path = require('path');
 const babelify = require('babelify');
-const loadConfiguration = require('./src/config');
+const fs = require('fs');
 
-loadConfiguration();
+const conf = __dirname + '/.env';
+
+if (fs.existsSync(conf)) {
+  require('node-env-file')(conf);
+} else {
+  require('debug')('xeno:env')('No env file found', conf);
+}
 
 const debug = (process.env.NODE_ENV === 'development');
 const output = path.join(__dirname, 'build');
