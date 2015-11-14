@@ -1,11 +1,12 @@
 import path from 'path';
+import config from './../dist/config';
 
 describe('API functional tests', function tests() {
   this.slow(5000);
   this.timeout(10000);
 
   before(() => {
-    require('node-env-file')(path.join(__dirname, './../.env'));
+    config();
     [this.app] = require('./../dist/app')();
     this.request = request(this.app);
   });

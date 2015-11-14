@@ -50,7 +50,7 @@ function mkdirp(dir) {
 /*
  * Meta tasks
  */
-gulp.task('default', sequence('build', ['test', 'jsLint']));
+gulp.task('default', sequence('build', ['test', 'jsLint', 'watch']));
 gulp.task('build', sequence('clean', ['jsBuild', 'css']));
 
 gulp.task('js', ['jsClient', 'jsServer']);
