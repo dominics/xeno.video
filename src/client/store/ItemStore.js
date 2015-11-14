@@ -1,4 +1,8 @@
 import { MapStore } from 'flux/utils';
+import libdebug from 'debug';
+import { receiveItemsForChannel } from '../action';
+
+const debug = libdebug('xeno:store:item');
 
 export default class ItemStore extends MapStore {
 
@@ -18,6 +22,9 @@ export default class ItemStore extends MapStore {
 
   reduce(state, action) {
     switch (action.type) {
+      case receiveItemsForChannel:
+        debug('Received items for channel, mutating state', action, state);
+        return state;
       default:
         return state;
     }

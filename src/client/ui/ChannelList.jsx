@@ -33,7 +33,7 @@ export default class ChannelList extends Component {
             title={channel.title} />
         );
       }
-    );
+    ).toArray();
   }
 
   render() {

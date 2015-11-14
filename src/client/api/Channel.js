@@ -6,7 +6,7 @@ const debug = libdebug('xeno:api:channel');
 
 export default class Channel extends Api
 {
-  getAll() {
+  refresh() {
     return this.get(
       '/channel/all',
       registry.get(pending),

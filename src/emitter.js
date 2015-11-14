@@ -7,7 +7,7 @@ export default (app) => {
 
   io.emit('tv', 'Hello, world');
 
-  io.on('connection', (ws) => {
+  io.on('connection', (_ws) => {
     debug('A client connected');
   });
 

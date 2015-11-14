@@ -84,7 +84,7 @@ export default class ActionRegistry {
    * @returns {function(Object):string|null}
    */
   _creator(type) {
-    return (data) => {
+    return (data, err = null) => {
       debug('Creating action', type, data);
       return this._dispatch(this._payload(type, data));
     };

@@ -11,58 +11,56 @@ const debug = libdebug('xeno:container');
 
 class ContainerComponent extends Component {
   componentDidMount() {
-    debug('Dispatching the first initialize event!');
-
     actions.get(initialize)({
       status: 'starting up the app!',
     });
   }
 
   static getStores() {
-    return stores.toArray();
+    const arr = Object.keys(stores).map(name => stores[name]);
+    debug('Container has stores', arr);
+
+    return arr;
   }
 
-  static calculateState(prevState) {
-    let state = (!(prevState instanceof Map) ? new Map() : prevState);
-    debug('Got previous state', state.toJS());
+  static calculateState(_prevState) {
+    const state = {};
 
-    state = state.withMutations(map => {
-      let mutated = map;
-
-      for (const [key, value] of stores.entries()) {
-        debug('Mutating store state', key, value.getState());
-        mutated = mutated.set(key, value.getState());
-      }
-
-      return mutated;
+    Object.keys(stores).forEach(key => {
+      state[key] = stores[key].getState();
     });
 
-    debug('New state', state.toJS());
-
-    return state;
+    return state; //
   }
 
   render() {
     const state = this.state;
-    debug('Rendering container, using state like', state.toJS());
+
+    const item = state.item;
+    const channel = state.channel;
+
+    const currentItemId = state.currentItem;
+    const currentChannelId = state.currentChannel;
+
+    const currentItem = currentItemId ? item.get(currentItemId) : null;
+    const currentChannel = currentChannelId ? channel.get(currentChannelId) : null;
 
     return (
       <div id="container">
         <NavBar
-          setting={this.state.get('setting')}
-          channel={this.state.get('channel')}
-          currentChannel={this.state.get('currentChannel')} />
+          setting={state.setting}
+          channel={channel}
+          currentChannel={currentChannel} />
 
         <div className="row">
           <Viewer
-            item={this.state.get('currentItem')}
-            socket={this.state.get('socket')} />
+            item={currentItem}
+            socket={state.socket} />
 
           <ItemList
-            item={this.state.get('item')}
-            viewedItem={this.state.get('viewedItem')}
-            currentChannel={this.state.get('currentChannel')}
-            currentItem={this.state.get('currentItem')} />
+            item={item}
+            viewedItem={state.viewedItem}
+            currentItemId={currentItemId} />
         </div>
       </div>
     );

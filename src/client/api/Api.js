@@ -9,7 +9,7 @@ export default class Api {
    * @param {function(object): string} complete Action creator
    * @returns Promise which, when resolved, provides a dispatcher token for the complete action
    */
-  get(url, pending, complete) {
+  get(url, pending, complete, failure = null) {
     debug('Dispatching pending action with data', url);
     pending(url);
 
@@ -20,7 +20,7 @@ export default class Api {
           return Promise.resolve(complete(data.data));
         },
         (xhr, status, error) => {
-          throw new Error(xhr, status, error);
+          return Promise.reject(new Error(xhr, status, error));
         }
       );
   }
