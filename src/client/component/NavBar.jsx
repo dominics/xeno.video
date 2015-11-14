@@ -21,12 +21,12 @@ export default class NavBar extends Component {
           <div className="navbar-header">
             <button type="button" className="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-              <span className="sr-only"></span>
-              <span className="fa fa-bars"></span>
+              <span className="sr-only" />
+              <span className="fa fa-bars" />
             </button>
 
             <a className="navbar-brand" href="#">
-              <span className="icomoon-logo"></span>
+              <span className="icomoon-logo" />
               <h1>xeno.video</h1>
             </a>
           </div>
