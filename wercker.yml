@@ -4,6 +4,11 @@ build:
   steps:
     - npm-install
 
+    - script:
+        name: Provide testing defaults
+        code: |
+          cp $WERCKER_SOURCE_DIR/.env.dist $WERCKER_SOURCE_DIR/.env
+
     - hgen/gulp:
         tasks: build
 
@@ -19,6 +24,11 @@ dev:
 
 deploy:
   steps:
+    - script:
+        name: Remove testing defaults
+        code: |
+          rm $WERCKER_SOURCE_DIR/.env
+
     - internal/docker-push:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
