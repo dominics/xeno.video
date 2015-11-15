@@ -1,5 +1,24 @@
 import { Set } from 'immutable';
 
+export function find(obj, paths, notFound) {
+  const path = (typeof paths === 'string') ? paths.split('.') : paths.join('.').split('.');
+  let current = obj;
+
+  for (let l = path.length, i = 0; i < l; i++) {
+    if (typeof current[path[i]] === 'undefined') {
+      return notFound;
+    }
+
+    if ((i < l - 1) && typeof current[path[i]] !== 'object') {
+      return notFound;
+    }
+
+    current = current[path[i]];
+  }
+
+  return current;
+}
+
 export function mapSchema(obj, schema) {
   const mapped = {};
 

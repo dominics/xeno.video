@@ -29,7 +29,7 @@ export default class Api {
    * @param {function(object): string} complete Action creator
    * @returns {*}
    */
-  get(url, pending, complete) {
+  getJSONWithActionCreators(url, pending, complete) {
     debug('API request pending', url);
     const token = pending(null, url);
 

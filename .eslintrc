@@ -23,8 +23,8 @@
     "no-unused-vars": [2, {
       "vars": "local",
       "args": "after-used",
-      "argsIgnorePattern": "^_",
-      "varsIgnorePattern": "^(_|debug)"
+      "argsIgnorePattern": "^_.+$",
+      "varsIgnorePattern": "^(_.+|debug)$"
     }]
   }
 }

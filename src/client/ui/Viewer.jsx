@@ -1,7 +1,7 @@
 import { default as React, Component } from 'react/addons';
 import libdebug from 'debug';
 const debug = libdebug('xeno:render');
-import Item from './Item';
+import { Map } from 'immutable';
 
 export default class Viewer extends Component {
   static propTypes = {
@@ -10,22 +10,28 @@ export default class Viewer extends Component {
     socket: React.PropTypes.any,
   };
 
+  _getRawEmbed(item) {
+    return {
+      __html: item.embed.content,
+    };
+  }
+
   render() {
-    const item  = this.props.currentItem;
-    debug('Rendering viewer', item);
+    const item = this.props.currentItem;
 
     if (!item) {
       debug('Viewer disabled');
       return null;
     }
 
-    const ratio = this.props.setting.get('ratio');
+    debug('Rendering viewer', item);
 
-    const rawEmbed        = item.embed;
+    const rawEmbed = this._getRawEmbed(item);
+    const ratio = this.props.setting.get('ratio');
     const responsiveRatio = (ratio === 'free' ? '' : `embed-responsive embed-responsive-${ratio}`);
 
     return (
-      <article id="viewer" className="panel col-md-9 pull-left">
+      <article id="viewer" className="panel col-md-8 pull-left">
         <header className="panel-heading">
           <h2>{item.title}</h2>
         </header>

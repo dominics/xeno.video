@@ -1,5 +1,5 @@
 import { MapStore } from 'flux/utils';
-import { receiveChannels } from './../action';
+import { channelReceive } from './../action';
 import libdebug from 'debug';
 
 const debug = libdebug('xeno:store:channel');
@@ -12,7 +12,7 @@ export default class ChannelStore extends MapStore {
    */
   reduce(state, action) {
     switch (action.type) {
-      case receiveChannels:
+      case channelReceive:
         if (action.isError()) {
           debug('Channel store received error updating channels');
           return state;

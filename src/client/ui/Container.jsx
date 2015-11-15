@@ -5,13 +5,13 @@ import NavBar from './NavBar';
 import { Container as FluxContainer } from 'flux/utils';
 import libdebug from 'debug';
 import stores from './../store';
-import { default as actions, initialize } from '../action';
+import { registry, initialize } from '../action';
 const debug = libdebug('xeno:container');
 
 class ContainerComponent extends Component {
   componentDidMount() {
     debug('Initializing the app');
-    actions.getCreator(initialize)(null, {
+    registry.getCreator(initialize)(null, {
       status: 'starting up the app!',
     });
   }
@@ -37,16 +37,29 @@ class ContainerComponent extends Component {
     const state = this.state;
 
     const item = state.item;
+    const itemByChannel = state.itemByChannel;
+
     const channel = state.channel;
 
     const currentItemId = state.currentItem;
     const currentChannelId = state.currentChannel;
 
-    const currentItem = currentItemId ? item.get(currentItemId) : null;
-    const currentChannel = currentChannelId ? channel.get(currentChannelId) : null;
+    const currentItem = currentItemId
+      ? item.get(currentItemId, null)
+      : null;
+
+    const currentChannel = currentChannelId
+      ? channel.get(currentChannelId, null)
+      : null;
+
+    const currentChannelItems = currentChannelId
+      ? itemByChannel.get(currentChannelId, []).map(itemId => item.get(itemId))
+      : null;
+
+    debug('Rendering using state', state);
 
     return (
-      <div id="container">
+      <section className="container-fluid">
         <NavBar
           setting={state.setting}
           channel={channel}
@@ -59,11 +72,11 @@ class ContainerComponent extends Component {
             socket={state.socket} />
 
           <ItemList
-            item={item}
+            currentChannelItems={currentChannelItems}
             viewedItem={state.viewedItem}
             currentItemId={currentItemId} />
         </div>
-      </div>
+      </section>
     );
   }
 

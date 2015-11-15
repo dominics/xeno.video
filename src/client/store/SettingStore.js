@@ -1,22 +1,26 @@
 import { MapStore } from 'flux/utils';
 import libdebug from 'debug';
+import { settingReceiveAll } from '../action';
 
 const debug = libdebug('xeno:store:setting');
 
 export default class SettingStore extends MapStore {
-  _old() {
-    this.props.stores.setting.getAll().then(settings => {
-      this.setState(React.addons.update(this.state, {data: {settings: {$set: settings}}}));
-    });
-
-    return Promise.resolve({
-      nsfw: true,
-      ratio: 'free',
-    });
-  }
-
   reduce(state, action) {
     switch (action.type) {
+      case settingReceiveAll:
+        if (action.isError()) {
+          debug('Setting store received error updating');
+          return state;
+        }
+
+        debug('Setting received data, mutating', action.data);
+        return state.withMutations(map => {
+          let mutated = map;
+
+          for (const setting of action.data) {
+            mutated = mutated.set(setting.id, setting.value);
+          }
+        });
       default:
         return state;
     }

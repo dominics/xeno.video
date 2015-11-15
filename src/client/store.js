@@ -6,10 +6,10 @@ import CurrentChannelStore from './store/CurrentChannelStore';
 import CurrentItemStore from './store/CurrentItemStore';
 import ViewedItemStore from './store/ViewedItemStore';
 import SocketStore from './store/SocketStore';
-
-//
+import ItemByChannelStore from './store/ItemByChannelStore';
 
 export const itemStore = new ItemStore(dispatcher);
+export const itemByChannelStore = new ItemByChannelStore(dispatcher);
 export const channelStore = new ChannelStore(dispatcher);
 export const settingStore = new SettingStore(dispatcher);
 export const currentItemStore = new CurrentItemStore(dispatcher);
@@ -19,6 +19,7 @@ export const socketStore = new SocketStore(dispatcher);
 
 export default {
   item: itemStore,
+  itemByChannel: itemByChannelStore,
   channel: channelStore,
   setting: settingStore,
   currentItem: currentItemStore,

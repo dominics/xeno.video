@@ -27,15 +27,14 @@ export default class ItemStore extends Store {
    *
    * @param channel
    * @param req
-   * @param next
    * @return Promise.<Array.<Object>>
    */
-  getByChannel(channel, req, next) {
+  getByChannel(channel, req) {
     debug('Getting items by channel', channel);
 
     const addToQueue = this.queues.byChannel.add({
       channel: channel,
-      token: req.redditToken,
+      token: req.session.passport.user.accessToken,
     }, {
       delay: 100,
       attempts: 3,
@@ -52,7 +51,7 @@ export default class ItemStore extends Store {
 
     return Promise.join(addToQueue, getFromDb, (queue, ids) => {
       if (!ids || !ids.length) {
-        return next(null, []);
+        return Promise.resolve([]);
       }
 
       const keys = ids.map((v) => {

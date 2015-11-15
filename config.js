@@ -30,6 +30,8 @@ const config = {
   paths: {
     vendorRegex: /(node_modules|bower_components)/,
 
+    socket: './node_modules/socket.io/node_modules/socket.io-client/socket.io.js',
+
     server: {
       entryPoint: 'bin/www',
       src: {
@@ -48,7 +50,27 @@ const config = {
       output: 'public/js/',
     },
 
-    bower: 'bower_components',
+    bower: {
+      src: 'bower_components',
+      compiled: 'common.js',
+      output: {
+        js: 'public/js/',
+        font: 'public/fonts',
+      },
+      overrides: {
+        'bootstrap-sass': {
+          main: [
+            './assets/javascripts/bootstrap.js',
+            './assets/fonts/bootstrap/*',
+          ],
+        },
+        'font-awesome': {
+          main: [
+            './fonts/*',
+          ],
+        },
+      },
+    },
 
     css: {
       src: {
@@ -75,6 +97,7 @@ config.outputs = [
   config.paths.client.output,
   config.paths.server.output,
   config.paths.css.output,
+  config.paths.bower.output.font,
 ];
 
 module.exports = config;

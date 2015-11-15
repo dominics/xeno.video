@@ -1,6 +1,6 @@
 import { default as React, Component } from 'react/addons';
 import libdebug from 'debug';
-import { default as actions, selectItem } from '../action';
+import { registry, itemSelect } from '../action';
 
 const debug = libdebug('xeno:component:item');
 
@@ -14,10 +14,6 @@ export default class Item extends Component {
     embed: React.PropTypes.object.isRequired,
   };
 
-  state = {
-    unwatched: 3,
-  };
-
   getRawEmbed() {
     return {
       __html: this.props.embed.content,
@@ -25,24 +21,18 @@ export default class Item extends Component {
   }
 
   render() {
-    const click = actions.getHandler(selectItem).bind(undefined, this.props.id);
+    const click = registry.getHandler(itemSelect).bind(undefined, this.props.id);
 
     return (
-      <li className="item" id={'item-' + this.props.id} onClick={click}>
-        <a href="#" className="thumbnail">
+      <article className={'item' + (this.props.selected ? ' active' : '')} id={'item-' + this.props.id} onClick={click}>
+        <h4>{this.props.title}</h4>
+        <div className="thumbnail" style={{ backgroundImage: 'url("' + this.props.thumbnail.url + '")' }}>
           <img
-            className="media-object"
             src={this.props.thumbnail.url}
             alt={this.props.title}
-            width={this.props.thumbnail.width}
-            height={this.props.thumbnail.height}
           />
-
-          <article className="caption">
-            <h4>{this.props.title}</h4>
-          </article>
-        </a>
-      </li>
+        </div>
+      </article>
     );
   }
 }

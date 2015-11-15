@@ -5,26 +5,22 @@ import { receiveItemsForChannel } from '../action';
 const debug = libdebug('xeno:store:item');
 
 export default class ItemStore extends MapStore {
-
-  //
-  //something() {
-  //  this.props.stores.item.getAllForChannel(channel).then(
-  //    (items) => {
-  //      this.setState(React.addons.update(this.state, {data: {items: {$set: items}}}));
-  //      debug('Initial load, setting as default item', items[0]);
-  //      this.onItemSelect(items[0], { state: 'initial channel load, set as default item' });
-  //    },
-  //    (err) => {
-  //      debug('Error', err);
-  //    }
-  //  );
-  //}
-
   reduce(state, action) {
     switch (action.type) {
       case receiveItemsForChannel:
-        debug('Received items for channel, mutating state', action, state);
-        return state;
+        if (action.isError()) {
+          debug('Item store received error');
+          return state;
+        }
+
+        debug('Item store received data, mutating', action.data);
+        return state.withMutations(map => {
+          let mutated = map;
+
+          for (const item of action.data.items) {
+            mutated = mutated.set(item.id, item);
+          }
+        });
       default:
         return state;
     }

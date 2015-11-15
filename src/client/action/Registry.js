@@ -27,6 +27,18 @@ export default class ActionRegistry {
   }
 
   /**
+   * @param {string} type
+   * @returns {function(*, Object): string|null}
+   */
+  addType(type) {
+    if (typeof this.creators[type] !== 'undefined') {
+      throw new Error('Type is already defined');
+    }
+
+    return (this.creators[type] = this._creator(type));
+  }
+
+  /**
    * @returns {Array.<string>}
    */
   get types() {
@@ -35,10 +47,30 @@ export default class ActionRegistry {
 
   /**
    * @param {string} type
-   * @returns {function(Object): string}
+   * @param {Array.<function(Object): Object>} transformers
+   * @returns {function(*, Object): string}
    */
-  getCreator(type) {
-    return this.creators[type];
+  getCreator(type, ...transformers) {
+    this._validateType(type);
+    const base = this.creators[type];
+
+    if (transformers.length === 0) {
+      return base;
+    }
+
+    return (err = null, data = null) => {
+      if (err !== null) {
+        return base(err, data);
+      }
+
+      let transformed = data;
+
+      for (const transformer of transformers) {
+        transformed = transformer(transformed);
+      }
+
+      return base(err, transformed);
+    };
   }
 
   /**
@@ -60,6 +92,7 @@ export default class ActionRegistry {
    * @returns {function(*, Event): string}
    */
   getHandler(type) {
+    this._validateType(type);
     return (data, _event) => {
       debug(`Handling ${_event} as ${type}`, _event, data);
       return this.getCreator(type)(null, data);
@@ -71,7 +104,14 @@ export default class ActionRegistry {
    * @param {function({?function(*, Object): string}): function(*, Object): string} fn
    */
   wrap(type, fn) {
+    this._validateType(type);
     this.setCreator(type, fn.bind(undefined, this.getCreator(type) || null));
+  }
+
+  _validateType(type) {
+    if (typeof this.creators[type] === 'undefined') {
+      throw new Error('Unknown action type: ' + type);
+    }
   }
 
   /**
