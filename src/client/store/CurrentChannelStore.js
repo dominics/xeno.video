@@ -19,9 +19,19 @@ export default class CurrentChannelStore extends MapStore
   reduce(state, action) {
     switch (action.type) {
       case channelSelect:
+        if (action.isError()) {
+          debug('Error selecting channel', action.err);
+          return state.set('pending', null).set('selected', null);
+        }
+
         return state.set('pending', action.data);
       case channelSelected:
-        return state.set('pending', null).set('channelId', action.data.channelId);
+        if (action.isError()) {
+          debug('Error on channel selected', action.err);
+          return state.set('pending', null).set('selected', null);
+        }
+
+        return state.set('pending', null).set('selected', action.data.channelId);
       default:
         return state;
     }
