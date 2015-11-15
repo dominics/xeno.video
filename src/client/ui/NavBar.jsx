@@ -3,7 +3,7 @@ import libdebug from 'debug';
 import ChannelList from './ChannelList';
 import { Map } from 'immutable';
 
-const debug = libdebug('xeno:navbar');
+const debug = libdebug('xeno:component:navBar');
 
 export default class NavBar extends Component {
   static propTypes = {

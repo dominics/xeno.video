@@ -1,6 +1,6 @@
 import { default as React, Component } from 'react/addons';
 import libdebug from 'debug';
-const debug = libdebug('xeno:render');
+const debug = libdebug('xeno:component:viewer');
 import { Map } from 'immutable';
 
 export default class Viewer extends Component {
