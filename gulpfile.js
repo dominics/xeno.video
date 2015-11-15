@@ -1,7 +1,7 @@
 'use strict'; // eslint-disable-line strict
 
 const autoprefixer = require('gulp-autoprefixer');
-const babelify = require('babelify');
+
 const babel = require('gulp-babel');
 const bower = require('gulp-bower');
 const bowerFiles = require('bower-files');
@@ -15,6 +15,8 @@ const gls = require('gulp-live-server');
 const gulp = require('gulp');
 const gulpif = require('gulp-if');
 const gutil = require('gulp-util');
+const jasmine = require('gulp-jasmine');
+const KarmaServer = require('karma').Server;
 const lazypipe = require('lazypipe');
 const path = require('path');
 const rename = require('gulp-rename');
@@ -43,12 +45,9 @@ const pipes = {
 };
 
 const sources = {
-  jsClient: () => browserify({
-    entries: config.paths.client.entryPoint,
-    debug: config.browserifyDebug,
-    transform: [babelify.configure(config.babelOptions.client)],
-    extensions: ['.jsx'],
-  }).plugin(sourcemapify, { base: 'public/js' }),
+  jsClient: () => browserify(
+    config.browserifyOptions
+  ).plugin(sourcemapify, { base: 'public/js' }),
   jsClientSource: () => gulp.src(
     config.paths.client.src.js, { base: 'src' }
   ),
@@ -84,13 +83,11 @@ const sources = {
  * And finally, our task definitions
  */
 
+/* Meta tasks */
 gulp.task('default', ['build']);
 
 gulp.task('build', sequence('clean', ['jsBuild', 'jsLint', 'css']));
-
-gulp.task('clean', () => {
-  return del(config.outputs);
-});
+gulp.task('test', sequence('build', ['jsClientTest', 'jsServerTest']));
 
 gulp.task('js', ['jsClient', 'jsServer']);
 
@@ -102,6 +99,7 @@ gulp.task('jsServer', ['jsServerBuild', 'jsServerSource']);
 
 gulp.task('bower', ['bowerInstall', 'bowerJs', 'bowerFont']);
 
+/* Simple tasks */
 gulp.task('docker', () => shell.task([
   'docker run --env-file=.env .',
 ]));
@@ -114,6 +112,11 @@ gulp.task('pkill', () => shell.task([
   'pkill -f \' bin/www \' || true',
 ]));
 
+gulp.task('clean', () => {
+  return del(config.outputs);
+});
+
+/* Build tasks */
 gulp.task('bowerInstall', () => {
   return bower()
     .pipe(gulp.dest(config.paths.bower.src));
@@ -202,6 +205,23 @@ gulp.task('css', ['bowerInstall'], () => {
     .pipe(gulp.dest(config.paths.css.output));
 });
 
+/* Test tasks */
+
+gulp.task('jsClientTest', (done) => {
+  new KarmaServer({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true,
+  }, done).start();
+});
+
+gulp.task('jsServerTest', () => {
+  return gulp.src(config.paths.server.src.test)
+    .pipe(jasmine({
+      verbose: config.debug,
+    }));
+});
+
+/* Watch tasks */
 gulp.task('watch', ['build'], () => {
   const server = gls(config.paths.server.entryPoint);
   server.start();
