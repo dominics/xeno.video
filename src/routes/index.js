@@ -61,8 +61,8 @@ export default (app, passport) => {
     res.json({
       type: 'channel',
       data: [
-        {id: 'all', title: 'All'},
         {id: 'videos', title: 'Videos'},
+        {id: 'all', title: 'All'},
       ],
     });
   });
