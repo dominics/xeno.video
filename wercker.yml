@@ -18,10 +18,6 @@ build:
           export REDIS_HOST=$REDIS_PORT_6379_TCP_HOST
           export REDIS_PORT=$REDIS_PORT_6379_TCP_PORT
 
-    - script:
-         name: env
-         code: env
-
     - hgen/gulp:
         tasks: build
 
