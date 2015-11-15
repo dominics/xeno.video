@@ -6,23 +6,19 @@ import bodyParser from 'body-parser';
 import compress from 'compression';
 import libdebug from 'debug';
 import Promise from 'bluebird';
-import redis from 'redis';
 import http from 'http';
 import cookieParser from 'cookie-parser';
 import { ValidationError } from 'express-validation';
-import Api from './reddit/Api';
-import ChannelStore from './reddit/ChannelStore';
-import ItemStore from './reddit/ItemStore';
 import { default as session, validate } from './session';
 import socket from 'socket.io';
 import indexRouter from './routes/index';
 import emitter from './emitter';
-import SettingStore from './setting/SettingStore';
-
-Promise.promisifyAll(redis.RedisClient.prototype);
-Promise.promisifyAll(redis.Multi.prototype);
 
 const debug = libdebug('xeno:app');
+
+// todo deprecate app.locals.redis
+// todo deprecate app.locals.stores
+// todo deprecate app.locals.redditApi
 
 export default () => {
   const app = express();
@@ -104,107 +100,28 @@ export default () => {
   app.set('env', process.env.NODE_ENV);
 
   /**
-   * Create HTTP server.
-   */
-  const server = http.createServer(app);
-
-  const redisConnection = redis.createClient(
-    parseInt(process.env.REDIS_PORT, 10),
-    process.env.REDIS_HOST,
-    {}
-  );
-
-  redisConnection.on('error', (err) => {
-    debug(err);
-  });
-
-  app.locals.redis = redisConnection;
-
-  /**
-   * Create socket.io server.
-   */
-  const io = socket(server);
-  app.locals.io = io;
-
-  /**
-   * passport
-   */
-  const passport = session(app, io, redisConnection);
-
-   /**
-   * API-based storages
-   */
-  const api = new Api();
-
-  app.locals.redditApi = api;
-
-  app.locals.stores = {
-    channel: new ChannelStore(api, redisConnection),
-    item:    new ItemStore(api, redisConnection),
-    setting: new SettingStore(redisConnection),
-  };
-
-  app.locals.host = process.env.HOST;
-  app.locals.port = process.env.PORT;
-  app.locals.lr_host = process.env.LR_HOST;
-  app.locals.lr_port = process.env.LR_PORT;
-  app.locals.google_analytics_id = process.env.GOOGLE_ANALYTICS_ID;
-
-  /**
    * Common template vars
    */
-  app.use((req, res, next) => {
-    res.locals.passport = req.passport;
-    res.locals.isAuthenticated = req.isAuthenticated();
-    res.locals.env = app.get('env');
-    res.locals.sessionValidation = validate(req);
+  // @todo
+  //app.use((req, res, next) => {
+  //  res.locals.passport = req.passport;
+  //  res.locals.isAuthenticated = req.isAuthenticated();
+  //  res.locals.env = app.get('env');
+  //  res.locals.sessionValidation = validate(req);
+  //
+  //  next();
+  //});
 
-    next();
-  });
+  ///**
+  // * Routes
+  // */
+  //const index = indexRouter(app, passport);
+  //app.use('/', index);
+  //
+  ///**
+  // * Start emitter
+  // */
+  //emitter(app);
 
-  /**
-   * Routes
-   */
-  const index = indexRouter(app, passport);
-  app.use('/', index);
-
-  /**
-   * Start emitter
-   */
-  emitter(app);
-
-  server.on('error', (error) => {
-    if (error.syscall !== 'listen') {
-      throw error;
-    }
-
-    const port = app.get('port');
-    const bind = typeof port === 'string'
-      ? 'Pipe ' + port
-      : 'Port ' + port;
-
-    switch (error.code) {
-      case 'EACCES':
-        debug(bind + ' requires elevated privileges');
-        process.exit(1);
-        break;
-      case 'EADDRINUSE':
-        debug(bind + ' is already in use');
-        process.exit(1);
-        break;
-      default:
-        throw error;
-    }
-  });
-
-  server.on('listening', () => {
-    const addr = server.address();
-    const bind = typeof addr === 'string'
-      ? 'pipe ' + addr
-      : 'port ' + addr.port;
-
-    debug('Listening on ' + bind);
-  });
-
-  return [app, server];
+  return app;
 };

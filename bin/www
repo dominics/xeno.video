@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const appModule = require('./../dist/app');
 
 require('./../dist/config')();
 
@@ -12,7 +13,7 @@ if (!fs.existsSync(path.join(__dirname, '/../dist'))) {
 /**
  * Start the application
  */
-const _ = require('./../dist/app')();
+const _ = appModule();
 const app = _[0];
 const server = _[1];
 
