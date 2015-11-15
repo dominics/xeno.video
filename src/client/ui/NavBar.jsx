@@ -14,11 +14,11 @@ export default class NavBar extends Component {
 
   render() {
     return (
-
-
-      <ChannelList
-        channel={this.props.channel}
-        currentChannel={this.props.currentChannel} />
+      <section>
+        <ChannelList
+          channel={this.props.channel}
+          currentChannel={this.props.currentChannel} />
+      </section>
     );
   }
 }
