@@ -14,10 +14,6 @@ export default class Viewer extends Component {
     socket: React.PropTypes.any,
   };
 
-  state = {
-    containerHeight: null,
-  };
-
   componentDidMount() {
     window.addEventListener('resize', this.handleResize.bind(this));
     this.handleResize({});
@@ -34,6 +30,9 @@ export default class Viewer extends Component {
   handleResize(_event) {
     this.setState({
       containerHeight: $('#viewer-container').innerHeight(),
+      headerHeight: $('#viewer').find('> header').outerHeight() || null,
+      footerHeight: $('#viewer').find('> footer').outerHeight() || null,
+      offset: 0,
     });
   }
 
@@ -43,20 +42,35 @@ export default class Viewer extends Component {
     };
   }
 
+  static _height(state) {
+    if (
+      !state
+      || !state.containerHeight
+    ) {
+      return 400;
+    }
+
+    return state.containerHeight
+      - state.headerHeight
+      - state.footerHeight
+      - state.offset;
+  }
+
   render() {
     const item = this.props.currentItem;
 
-    if (!item || !this.state.containerHeight) {
+    if (!item) {
       debug('Viewer disabled');
       return null;
     }
 
+    const height = Viewer._height(this.state);
     const rawEmbed = this._getRawEmbed(item);
     const ratio = this.props.setting.get('ratio', 'free');
 
     // calculate size in px
 
-    const containerHeight = `${this.state.containerHeight - 60}px`;
+    const containerHeight = `${height}px`;
 
     const _containerStyle = ratio === 'free'
       ? { paddingBottom: containerHeight }
@@ -65,6 +79,12 @@ export default class Viewer extends Component {
     const _containerClass = `embed-responsive embed-responsive-${ratio}`;
 
     debug('Rendering viewer', item, _containerStyle, _containerClass);
+
+    if (this.state.headerHeight === null || this.state.footerHeight === null) {
+      window.setTimeout(() => {
+        this.handleResize({});
+      }, 20);
+    }
 
     return (
       <article id="viewer">

@@ -62,24 +62,21 @@ export default function(app, io, redis) {
   return passport;
 }
 
-function authFail(req, res, next, reason) {
-  debug('Failed session validation!', reason);
+function _logout(req, res, _next) {
+  debug('Failed session validation!, logging out');
   req.logout();
   res.redirect('/login');
   res.end();
 }
 
-/**
- * @todo Refresh tokens
- */
-function authRefresh(req, res, next, reason) {
-  debug('Refresh tokens not implemented', reason);
-  return authFail(req, res);
+function _forbidden(req, res, _next) {
+  res.sendStatus(401);
+  res.end();
 }
 
-export function auth(req, res, next) {
+function _strategy(req) {
   if (!req.isAuthenticated()) {
-    return res.redirect('/login');
+    return 'fail.auth';
   }
 
   const accessToken = _.get(req, 'session.passport.user.accessToken', null);
@@ -89,23 +86,49 @@ export function auth(req, res, next) {
 
   if (!accessToken) {
     if (refreshToken) {
-      return authRefresh(req, res, next, 'No access token, refreshing to get one');
+      return 'refresh.first';
     }
-
-    return authFail(req, res, next, 'No access token, and no refresh token to get one');
+    return 'fail.access_token';
   }
 
-  debug('Session age', age);
-
   if (age > 50 * 60 && refreshToken) {
-    return authRefresh(req, res, next, 'Access token almost expired, attempt to refresh');
+    return 'refresh.proactive';
   }
 
   if (age > 60 * 60) {
-    return authFail(req, res, next, 'Access token expired, cannot refresh');
+    return 'fail.session_age';
   }
 
-  debug('Passed session validation!');
+  return 'pass';
+}
 
-  return next();
+
+export function authInteractive(req, res, next) {
+  switch (_strategy(req)) {
+    case 'refresh.first': // @todo Refresh tokens
+    case 'refresh.proactive':
+    case 'fail.access_token':
+    case 'fail.session_age':
+    case 'fail.auth':
+      return _logout(req, res, next);
+    case 'pass':
+      return next();
+    default:
+      throw Error('Unexpected action from session strategy');
+  }
+}
+
+export function authApi(req, res, next) {
+  switch (_strategy(req)) {
+    case 'refresh.first': // @todo Refresh tokens
+    case 'refresh.proactive':
+    case 'fail.access_token':
+    case 'fail.session_age':
+    case 'fail.auth':
+      return _forbidden(req, res, next);
+    case 'pass':
+      return next();
+    default:
+      throw Error('Unexpected action from session strategy');
+  }
 }
