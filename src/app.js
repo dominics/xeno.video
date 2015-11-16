@@ -17,6 +17,7 @@ import session from './session';
 import socket from 'socket.io';
 import indexRouter from './routes/index';
 import emitter from './emitter';
+import SettingStore from './setting/SettingStore'
 
 const debug = libdebug('xeno:app');
 
@@ -140,6 +141,7 @@ export default () => {
   app.locals.stores = {
     channel: new ChannelStore(api, redisConnection),
     item:    new ItemStore(api, redisConnection),
+    setting: new SettingStore(redisConnection),
   };
 
   /**
