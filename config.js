@@ -103,11 +103,13 @@ config.outputs = [
   config.paths.bower.output.font,
 ];
 
-config.browserifyOptions = {
+config.browserifyOptions = Object.assign({
   entries: config.paths.client.entryPoint,
   debug: config.browserifyDebug,
   transform: [babelify.configure(config.babelOptions.client)],
   extensions: ['.jsx'],
-};
+  cache: {},
+  packageCache: {},
+});
 
 module.exports = config;

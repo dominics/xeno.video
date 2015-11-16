@@ -66,17 +66,17 @@ class ContainerComponent extends Component {
           channel={channel}
           currentChannel={currentChannel} />
 
-        <div className="row">
+        <ItemList
+          currentChannelItems={currentChannelItems}
+          viewedItem={state.viewedItem}
+          currentItemId={currentItemId} />
+
+        <section id="viewer-container">
           <Viewer
             setting={state.setting}
             currentItem={currentItem}
             socket={state.socket} />
-
-          <ItemList
-            currentChannelItems={currentChannelItems}
-            viewedItem={state.viewedItem}
-            currentItemId={currentItemId} />
-        </div>
+        </section>
       </section>
     );
   }

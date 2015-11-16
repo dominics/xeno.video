@@ -34,11 +34,23 @@
   }
 }
 
-#viewer {
-  margin: $grid-gutter-width;
-  background-color: #fefefe;
-  border: 1px solid black;
+#viewer-container {
+  background-color: orange;
   position: fixed;
+  top: 70px;
+  left: 0;
+  right: 550px;
+  bottom: 0;
+
+  #viewer {
+    h2 {
+      font-size: 1.2em;
+      margin: 0px 0px;
+    }
+
+    background-color: green;
+    border: 1px solid black;
+  }
 }
 
 .embed-responsive-free {

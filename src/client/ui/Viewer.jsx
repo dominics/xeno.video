@@ -3,12 +3,39 @@ import libdebug from 'debug';
 const debug = libdebug('xeno:component:viewer');
 import { Map } from 'immutable';
 
+/*
+ * global: $
+ */
+
 export default class Viewer extends Component {
   static propTypes = {
     setting:  React.PropTypes.instanceOf(Map).isRequired,
     currentItem:  React.PropTypes.object,
     socket: React.PropTypes.any,
   };
+
+  state = {
+    containerHeight: null,
+  };
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize.bind(this));
+    this.handleResize({});
+  }
+
+  componentWillReceiveProps() {
+    this.handleResize({});
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize.bind(this));
+  }
+
+  handleResize(_event) {
+    this.setState({
+      containerHeight: $('#viewer-container').innerHeight(),
+    });
+  }
 
   _getRawEmbed(item) {
     return {
@@ -19,33 +46,37 @@ export default class Viewer extends Component {
   render() {
     const item = this.props.currentItem;
 
-    if (!item) {
+    if (!item || !this.state.containerHeight) {
       debug('Viewer disabled');
       return null;
     }
 
-    debug('Rendering viewer', item);
-
     const rawEmbed = this._getRawEmbed(item);
     const ratio = this.props.setting.get('ratio', 'free');
 
-    const containerStyle = ratio === 'free'
-      ? { paddingBottom: `${(item.embed.height / item.embed.width) * 100}%` }
+    // calculate size in px
+
+    const containerHeight = `${this.state.containerHeight}px`;
+
+    const _containerStyle = ratio === 'free'
+      ? { paddingBottom: containerHeight }
       : {};
 
+    const _containerClass = `embed-responsive embed-responsive-${ratio}`;
+
+    debug('Rendering viewer', item, _containerStyle, _containerClass);
+
     return (
-      <article id="viewer" className="panel col-md-8 pull-left">
-        <header className="panel-heading">
+      <article id="viewer">
+        <header>
           <h2>{item.title}</h2>
         </header>
 
-        <section className="panel-body text-center">
-          <div className={`embed-responsive embed-responsive-${ratio}`} style={containerStyle} dangerouslySetInnerHTML={rawEmbed}/>
-        </section>
+        <section className={_containerClass} style={_containerStyle} dangerouslySetInnerHTML={rawEmbed} />
 
-        <section>
+        <footer>
           <a href={'https://www.reddit.com' + item.permalink}>{item.num_comments} comments</a>
-        </section>
+        </footer>
       </article>
     );
   }
