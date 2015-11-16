@@ -5,14 +5,12 @@ import logger from 'morgan';
 import bodyParser from 'body-parser';
 import compress from 'compression';
 import libdebug from 'debug';
-import Promise from 'bluebird';
+
 import http from 'http';
 import cookieParser from 'cookie-parser';
 import { ValidationError } from 'express-validation';
 import { default as session, validate } from './session';
-import socket from 'socket.io';
-import indexRouter from './routes/index';
-import emitter from './emitter';
+
 
 const debug = libdebug('xeno:app');
 
@@ -20,7 +18,7 @@ const debug = libdebug('xeno:app');
 // todo deprecate app.locals.stores
 // todo deprecate app.locals.redditApi
 
-export default () => {
+export default (config) => {
   const app = express();
 
   // view engine setup
@@ -76,28 +74,14 @@ export default () => {
    * Get port from environment and store in Express.
    */
 
-  const normalizedPort = ((val) => {
-    const port = parseInt(val, 10);
 
-    if (isNaN(port)) {
-      // named pipe
-      return val;
-    }
-
-    if (port >= 0) {
-      // port number
-      return port;
-    }
-
-    return false;
-  })(process.env.PORT);
-
-  app.set('port', normalizedPort);
+  app.set('port', config.PORT);
+  app.set('env', config.NODE_ENV);
 
   /**
    * Store other configuration
    */
-  app.set('env', process.env.NODE_ENV);
+
 
   /**
    * Common template vars
