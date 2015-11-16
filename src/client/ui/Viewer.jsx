@@ -56,7 +56,7 @@ export default class Viewer extends Component {
 
     // calculate size in px
 
-    const containerHeight = `${this.state.containerHeight}px`;
+    const containerHeight = `${this.state.containerHeight - 60}px`;
 
     const _containerStyle = ratio === 'free'
       ? { paddingBottom: containerHeight }
