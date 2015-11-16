@@ -1,3 +1,9 @@
+/**
+ * This is the runtime configuration.
+ *
+ * We don't support some types of
+ */
+
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
@@ -13,10 +19,7 @@ const schema = {
   REDIS_PORT: true,
   REDIS_HOST: true,
   DEBUG: false,
-  LR_HOST: false,
-  LR_PORT: false,
   GOOGLE_ANALYTICS_ID: false,
-  TEST_USE_CHROME: false,
 };
 
 function filter(settings) {

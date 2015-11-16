@@ -39,7 +39,7 @@ export default (app, config) => {
     debug('Listening on ' + bind);
   });
 
-  server.listen(config.PORT);
+
 
   return server;
 };

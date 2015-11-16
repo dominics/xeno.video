@@ -1,19 +1,17 @@
 {
   "name": "xeno.video",
   "version": "0.0.3",
-  "author": "Dominic Scheirlinck <dominic@varspool.com>",
+  "author": "Dominic Scheirlinck <dominic@xeno.video>",
   "private": true,
   "scripts": {
     "prestart": "npm run build",
-    "preversion": "npm test",
+    "prepublish": "npm run build",
+    "preversion": "npm run build && npm test",
     "build": "gulp build",
-    "start": "gulp run:shell",
+    "start": "./index.js",
     "test": "gulp test"
   },
-  "bin": {
-    "xeno.video": "./bin/www"
-  },
-  "main": "./src/app.js",
+  "main": "./dist/app.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/dominics/xeno.video"

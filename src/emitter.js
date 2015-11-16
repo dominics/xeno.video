@@ -2,9 +2,7 @@ import libdebug from 'debug';
 
 const debug = libdebug('xeno:emitter');
 
-export default (app) => {
-  const io = app.locals.io;
-
+export default (config, io) => {
   io.emit('tv', 'Hello, world');
 
   io.on('connection', (_ws) => {
