@@ -1,6 +1,6 @@
-import { default as React, Component } from '../../../../node_modules/react/addons';
+import { default as React, Component } from 'react/addons';
 
-import Channel from './../Channel';
+import Channel from './Channel';
 import libdebug from 'debug';
 import { Map } from 'immutable';
 
@@ -45,9 +45,27 @@ export default class List extends Component {
     debug('Rendering channel list', this.props.channel);
 
     return (
-      <ol className="channel-list nav nav-tabs">
+      <ol className="nav navbar-nav">
         {this.channelNodes(this.props.channel)}
+
+        /*
+          <li className="dropdown">
+            <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span className="caret"></span></a>
+            <ul className="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li role="separator" className="divider"></li>
+              <li><a href="#">Separated link</a></li>
+              <li role="separator" className="divider"></li>
+              <li><a href="#">One more separated link</a></li>
+            </ul>
+          </li>
+         */
       </ol>
+
+
+
     );
   }
 }

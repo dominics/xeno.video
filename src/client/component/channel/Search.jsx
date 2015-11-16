@@ -1,7 +1,6 @@
-import { default as React, Component } from '../../../../node_modules/react/addons';
+import { default as React, Component } from 'react/addons';
 
 import libdebug from 'debug';
-import { Map } from 'immutable';
 
 const debug = libdebug('xeno:component:channel:search');
 
