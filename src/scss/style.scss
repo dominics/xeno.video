@@ -3,7 +3,17 @@
 @import "icomoon";
 
 body {
-  padding-top: 70px;
+  padding-top: 50px;
+}
+
+#tv > .container-fluid {
+  padding: 0;
+}
+
+nav.navbar.navbar-default {
+  .navbar-brand h1 {
+    display: none;
+  }
 }
 
 .channel-list {
@@ -12,13 +22,18 @@ body {
 }
 
 .item-list {
-  width: 480px;
+  width: 240px;
   background-color: #fefefe;
   border: 1px solid black;
+  @media (min-width: $screen-md-min) {
+    width: 480px;
+  }
 }
 
+
+
 .item {
-  border: 1px solid black;
+  border: 1px solid #222;
   position: relative;
 
   h4 {
@@ -40,7 +55,10 @@ body {
 
     overflow: hidden;
     background: no-repeat center center;
-    max-height: 300px;
+    @media (min-width: $screen-md-min) {
+      max-height: 300px;
+    }
+    max-height: 150px;
   }
 
   &.active {
@@ -48,25 +66,33 @@ body {
       color: orangered;
     }
   }
+
+  &:hover, &:active {
+    h4 {
+      opacity: 1.0;
+      background-color: #111;
+    }
+  }
 }
 
 #viewer-container {
   position: fixed;
-  top: 70px;
+  top: 50px;
   left: 0;
-  right: 550px;
+  right: 250px;
   bottom: 0;
 
-  #viewer {
-    background-color: white;
+  @media (min-width: $screen-md-min) {
+    right: 510px;
+  }
 
-    header {
-      padding: 0 1em 1em;
-    }
+  #viewer {
+    overflow: auto;
 
     h2 {
-      font-size: 1.7em;
+      font-size: 1.6em;
       margin: 0;
+      padding: 0.8em;
     }
 
     footer {
@@ -80,10 +106,4 @@ body {
   // Just a 16by9 default, we calculate the actual padding per-item
   padding-bottom: 56.25%;
   max-height: 100%;
-}
-
-nav.navbar.navbar-default {
-  .navbar-brand h1 {
-    display: none;
-  }
 }
