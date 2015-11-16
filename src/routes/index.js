@@ -1,6 +1,6 @@
 import libdebug from 'debug';
 
-const debug = libdebug('xeno:router');
+const debug = libdebug('xeno:routes:index');
 
 function auth(req, res, next) {
   switch (res.locals.sessionValidation) {

@@ -1,3 +1,7 @@
+import libdebug from 'debug';
+
+const debug = libdebug('xeno:routes:user');
+
 export default (router, passport) => {
   router.get('/login', (req, res, next) => {
     req.session.state = crypto.randomBytes(32).toString('hex');

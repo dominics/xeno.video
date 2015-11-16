@@ -4,7 +4,6 @@ import chaiAsPromised from 'chai-as-promised';
 import supertest from 'supertest';
 import jsdom from 'jsdom';
 import TestUtils from 'react-addons-test-utils';
-import deps from './../dist/deps';
 
 chai.use(chaiAsPromised);
 
@@ -16,4 +15,3 @@ global.expect = chai.expect;
 global.sinon = sinon;
 global.request = supertest;
 global.TestUtils = TestUtils;
-global.deps = deps;

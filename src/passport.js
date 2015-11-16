@@ -6,7 +6,7 @@ import libdebug from 'debug';
 import _ from 'lodash';
 const debug          = libdebug('xeno:session');
 
-export default function(app, io, redis) {
+export default function(config, app, io, redis) {
   passport.serializeUser((user, done) => {
     done(null, user);
   });
