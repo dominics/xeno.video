@@ -1,15 +1,15 @@
-import { default as React, Component } from 'react/addons';
+import { default as React, Component } from '../../../../node_modules/react/addons';
 
-import Channel from './Channel';
+import Channel from './../Channel';
 import libdebug from 'debug';
 import { Map } from 'immutable';
 
-const debug = libdebug('xeno:component:channelList');
+const debug = libdebug('xeno:component:channel:list');
 
 /**
  * A channel-list is full of channels
  */
-export default class ChannelList extends Component {
+export default class List extends Component {
   static propTypes = {
     channel:        React.PropTypes.instanceOf(Map).isRequired,
     currentChannel: React.PropTypes.object,

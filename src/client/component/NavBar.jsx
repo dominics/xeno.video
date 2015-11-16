@@ -1,6 +1,7 @@
-import { default as React, Component } from 'react/addons';
+import { default as React, Component } from '../../../node_modules/react/addons';
 import libdebug from 'debug';
-import ChannelList from './ChannelList';
+import ChannelList from './channel/List';
+import ChannelSearch from './channel/Search';
 import { Map } from 'immutable';
 
 const debug = libdebug('xeno:component:navBar');
@@ -30,6 +31,12 @@ export default class NavBar extends Component {
           </div>
 
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ChannelList
+              channel={this.props.channel}
+              currentChannel={this.props.currentChannel} />
+
+            <ChannelSearch />
+
             <ul className="nav navbar-nav">
               <li className="active"><a href="#">Link <span className="sr-only">(current)</span></a></li>
               <li><a href="#">Link</a></li>
@@ -47,12 +54,7 @@ export default class NavBar extends Component {
               </li>
             </ul>
 
-            <form className="navbar-form navbar-left" role="search">
-              <div className="form-group">
-                <input type="text" className="form-control" placeholder="Search" />
-              </div>
-              <button type="submit" className="btn btn-default">Submit</button>
-            </form>
+
 
             <ul className="nav navbar-nav navbar-right">
               <li><a href="#">Link</a></li>
@@ -70,9 +72,7 @@ export default class NavBar extends Component {
           </div>
         </section>
 
-        <ChannelList
-          channel={this.props.channel}
-          currentChannel={this.props.currentChannel} />
+
       </nav>
     );
   }

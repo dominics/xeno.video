@@ -1,4 +1,4 @@
-import { default as React, Component } from 'react/addons';
+import { default as React, Component } from '../../../node_modules/react/addons';
 import Item from './Item';
 import { Map } from 'immutable';
 

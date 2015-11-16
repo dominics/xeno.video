@@ -1,8 +1,8 @@
-import { default as React, Component } from 'react/addons';
+import { default as React, Component } from '../../../node_modules/react/addons';
 import ItemList from './ItemList';
 import Viewer from './Viewer';
 import NavBar from './NavBar';
-import { Container as FluxContainer } from 'flux/utils';
+import { Container as FluxContainer } from '../../../node_modules/flux/utils';
 import libdebug from 'debug';
 import stores from './../store';
 import { registry, initialize } from '../action';
