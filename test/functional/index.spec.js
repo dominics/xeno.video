@@ -12,4 +12,8 @@ describe('functional test: index routes', function tests() {
         .expect(200, done);
     });
   });
+
+  after(() => {
+    (deps.container.shutdown)();
+  });
 });

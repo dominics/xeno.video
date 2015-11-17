@@ -26,4 +26,8 @@ describe('functional test: API routes', function tests() {
         .expect(200, done);
     });
   });
+
+  after(() => {
+    deps.container.redis.unref();
+  });
 });

@@ -4,7 +4,6 @@ import Store from './Store';
 import { mapSchema } from './../util';
 import { session as validateSession } from './../util/validation';
 
-const Queue = require('../queue');
 import Promise from 'bluebird';
 const debug = libdebug('xeno:store:item');
 const workerLog = libdebug('xeno:store:item:worker');
@@ -15,12 +14,12 @@ export default class ItemStore extends Store {
   static CACHE_TTL_ITEMS = 60 * 60 * 24;
   static CACHE_TTL_CHANNEL_ITEMS = 300;
 
-  constructor(api, redis) {
+  constructor(api, redis, queueByChannel) {
     super(api, redis);
 
     this.type = 'item';
 
-    this.queues.byChannel = Queue('item:by-channel');
+    this.queues.byChannel = queueByChannel;
     this.queues.byChannel.process(this.processGetByChannel.bind(this));
   }
 
