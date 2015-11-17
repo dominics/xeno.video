@@ -5,14 +5,15 @@ import NavBar from './NavBar';
 import { Container as FluxContainer } from 'flux/utils';
 import libdebug from 'debug';
 import stores from './../store';
-import { registry, initialize } from '../action';
+import registry from '../action';
+import types from '../action/types';
 import _ from 'lodash';
 const debug = libdebug('xeno:component:container');
 
 class ContainerComponent extends Component {
   componentDidMount() {
     debug('Initializing the app');
-    registry.getCreator(initialize)(null, {
+    registry.getCreator(types.initialize)(null, {
       status: 'starting up the app!',
     });
   }

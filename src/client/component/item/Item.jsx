@@ -1,6 +1,7 @@
 import { default as React, Component } from 'react/addons';
 import libdebug from 'debug';
-import { registry, itemSelect } from '../../action';
+import registry from './../../action';
+import types from './../../action/types';
 
 const debug = libdebug('xeno:component:item');
 
@@ -21,7 +22,7 @@ export default class Item extends Component {
   }
 
   render() {
-    const click = registry.getHandler(itemSelect).bind(undefined, this.props.id);
+    const click = registry.getHandler(types.itemSelect).bind(undefined, this.props.id);
 
     return (
       <article className={'item' + (this.props.selected ? ' active' : '')} id={'item-' + this.props.id} onClick={click}>

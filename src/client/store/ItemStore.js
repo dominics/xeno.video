@@ -1,13 +1,13 @@
 import { MapStore } from 'flux/utils';
 import libdebug from 'debug';
-import { channelSelected } from '../action';
+import types from '../action/types';
 
 const debug = libdebug('xeno:store:item');
 
 export default class ItemStore extends MapStore {
   reduce(state, action) {
     switch (action.type) {
-      case channelSelected:
+      case types.channelSelected:
         if (action.isError()) {
           debug('Item store received error');
           return state;

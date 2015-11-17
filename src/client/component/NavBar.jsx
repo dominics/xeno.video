@@ -1,7 +1,7 @@
 import { default as React, Component } from 'react/addons';
 import libdebug from 'debug';
 import ChannelList from './channel/List';
-import ChannelSearch from './channel/Search';
+// import ChannelSearch from './channel/Search';
 import UserMenu from './UserMenu';
 import { Map } from 'immutable';
 
