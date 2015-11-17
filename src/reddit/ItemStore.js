@@ -86,7 +86,7 @@ export default class ItemStore extends Store {
       (val) => {
         const now = Math.floor(Date.now() / 1000);
 
-        if (val && val > (now - ItemStore.CACHE_TTL_CHANNEL_ITEMS) && false) {
+        if (val && val > (now - ItemStore.CACHE_TTL_CHANNEL_ITEMS)) {
           debug('Skipped API refresh because of cool-down: ', val - (now - ItemStore.CACHE_TTL_CHANNEL_ITEMS));
           return Promise.resolve();
         }
