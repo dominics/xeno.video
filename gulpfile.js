@@ -154,12 +154,11 @@ gulp.task('bowerJs', ['bowerInstall'], () => {
     .files;
 
   return gulp.src(files.concat(config.paths.socket))
-    .pipe(debug({title: 'bower-build-input'}))
+    .pipe(debug({title: 'bower-build'}))
     .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
     .pipe(concat('common.js'))
     .pipe(gulpif(config.compress, uglify({mangle: false})))
     .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
-    .pipe(debug({title: 'bower-build-output'}))
     .pipe(gulp.dest(config.paths.bower.output.js));
 });
 
@@ -169,7 +168,7 @@ gulp.task('bowerFont', ['bowerInstall'], () => {
     .files;
 
   return gulp.src(files)
-    .pipe(debug({title: 'bower-font-input'}))
+    .pipe(debug({title: 'bower-font'}))
     .pipe(gulp.dest(config.paths.bower.output.font));
 });
 
@@ -182,21 +181,12 @@ gulp.task('jsClientSource', () => {
     .pipe(gulpif(config.linting, pipes.jsLint()));
 });
 
-gulp.task('jsServerBuild', ['copyEsLintGenerated'], () => {
+gulp.task('jsServerBuild', () => {
   return sources.jsServer()
-    .pipe(debug({title: 'server-build-input'}))
+    .pipe(debug({title: 'server-build'}))
     .pipe(gulpif(config.sourcemap, sourcemaps.init()))
     .pipe(babel(config.babelOptions.server))
     .pipe(gulpif(config.sourcemap, sourcemaps.write('.')))
-    .pipe(debug({title: 'server-build-output'}))
-    .pipe(gulp.dest(config.paths.server.output));
-});
-
-gulp.task('copyEsLintGenerated', () => {
-  return gulp.src('./.eslintrc-generated')
-    .pipe(rename({
-      basename: '.eslintrc',
-    }))
     .pipe(gulp.dest(config.paths.server.output));
 });
 
