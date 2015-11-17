@@ -5,11 +5,8 @@ import logger from 'morgan';
 import bodyParser from 'body-parser';
 import compress from 'compression';
 import libdebug from 'debug';
-
-import http from 'http';
 import cookieParser from 'cookie-parser';
 import { ValidationError } from 'express-validation';
-import { default as session, validate } from './passport';
 
 const debug = libdebug('xeno:app');
 
@@ -70,17 +67,6 @@ export default (config) => {
    */
   app.set('port', config.PORT);
   app.set('env', config.NODE_ENV);
-
-  /**
-   * Common template vars
-   */
-  app.use((req, res, next) => {
-    res.locals.isAuthenticated = req.isAuthenticated();
-    res.locals.env = app.get('env');
-    res.locals.sessionValidation = validate(req);
-
-    next();
-  });
 
   return app;
 };

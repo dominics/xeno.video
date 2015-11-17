@@ -1,4 +1,4 @@
-export default (router) => {
+export default () => (router) => {
   router.get('/401', (req, res) => {
     res.render('error', {
       message: 'You are not allowed to log in to this app.',

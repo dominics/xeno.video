@@ -30,6 +30,7 @@ function filter(settings) {
 
 function getMergedConfig() {
   const actual = filter(process.env);
+  process.env = {};
 
   const configPaths = [
     '/etc/xeno/env',
@@ -74,3 +75,5 @@ module.exports = () => {
   process.env = config;
   return config;
 };
+
+export default module.exports;
