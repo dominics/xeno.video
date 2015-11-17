@@ -1,12 +1,8 @@
-import path from 'path';
-import deps from './../dist/deps';
+import deps from './../../dist/deps';
 
-describe('API functional tests', function tests() {
-  this.slow(5000);
-  this.timeout(10000);
-
+describe('functional test: API routes', function tests() {
   before(() => {
-    this.app = deps.container.app;
+    this.app = deps.container.stack;
     this.request = request(this.app);
   });
 

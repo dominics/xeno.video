@@ -7,9 +7,5 @@ describe('module passport', () => {
     });
   });
 
-  describe('export validate()', () => {
-    it('is a validation method', () => {
-      expect(validate).to.be.a('function');
-    });
-  });
+
 });

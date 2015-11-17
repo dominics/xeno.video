@@ -14,7 +14,7 @@ export default (config, app) => {
       throw error;
     }
 
-    const port = config.port;
+    const port = config.PORT;
     const bind = typeof port === 'string'
       ? 'Pipe ' + port
       : 'Port ' + port;

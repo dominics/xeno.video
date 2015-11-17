@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import _ from 'lodash';
 
 export const itemsForChannel = {
   params: {
@@ -12,7 +13,7 @@ export function session(req) {
   }
 
   const accessToken = _.get(req, 'session.passport.user.accessToken', null);
-  const refreshToken = _.get(req, 'session.passport.user.accessToken', null);
+  const refreshToken = _.get(req, 'session.passport.user.refreshToken', null);
   const authenticated = _.get(req, 'session.passport.user.authenticated', null);
   const age = (Date.now() / 1000) - authenticated;
 
