@@ -11,6 +11,6 @@ export default class Item extends Api
    */
   getAllForChannel(channelId) {
     debug('Getting all items for channel', channelId);
-    return this.getJSON(`/item/channel/${channelId}`);
+    return this.filterId(this.getJSON(`/item/channel/${channelId}`));
   }
 }

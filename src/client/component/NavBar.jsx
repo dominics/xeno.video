@@ -36,7 +36,7 @@ export default class NavBar extends Component {
               channel={this.props.channel}
               currentChannel={this.props.currentChannel} />
 
-            <ChannelSearch />
+            {/* <ChannelSearch /> */}
 
             <UserMenu />
           </div>
