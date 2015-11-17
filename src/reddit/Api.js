@@ -34,10 +34,10 @@ export default class Api {
 
     const listingParams = {
       raw_json: 1,
+      limit: 100, // max
       // after
       // before
       // count
-      // limit
       // show
       // sr_detail
     };

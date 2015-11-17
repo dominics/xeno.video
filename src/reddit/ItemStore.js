@@ -47,7 +47,7 @@ export default class ItemStore extends Store {
     }) : Promise.resolve('Skipping enqueue because not fully authenticated');
 
     const getFromDb = this.redis.lrangeAsync(
-      this._key('by-channel', channel), 0, 100
+      this._key('by-channel', channel), 0, 60 // todo slicing
     );
 
     return Promise.join(addToQueue, getFromDb, (queue, ids) => {
