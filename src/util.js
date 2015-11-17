@@ -1,5 +1,9 @@
 import { Set } from 'immutable';
 
+/*
+ * TODO: DESTROY THIS FILE
+ */
+
 export function find(obj, paths, notFound) {
   const path = (typeof paths === 'string') ? paths.split('.') : paths.join('.').split('.');
   let current = obj;

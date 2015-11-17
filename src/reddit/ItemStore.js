@@ -2,8 +2,8 @@ import libdebug from 'debug';
 
 import Store from './Store';
 import { mapSchema } from './../util';
+import { session as validateSession } from './../util/validation';
 
-const Queue = require('../queue');
 import Promise from 'bluebird';
 const debug = libdebug('xeno:store:item');
 const workerLog = libdebug('xeno:store:item:worker');
@@ -14,17 +14,16 @@ export default class ItemStore extends Store {
   static CACHE_TTL_ITEMS = 60 * 60 * 24;
   static CACHE_TTL_CHANNEL_ITEMS = 300;
 
-  constructor(api, redis) {
+  constructor(api, redis, queueByChannel) {
     super(api, redis);
 
     this.type = 'item';
 
-    this.queues.byChannel = Queue('item:by-channel');
+    this.queues.byChannel = queueByChannel;
     this.queues.byChannel.process(this.processGetByChannel.bind(this));
   }
 
   /**
-   *
    * @param channel
    * @param req
    * @param res
@@ -33,7 +32,7 @@ export default class ItemStore extends Store {
   getByChannel(channel, req, res) {
     debug('Getting items by channel', channel);
 
-    const addToQueue = res.locals.sessionValidation === 'pass' ? this.queues.byChannel.add({
+    const addToQueue = validateSession(req) === 'pass' ? this.queues.byChannel.add({
       channel: channel,
       token: req.session.passport.user.accessToken,
     }, {
@@ -47,10 +46,12 @@ export default class ItemStore extends Store {
     }) : Promise.resolve('Skipping enqueue because not fully authenticated');
 
     const getFromDb = this.redis.lrangeAsync(
-      this._key('by-channel', channel), 0, 100
+      this._key('by-channel', channel), 0, 60 // todo slicing
     );
 
-    return Promise.join(addToQueue, getFromDb, (_queue, ids) => {
+    return Promise.join(addToQueue, getFromDb, (queue, ids) => {
+      debug(`Response from enqueue: ${queue}`);
+
       if (!ids || !ids.length) {
         return Promise.resolve([]);
       }
@@ -85,11 +86,12 @@ export default class ItemStore extends Store {
       (val) => {
         const now = Math.floor(Date.now() / 1000);
 
-        if (val && val > (now - ItemStore.CACHE_TTL_CHANNEL_ITEMS) && false) {
+        if (val && val > (now - ItemStore.CACHE_TTL_CHANNEL_ITEMS)) {
           debug('Skipped API refresh because of cool-down: ', val - (now - ItemStore.CACHE_TTL_CHANNEL_ITEMS));
           return Promise.resolve();
         }
 
+        debug(`Getting items for ${channel} in background...`);
         return this._processGetByChannel(channel, token)
           .then((results) => {
             debug(`Stored ${results.length} items, setting refresh key to ${now}`);
