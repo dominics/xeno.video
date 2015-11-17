@@ -14,6 +14,8 @@ export default class Viewer extends Component {
     setting:  React.PropTypes.instanceOf(Map).isRequired,
     currentItem:  React.PropTypes.object,
     socket: React.PropTypes.any,
+    hasPrevious: React.PropTypes.bool.isRequired,
+    hasNext: React.PropTypes.bool.isRequired,
   };
 
   componentDidMount() {
@@ -58,6 +60,20 @@ export default class Viewer extends Component {
       - state.offset;
   }
 
+  static _pagerButtons(hasNext, hasPrevious) {
+    return (
+      <nav>
+        <a href="#" rel="next" className={'btn btn-default goto-next pull-right' + (hasNext ? '' : ' disabled')}>
+          Next <span className="fa fa-arrow-right"></span>
+        </a>
+
+        <a href="#" rel="prev" className={'btn btn-default goto-prev pull-left' + (hasPrevious ? '' : ' disabled')}>
+          <span className="fa fa-arrow-left"></span> Previous
+        </a>
+      </nav>
+    );
+  }
+
   render() {
     const item = this.props.currentItem;
 
@@ -70,7 +86,6 @@ export default class Viewer extends Component {
         this.handleResize({});
       }, 0);
     }
-
 
     const permalink = 'https://www.reddit.com' + item.permalink;
     const relativeDate = moment(item.created_utc * 1000).fromNow();
@@ -96,13 +111,7 @@ export default class Viewer extends Component {
         <section className={containerClass} style={containerStyle} dangerouslySetInnerHTML={rawEmbed} />
 
         <footer>
-          <a href="#" rel="next" className="btn btn-default goto-next pull-right">
-            Next <span className="fa fa-arrow-right"></span>
-          </a>
-
-          <a href="#" rel="prev" className="btn btn-default goto-prev pull-left">
-            <span className="fa fa-arrow-left"></span> Previous
-          </a>
+          {Viewer._pagerButtons(this.props.hasNext, this.props.hasPrevious)}
 
           <section className="info">
             <ul>
