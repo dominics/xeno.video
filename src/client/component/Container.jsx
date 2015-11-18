@@ -35,59 +35,67 @@ class ContainerComponent extends Component {
     return state;
   }
 
-  render() {
-    const state = this.state;
-    const item = state.item;
-    const itemByChannel = state.itemByChannel;
-    const channel = state.channel;
-    const currentItemId = state.currentItem;
+  _current(state) {
+    const current = {
+      itemId: state.currentItem,
+      channelId: state.currentChannel.get(
+        'selected',
+        state.currentChannel.get('pending', null)
+      ),
+    };
 
-    const currentChannelId = state.currentChannel.get(
-      'selected',
-      state.currentChannel.get('pending', null)
-    );
-
-    const currentItem = currentItemId
-      ? item.get(currentItemId, null)
+    current.item = current.itemId
+      ? state.item.get(current.itemId, null)
       : null;
 
-    const currentChannel = currentChannelId
-      ? channel.get(currentChannelId, null)
+    current.channel = current.channelId
+      ? state.channel.get(current.channelId, null)
       : null;
 
-    const currentChannelItems = currentChannelId
-      ? itemByChannel.get(currentChannelId, []).map(itemId => item.get(itemId)).filter(v => !!v)
+    current.channelItems = current.channelId
+      ? state.itemByChannel.get(current.channelId, []).map(itemId => state.item.get(itemId)).filter(v => !!v)
       : null;
 
-    let hasNext = false;
-    let hasPrevious = false;
+    current.next = false;
+    current.previous = false;
 
-    if (currentItem && currentChannelItems) {
-      const currentItemIndex = _.findIndex(currentChannelItems, (v) => v.id === currentItemId);
+    if (current.item && current.channelItems) {
+      const itemIndex = _.findIndex(current.channelItems, 'id', current.itemId);
 
-      hasPrevious = currentItemIndex > 0;
-      hasNext = currentItemIndex < (currentChannelItems.length - 1);
+      if (itemIndex < (current.channelItems.length - 1) && itemIndex >= 0) { // exclude -1
+        current.next = current.channelItems[itemIndex + 1];
+      }
+
+      if (itemIndex > 0) {
+        current.previous = current.channelItems[itemIndex - 1];
+      }
     }
+
+    return current;
+  }
+
+  render() {
+    const current = this._current(this.state);
 
     return (
       <section className="container-fluid">
         <NavBar
-          setting={state.setting}
-          channel={channel}
-          currentChannel={currentChannel} />
+          setting={this.state.setting}
+          channel={this.state.channel}
+          currentChannel={current.channel} />
 
         <ItemList
-          currentChannelItems={currentChannelItems}
-          viewedItem={state.viewedItem}
-          currentItemId={currentItemId} />
+          currentChannelItems={current.channelItems}
+          viewedItem={this.state.viewedItem}
+          currentItemId={current.itemId} />
 
         <section id="viewer-container">
           <Viewer
-            setting={state.setting}
-            currentItem={currentItem}
-            socket={state.socket}
-            hasNext={hasNext}
-            hasPrevious={hasPrevious} />
+            setting={this.state.setting}
+            currentItem={current.item}
+            socket={this.state.socket}
+            next={current.next}
+            previous={current.previous} />
         </section>
       </section>
     );

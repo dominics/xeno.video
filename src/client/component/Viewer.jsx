@@ -16,8 +16,8 @@ export default class Viewer extends Component {
     setting:  React.PropTypes.instanceOf(Map).isRequired,
     currentItem:  React.PropTypes.object,
     socket: React.PropTypes.any,
-    hasPrevious: React.PropTypes.bool.isRequired,
-    hasNext: React.PropTypes.bool.isRequired,
+    previous: React.PropTypes.object,
+    next: React.PropTypes.object,
   };
 
   componentDidMount() {
@@ -62,17 +62,17 @@ export default class Viewer extends Component {
       - state.offset;
   }
 
-  static _pagerButtons(hasNext, hasPrevious) {
-    const next = registry.getHandler(types.itemSelectRelative).bind(undefined, 'next');
-    const previous = registry.getHandler(types.itemSelectRelative).bind(undefined, 'previous');
+  static _pagerButtons(props) {
+    const next = props.next ? registry.getHandler(types.itemSelect).bind(undefined, props.next.id) : null;
+    const previous = props.previous ? registry.getHandler(types.itemSelect).bind(undefined, props.previous.id) : null;
 
     return (
       <nav>
-        <a href="#" rel="next" className={'btn btn-default goto-next pull-right' + (hasNext ? '' : ' disabled')} onClick={hasNext ? next : null}>
+        <a href="#" rel="next" className={'btn btn-default goto-next pull-right' + (next !== null ? '' : ' disabled')} onClick={next}>
           Next <span className="fa fa-arrow-right"></span>
         </a>
 
-        <a href="#" rel="prev" className={'btn btn-default goto-prev pull-left' + (hasPrevious ? '' : ' disabled')} onClick={hasPrevious ? previous : null}>
+        <a href="#" rel="prev" className={'btn btn-default goto-prev pull-left' + (previous !== null ? '' : ' disabled')} onClick={previous}>
           <span className="fa fa-arrow-left"></span> Previous
         </a>
       </nav>
@@ -116,7 +116,7 @@ export default class Viewer extends Component {
         <section className={containerClass} style={containerStyle} dangerouslySetInnerHTML={rawEmbed} />
 
         <footer>
-          {Viewer._pagerButtons(this.props.hasNext, this.props.hasPrevious)}
+          {Viewer._pagerButtons(this.props)}
 
           <section className="info">
             <ul>
