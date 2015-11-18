@@ -76,8 +76,9 @@ const config = {
     },
 
     css: {
+      entryPoint: 'src/scss/style.scss',
       src: {
-        scss: ['src/scss/style.scss'],
+        scss: ['src/scss/**/*.scss'],
       },
       output: 'public/css',
     },
