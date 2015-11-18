@@ -1,0 +1,52 @@
+#viewer-container {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  right: 250px;
+  bottom: 0;
+
+  @media (min-width: $screen-md-min) {
+    right: 510px;
+  }
+
+  #viewer {
+    overflow: auto;
+
+    h2 {
+      font-size: 1.6em;
+      margin: 0;
+      padding: 0.7em;
+    }
+
+    footer {
+      height: 55px;
+      padding: 0.7em;
+
+      section.info {
+        text-align: center;
+        padding-top: 0.5em;
+
+        ul {
+          display: inline-block;
+          margin: 0;
+          padding: 0;
+
+          li {
+            .fa {
+              padding-right: 0.3em;
+            }
+
+            display: inline;
+            padding: 0 2em;
+          }
+        }
+      }
+    }
+  }
+}
+
+.embed-responsive-free {
+  // Just a 16by9 default, we calculate the actual padding per-item
+  padding-bottom: 56.25%;
+  max-height: 100%;
+}
