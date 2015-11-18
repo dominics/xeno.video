@@ -1,4 +1,7 @@
 import { default as React, Component } from 'react';
+import CheckboxMenuItem from './setting/CheckboxMenuItem';
+import types from './../action/types';
+import registry from './../action';
 import libdebug from 'debug';
 
 const debug = libdebug('xeno:component:UserMenu');
@@ -8,21 +11,6 @@ export default class UserMenu extends Component {
     setting: React.PropTypes.object.isRequired,
   };
 
-  static _slider(setting, state, title) {
-    const id = 'setting-' + setting;
-
-    return (
-      <li key={id}>
-        <div className="checkbox">
-          <input type="checkbox" id={id} />
-          <label htmlFor={id}>
-            {title}
-          </label>
-        </div>
-      </li>
-    );
-  }
-
   _options(settings) {
     const options = [];
 
@@ -31,8 +19,8 @@ export default class UserMenu extends Component {
       options.push(<li key="login-separator" role="separator" className="divider" />);
     }
 
-    options.push(UserMenu._slider('autoplay', settings.autoplay, 'Autoplay'));
-    options.push(UserMenu._slider('nsfw', settings.nsfw, 'Show NSFW'));
+    options.push(<CheckboxMenuItem key="autoplay" id="autoplay" checked={settings.autoplay} title="Autoplay" />);
+    options.push(<CheckboxMenuItem key="nsfw" id="nsfw" checked={settings.nsfw} title="Show NSFW" />);
 
     if (settings.authenticated) {
       options.push(<li key="logout-separator" role="separator" className="divider" />);
@@ -47,7 +35,7 @@ export default class UserMenu extends Component {
     const options = this._options(settings);
 
     const menu = (
-      <ul className="dropdown-menu">
+      <ul className="dropdown-menu dropdown-menu-right">
         {options}
       </ul>
     );
@@ -72,10 +60,12 @@ export default class UserMenu extends Component {
       'autoplay': true,
     }, this.props.setting.toJS());
 
+    debug('Rendering UserMenu with settings', settings);
+
     const menu = this._menu(settings);
 
     return (
-      <ul className="nav navbar-nav navbar-right">
+      <ul className="nav navbar-nav navbar-right user-menu">
         <li><a href="/about">About</a></li>
         {menu}
       </ul>

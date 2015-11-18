@@ -9,7 +9,7 @@ export default class SettingStore extends MapStore {
     switch (action.type) {
       case types.settingReceive:
         if (action.isError()) {
-          debug('Setting store received error updating');
+          debug('Setting store received error on setting receive action');
           return state;
         }
 
@@ -21,6 +21,14 @@ export default class SettingStore extends MapStore {
             mutated = mutated.set(setting.id, setting.value);
           }
         });
+      case types.settingUpdate:
+        if (action.isError()) {
+          debug('Setting store received error on setting update action');
+          return state;
+        }
+
+        debug('Setting was updated, mutating', action.data);
+        return state.set(action.data.id, action.data.state);
       default:
         return state;
     }
