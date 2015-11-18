@@ -7,6 +7,5 @@ public/fonts
 public/js/**/*.js
 public/js/**/*.map
 .sass-cache
-xeno.video.iml
 .env
 dist
