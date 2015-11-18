@@ -20,46 +20,10 @@ export default class Viewer extends Component {
     next: React.PropTypes.object,
   };
 
-  componentDidMount() {
-    window.addEventListener('resize', this.handleResize.bind(this));
-    this.handleResize({});
-  }
-
-  componentWillReceiveProps() {
-    this.handleResize({});
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize.bind(this));
-  }
-
-  handleResize(_event) {
-    this.setState({
-      containerHeight: $('#viewer-container').innerHeight(),
-      headerHeight: $('#viewer').find('> header').outerHeight() || null,
-      footerHeight: $('#viewer').find('> footer').outerHeight() || null,
-      offset: 0,
-    });
-  }
-
   _getRawEmbed(item) {
     return {
       __html: item.embed.content,
     };
-  }
-
-  static _height(state) {
-    if (
-      !state
-      || !state.containerHeight
-    ) {
-      return 400;
-    }
-
-    return state.containerHeight
-      - state.headerHeight
-      - state.footerHeight
-      - state.offset;
   }
 
   static _pagerButtons(props) {
@@ -86,22 +50,9 @@ export default class Viewer extends Component {
       return null;
     }
 
-    if (this.state.headerHeight === null || this.state.footerHeight === null) {
-      window.setTimeout(() => { // hacky mchackity
-        this.handleResize({});
-      }, 0);
-    }
-
     const permalink = 'https://www.reddit.com' + item.permalink;
     const relativeDate = moment(item.created_utc * 1000).fromNow();
-    const height = Viewer._height(this.state);
     const rawEmbed = this._getRawEmbed(item);
-    const ratio = this.props.setting.get('ratio', 'free');
-    const containerHeight = `${height}px`;
-    const containerClass = `embed-responsive embed-responsive-${ratio}`;
-    const containerStyle = ratio === 'free'
-      ? { paddingBottom: containerHeight }
-      : {};
 
     return (
       <article id="viewer">
@@ -113,7 +64,7 @@ export default class Viewer extends Component {
           </h2>
         </header>
 
-        <section className={containerClass} style={containerStyle} dangerouslySetInnerHTML={rawEmbed} />
+        <section id="screen" dangerouslySetInnerHTML={rawEmbed} />
 
         <footer>
           {Viewer._pagerButtons(this.props)}

@@ -13,7 +13,6 @@ export default class SettingStore {
     return new Promise((resolve, reject) => {
       const state = new Map({
         nsfw: true,
-        ratio: 'free',
         authenticated: req.isAuthenticated(),
         userId: _.get(req, 'session.passport.user.reddit.id', null),
         name: _.get(req, 'session.passport.user.reddit.name', null),
