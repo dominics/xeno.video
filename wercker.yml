@@ -1,18 +1,26 @@
 box: node:4.2
 
 build:
-    steps:
-      - npm-install
-      - hgen/gulp:
-            tasks: build
+  steps:
+    - npm-install
 
-      - script:
-          name: echo nodejs information
-          code: |
-              echo "node version $(node -v) running"
-              echo "npm version $(npm -v) running"
+    - hgen/gulp:
+        tasks: build
 
-      - npm-test
+    - script:
+        name: echo nodejs information
+        code: |
+          echo "node version $(node -v) running"
+          echo "npm version $(npm -v) running"
+
+    - npm-test
+
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        tag: $WERCKER_GIT_BRANCH
+        repository: dominics/xeno.video
+        registry: https://registry.hub.docker.com
 
 dev:
   steps:
@@ -22,5 +30,31 @@ dev:
         code: node bin/www
         reload: true
 
+deploy:
+  steps:
+    - add-to-known_hosts:
+        hostname:    $DEPLOYMENT_HOST
+        port:        $DEPLOYMENT_PORT
+        fingerprint: $DEPLOYMENT_FINGERPRINT
+
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        tag: $WERCKER_DEPLOYTARGET_NAME
+        repository: dominics/xeno.video
+        registry: https://registry.hub.docker.com
+
+    - script:
+        name: deploy task
+        code: |
+          echo "Deploying to $WERCKER_DEPLOYTARGET_NAME"
+
+          echo "$DEPLOYMENT_SSH_PRIVATE" > private.key
+          echo "$DEPLOYMENT_SSH_PUBLIC" > public.key
+          chmod 600 private.key
+
+          echo "ssh -i private.key -p $DEPLOYMENT_PORT $DEPLOYMENT_USER@$DEPLOYMENT_HOST uname -a"
+          ssh -vvv -i private.key -p $DEPLOYMENT_PORT $DEPLOYMENT_USER@$DEPLOYMENT_HOST uname -a
+
 services:
-    - redis
+  - redis
