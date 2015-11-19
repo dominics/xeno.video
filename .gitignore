@@ -9,3 +9,4 @@ public/js/**/*.map
 .sass-cache
 .env
 dist
+_*

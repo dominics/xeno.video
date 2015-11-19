@@ -1,25 +1,9 @@
-FROM phusion/passenger-nodejs
+FROM node:4.2
 
-# Add application user
-RUN groupadd -r app-tv && useradd -r -d /app -g app-tv app-tv
+COPY . /usr/src/app
+WORKDIR /usr/src/app
 
-# Cache NPM dependencies by doing them first
-ADD package.json /tmp/package.json
-RUN cd /tmp && npm install
-RUN cp -a /tmp/node_modules /app
-
-# Cache Bower dependencies by doing them first
-ADD bower.json /tmp/bower.json
-RUN cd /tmp && /app/node_modules/.bin/bower install
-RUN cp -a /tmp/bower_components /app
-
-COPY . /app
-WORKDIR /app
-
-
-ENV PATH $PATH:/app/node_modules/.bin
-USER app-tv
-
+RUN npm install
 RUN npm build
 
 EXPOSE 3000
