@@ -9,4 +9,5 @@ public/js/**/*.map
 .sass-cache
 .env
 dist
+dist-test
 _*

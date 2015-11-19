@@ -1,1 +1,5 @@
-console.log('test spec herherkadsnsdjkanskjdnaskjdnkja nkjasdn');
+
+
+describe('Server hello world', () => {
+  it('is just a pending test');
+});

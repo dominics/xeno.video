@@ -1,7 +1,8 @@
 const path = require('path');
 const babelify = require('babelify');
-const conf = __dirname + '/.env';
 const fs = require('fs');
+
+const conf = __dirname + '/.env';
 
 if (fs.existsSync(conf)) {
   require('node-env-file')(conf);
@@ -10,6 +11,7 @@ if (fs.existsSync(conf)) {
 }
 
 const debug = (process.env.NODE_ENV === 'development');
+const output = path.join(__dirname, 'build');
 
 const nodeOptions = [];
 
@@ -27,61 +29,69 @@ const config = {
 
   node: `${process.execPath} ${nodeOptions.join(' ')}`,
   nodeOptions: nodeOptions,
+  vendorRegex: /(node_modules|bower_components)/,
 
-  paths: {
-    vendorRegex: /(node_modules|bower_components)/,
+  socket: './node_modules/socket.io/node_modules/socket.io-client/socket.io.js',
 
-    socket: './node_modules/socket.io/node_modules/socket.io-client/socket.io.js',
+  build: {
+    output: output,
+    lcov:   output,
+  },
 
-    server: {
-      entryPoint: 'bin/www',
-      src: {
-        js: ['src/**/*.js?(x)', '!src/client/**'],
-        jade: ['src/views/**/*.jade'],
-        test: ['test/**/*.js', '!test/client/**'],
-      },
-      output: 'dist',
+  server: {
+    entryPoint: 'bin/www',
+    src: {
+      js: ['src/**/*.js?(x)', '!src/client/**'],
+      jade: ['src/views/**/*.jade'],
     },
+    output: 'dist',
+  },
 
-    client: {
-      entryPoint: './src/client/app.jsx',
-      src: {
-        js: ['src/client/**/*.js?(x)'],
-        test: ['test/client/**/*.js'],
-      },
-      compiled: 'app.js',
-      output: 'public/js/',
+  client: {
+    entryPoint: './src/client/app.jsx',
+    src: {
+      js: ['src/client/**/*.js?(x)'],
     },
+    compiled: 'app.js',
+    output: 'public/js/',
+  },
 
-    bower: {
-      src: 'bower_components',
-      compiled: 'common.js',
-      output: {
-        js: 'public/js/',
-        font: 'public/fonts',
-      },
-      overrides: {
-        'bootstrap-sass': {
-          main: [
-            './assets/javascripts/bootstrap.js',
-            './assets/fonts/bootstrap/*',
-          ],
-        },
-        'font-awesome': {
-          main: [
-            './fonts/*',
-          ],
-        },
-      },
-    },
+  test: {
+    src: ['test/**/*.js', '!test/fixture/**/*'],
+    output: 'dist-test',
+    tests: 'dist-test/**/*.spec.js',
+    bootstrap: './dist-test/bootstrap.js',
+    coverage: 'dist/**/*.js',
+  },
 
-    css: {
-      entryPoint: 'src/scss/style.scss',
-      src: {
-        scss: ['src/scss/**/*.scss'],
-      },
-      output: 'public/css',
+  bower: {
+    src: 'bower_components',
+    compiled: 'common.js',
+    output: {
+      js: 'public/js/',
+      font: 'public/fonts',
     },
+    overrides: {
+      'bootstrap-sass': {
+        main: [
+          './assets/javascripts/bootstrap.js',
+          './assets/fonts/bootstrap/*',
+        ],
+      },
+      'font-awesome': {
+        main: [
+          './fonts/*',
+        ],
+      },
+    },
+  },
+
+  css: {
+    entryPoint: 'src/scss/style.scss',
+    src: {
+      scss: ['src/scss/**/*.scss'],
+    },
+    output: 'public/css',
   },
 
   babelOptions: {
@@ -95,17 +105,21 @@ const config = {
       sourceMapRelative: path.join(__dirname, 'public/js'),
     },
   },
+
+  karma: {},
 };
 
+config.karma.browsers = process.env.TEST_USE_CHROME !== '1' ? ['PhantomJS'] : ['PhantomJS', 'Chrome'];
+
 config.outputs = [
-  config.paths.client.output,
-  config.paths.server.output,
-  config.paths.css.output,
-  config.paths.bower.output.font,
+  config.client.output,
+  config.server.output,
+  config.css.output,
+  config.bower.output.font,
 ];
 
 config.browserifyOptions = Object.assign({
-  entries: config.paths.client.entryPoint,
+  entries: config.client.entryPoint,
   debug: config.browserifyDebug,
   transform: [babelify.configure(config.babelOptions.client)],
   extensions: ['.jsx'],

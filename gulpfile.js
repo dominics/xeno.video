@@ -1,7 +1,6 @@
 'use strict'; // eslint-disable-line strict
 
 const autoprefixer = require('gulp-autoprefixer');
-
 const babel = require('gulp-babel');
 const bower = require('gulp-bower');
 const bowerFiles = require('bower-files');
@@ -11,15 +10,16 @@ const concat = require('gulp-concat');
 const del = require('del');
 const debug = require('gulp-debug');
 const eslint = require('gulp-eslint');
+const fs = require('fs');
 const gls = require('gulp-live-server');
 const gulp = require('gulp');
 const gulpif = require('gulp-if');
 const gutil = require('gulp-util');
-const jasmine = require('gulp-jasmine');
-const KarmaServer = require('karma').Server;
-const lazypipe = require('lazypipe');
+const isparta = require('isparta');
+const istanbul = require('gulp-istanbul');
+const mocha = require('gulp-mocha');
 const path = require('path');
-const rename = require('gulp-rename');
+const Promise = require('bluebird');
 const sequence = require('gulp-sequence');
 const sass = require('gulp-sass');
 const shell = require('gulp-shell');
@@ -27,96 +27,35 @@ const vinylSource = require('vinyl-source-stream');
 const uglify = require('gulp-uglify');
 const sourcemaps = require('gulp-sourcemaps');
 const sourcemapify = require('sourcemapify');
-const watchify = require('watchify');
 
-/**
+Promise.promisifyAll(fs);
+
+/*
  * Configuration
  */
 const config = require('./config');
 
 /*
- * Pipeline definitions
+ * Helpers
  */
-
-const pipes = {
-  jsLint: lazypipe()
-    .pipe(eslint)
-    .pipe(eslint.format),
-};
-
-const sources = {
-  jsClient: () => browserify(
-    config.browserifyOptions
-  ).plugin(sourcemapify, { base: 'public/js' }),
-  jsClientSource: () => gulp.src(
-    config.paths.client.src.js, { base: 'src' }
-  ),
-  jsServer: () => gulp.src(
-    config.paths.server.src.js, { base: 'src' }
-  ),
-  jsServerSource: () => gulp.src(
-    config.paths.server.src.js, { base: 'src' }
-  ),
-  scss: () =>
-    gulp.src(config.paths.css.entryPoint),
-  bower: () => {
-    return bowerFiles({
-      overrides: config.paths.bower.overrides,
+function mkdirp(dir) {
+  return fs.statAsync(dir)
+    .then(stat => {
+      return stat.isDirectory ? Promise.resolve() : Promise.reject(Error('Could not mkdirp: path already exists'));
     })
-    .self()
-    .camelCase(false)
-    .join({
-      font: ['eot', 'otf', 'woff', 'woff2', 'ttf', 'svg'],
-      js: ['js', 'jsx'],
-    });
-  },
-  bundle: (bundler, output) => {
-    return bundler
-      .bundle()
-      .on('error', gutil.log.bind(gutil, 'Browserify error'))
-      .pipe(vinylSource(output))
-      .pipe(debug({title: 'browserify-bundle-output'}))
-      .pipe(buffer());
-  },
-};
-
-function buildClient(_watch) {
-  const watch = (typeof _watch !== 'undefined')
-    ? _watch
-    : false;
-
-  const source = !watch
-    ? sources.jsClient()
-    : watchify(sources.jsClient());
-
-  if (watch) {
-    source.on('update', (files) => {
-      console.log(files);
-    });
-  }
-
-  return sources.bundle(source, config.paths.client.compiled)
-    .pipe(debug({title: 'client-build-input'}))
-    .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
-    .pipe(gulpif(config.compress, uglify({mangle: false})))
-    .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
-    .pipe(debug({title: 'client-build-output'}))
-    .pipe(gulp.dest(config.paths.client.output));
+    .catch(err => fs.mkdirAsync(dir))
+    .catch(err => { if (err.errno !== -17) throw err; /* already created */ });
 }
 
 /*
- * And finally, our task definitions
+ * Meta tasks
  */
-
-/* Meta tasks */
-gulp.task('default', ['build']);
-
-gulp.task('build', sequence('clean', ['jsBuild', 'jsLint', 'css']));
-gulp.task('test', sequence('build', ['jsClientTest', 'jsServerTest']));
+gulp.task('default', sequence('build', ['test', 'jsLint']));
+gulp.task('build', sequence('clean', ['jsBuild', 'css']));
 
 gulp.task('js', ['jsClient', 'jsServer']);
 
-gulp.task('jsBuild', ['bower', 'jsClientBuild', 'jsServerBuild']);
+gulp.task('jsBuild', ['bower', 'jsClientBuild', 'jsServerBuild', 'jsTestBuild']);
 gulp.task('jsLint', ['jsClientSource', 'jsServerSource']);
 
 gulp.task('jsClient', ['bower', 'jsClientBuild', 'jsClientSource']);
@@ -124,13 +63,15 @@ gulp.task('jsServer', ['jsServerBuild', 'jsServerSource']);
 
 gulp.task('bower', ['bowerInstall', 'bowerJs', 'bowerFont']);
 
-/* Simple tasks */
+/*
+ * And finally, our task definitions
+ */
 gulp.task('docker', () => shell.task([
   'docker run --env-file=.env .',
 ]));
 
 gulp.task('shell', () => shell.task([
-  config.paths.server.entryPoint,
+  config.server.entryPoint,
 ]));
 
 gulp.task('pkill', () => shell.task([
@@ -144,67 +85,108 @@ gulp.task('clean', () => {
 /* Build tasks */
 gulp.task('bowerInstall', () => {
   return bower()
-    .pipe(gulp.dest(config.paths.bower.src));
+    .pipe(gulp.dest(config.bower.src));
 });
 
 gulp.task('bowerJs', ['bowerInstall'], () => {
-  const files = sources.bower()
+  const files = bowerFiles({overrides: config.bower.overrides})
+    .self()
+    .camelCase(false)
+    .join({
+      font: ['eot', 'otf', 'woff', 'woff2', 'ttf', 'svg'],
+      js: ['js', 'jsx'],
+    })
     .match('!**/*.min.js')
     .ext('js')
     .files;
 
-  return gulp.src(files.concat(config.paths.socket))
+  return gulp.src(files.concat(config.socket))
     .pipe(debug({title: 'bower-build'}))
     .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
     .pipe(concat('common.js'))
     .pipe(gulpif(config.compress, uglify({mangle: false})))
     .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
-    .pipe(gulp.dest(config.paths.bower.output.js));
+    .pipe(gulp.dest(config.bower.output.js));
 });
 
 gulp.task('bowerFont', ['bowerInstall'], () => {
-  const files = sources.bower()
+  const files = bowerFiles({overrides: config.bower.overrides})
+    .self()
+    .camelCase(false)
+    .join({
+      font: ['eot', 'otf', 'woff', 'woff2', 'ttf', 'svg'],
+      js: ['js', 'jsx'],
+    })
     .ext('font')
     .files;
 
   return gulp.src(files)
     .pipe(debug({title: 'bower-font'}))
-    .pipe(gulp.dest(config.paths.bower.output.font));
+    .pipe(gulp.dest(config.bower.output.font));
 });
 
 gulp.task('jsClientBuild', () => {
-  return buildClient(false);
+  return browserify(config.browserifyOptions)
+    .plugin(sourcemapify, { base: 'public/js' })
+    .bundle()
+    .on('error', gutil.log.bind(gutil, 'Browserify error'))
+    .pipe(vinylSource(config.client.compiled))
+    .pipe(debug({title: 'browserify-bundle-output'}))
+    .pipe(buffer())
+    .pipe(debug({title: 'client-build-input'}))
+    .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
+    .pipe(gulpif(config.compress, uglify({mangle: false})))
+    .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
+    .pipe(debug({title: 'client-build-output'}))
+    .pipe(gulp.dest(config.client.output));
 });
 
 gulp.task('jsClientSource', () => {
-  return sources.jsClientSource()
-    .pipe(gulpif(config.linting, pipes.jsLint()));
+  return gulp.src(config.client.src.js)
+    .pipe(gulpif(config.linting, eslint()))
+    .pipe(gulpif(config.linting, eslint.format()));
 });
 
 gulp.task('jsServerBuild', () => {
-  return sources.jsServer()
+  return gulp.src(config.server.src.js)
     .pipe(debug({title: 'server-build'}))
     .pipe(gulpif(config.sourcemap, sourcemaps.init()))
     .pipe(babel(config.babelOptions.server))
     .pipe(gulpif(config.sourcemap, sourcemaps.write('.')))
-    .pipe(gulp.dest(config.paths.server.output));
+    .pipe(gulp.dest(config.server.output));
 });
 
 gulp.task('jsServerSource', () => {
-  return sources.jsServerSource()
-    .pipe(gulpif(config.linting, pipes.jsLint()));
+  return gulp.src(config.server.src.js)
+    .pipe(gulpif(config.linting, eslint()))
+    .pipe(gulpif(config.linting, eslint.format()));
+});
+
+gulp.task('jsTestBuild', () => {
+  return gulp.src(config.test.src)
+    .pipe(debug({title: 'test-build'}))
+    .pipe(gulpif(config.sourcemap, sourcemaps.init()))
+    .pipe(babel(config.babelOptions.server))
+    .pipe(gulpif(config.sourcemap, sourcemaps.write('.')))
+    .pipe(gulp.dest(config.test.output));
+});
+
+gulp.task('buildCoverage', () => {
+  return gulp.src(config.test.coverage)
+    .pipe(istanbul({instrumenter: isparta.Instrumenter}))
+    .pipe(istanbul.hookRequire());
 });
 
 gulp.task('css', ['bowerInstall'], () => {
-  return sources.scss()
+  return gulp.src(config.css.entryPoint)
     .pipe(debug({title: 'css-build'}))
     .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
     .pipe(sass({
       outputStyle: config.compress ? 'compressed' : 'expanded',
       includePaths: [
         './scss',
-        path.join(config.paths.bower.src, 'bootstrap-sass/assets/stylesheets'),
-        path.join(config.paths.bower.src, 'font-awesome/scss'),
+        path.join(config.bower.src, 'bootstrap-sass/assets/stylesheets'),
+        path.join(config.bower.src, 'font-awesome/scss'),
       ],
     }))
     .pipe(autoprefixer({
@@ -212,28 +194,30 @@ gulp.task('css', ['bowerInstall'], () => {
       cascade: false,
     }))
     .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
-    .pipe(gulp.dest(config.paths.css.output));
+    .pipe(gulp.dest(config.css.output));
 });
 
 /* Test tasks */
+gulp.task('test', ['buildCoverage'], () => {
+  mkdirp(config.build.output);
 
-gulp.task('jsClientTest', (done) => {
-  new KarmaServer({
-    configFile: __dirname + '/karma.conf.js',
-    singleRun: true,
-  }, done).start();
-});
-
-gulp.task('jsServerTest', () => {
-  return gulp.src(config.paths.server.src.test)
-    .pipe(jasmine({
-      verbose: config.debug,
+  return gulp.src(config.test.tests, {read: false})
+    .pipe(mocha({
+      ui: 'bdd',
+      reporter: 'spec',
+      require: [
+        config.test.bootstrap,
+      ],
+    }))
+    .pipe(istanbul.writeReports({
+      dir: config.build.lcov,
+      reporters: [ 'lcov' ],
     }));
 });
 
 /* Watch tasks */
 gulp.task('watch', ['build'], () => {
-  const server = gls(config.paths.server.entryPoint);
+  const server = gls(config.server.entryPoint);
   server.start();
 
   const notify = (file) => {
@@ -254,22 +238,18 @@ gulp.task('watch', ['build'], () => {
   // Restart the server when file changes
   gulp.watch(['public/*.html', 'public/images/*'], notify);
 
-  gulp.watch(config.paths.css.src.scss, ['css'], notify);
+  gulp.watch(config.css.src.scss, ['css'], notify);
 
   gulp.watch([
-    config.paths.client.src.js,
+    config.client.src.js,
   ], ['jsClient'], notify);
 
   gulp.watch([
-    config.paths.server.src.js,
-    config.paths.server.src.jade,
+    config.server.src.js,
+    config.server.src.jade,
   ], ['jsServer'], restart);
 
   gulp.watch([
-    config.paths.server.output + '/**/*.js',
+    config.server.output + '/**/*.js',
   ], restart);
-});
-
-gulp.task('watchify', (_done) => {
-  buildClient(true);
 });

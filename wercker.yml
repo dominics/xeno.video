@@ -1,0 +1,26 @@
+box: node:4.2
+
+build:
+    steps:
+      - npm-install
+      - hgen/gulp:
+            tasks: build
+
+      - script:
+          name: echo nodejs information
+          code: |
+              echo "node version $(node -v) running"
+              echo "npm version $(npm -v) running"
+
+      - npm-test
+
+dev:
+  steps:
+    - npm-install
+
+    - internal/watch:
+        code: node bin/www
+        reload: true
+
+services:
+    - redis
