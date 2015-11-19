@@ -8,11 +8,19 @@ ADD package.json /tmp/package.json
 RUN cd /tmp && npm install
 RUN cp -a /tmp/node_modules /app
 
-ENV PATH $PATH:/app/node_modules/.bin
-USER app-tv
+# Cache Bower dependencies by doing them first
+ADD bower.json /tmp/bower.json
+RUN cd /tmp && /app/node_modules/.bin/bower install
+RUN cp -a /tmp/bower_components /app
 
 COPY . /app
 WORKDIR /app
+
+
+ENV PATH $PATH:/app/node_modules/.bin
+USER app-tv
+
+RUN npm build
 
 EXPOSE 3000
 ENV PORT=3000

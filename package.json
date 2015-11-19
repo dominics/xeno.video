@@ -1,10 +1,12 @@
 {
-  "name": "tv-testing",
+  "name": "xeno.video",
   "version": "0.0.2",
   "author": "Dominic Scheirlinck <dominic@varspool.com>",
   "private": true,
   "scripts": {
-    "prestart": "gulp build",
+    "prestart": "npm run build",
+    "preversion": "npm test",
+    "build": "gulp build",
     "start": "gulp run:shell",
     "test": "karma start"
   },
@@ -107,6 +109,6 @@
   },
   "engines": {
     "node": "4.1.x",
-    "npm": "<=3.3.5,>=3.3.7"
+    "npm": ">=3.3.7"
   }
 }
