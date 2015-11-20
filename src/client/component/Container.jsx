@@ -56,8 +56,8 @@ class ContainerComponent extends Component {
       ? state.itemByChannel.get(current.channelId, []).map(itemId => state.item.get(itemId)).filter(v => !!v)
       : null;
 
-    current.next = false;
-    current.previous = false;
+    current.next = null;
+    current.previous = null;
 
     if (current.item && current.channelItems) {
       const itemIndex = _.findIndex(current.channelItems, 'id', current.itemId);
