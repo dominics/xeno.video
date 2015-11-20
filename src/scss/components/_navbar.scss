@@ -13,6 +13,10 @@ nav.navbar.navbar-default.navbar-fixed-top {
   }
 
   .user-menu {
+    .checkbox {
+      margin: 0 0;
+    }
+
     .dropdown-menu > li > .dropdown-action {
       display: block;
       padding: 3px 20px;

@@ -1,7 +1,7 @@
 import { default as React, Component } from 'react';
 import ItemList from './item/List';
 import Viewer from './Viewer';
-import NavBar from './NavBar';
+import Menu from './menu/Menu';
 import { Container as FluxContainer } from 'flux/utils';
 import libdebug from 'debug';
 import stores from './../store';
@@ -79,7 +79,7 @@ class ContainerComponent extends Component {
 
     return (
       <section className="container-fluid">
-        <NavBar
+        <Menu
           setting={this.state.setting}
           channel={this.state.channel}
           currentChannel={current.channel} />

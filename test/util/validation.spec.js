@@ -1,6 +1,6 @@
 import * as validation from './../../dist/util/validation';
 
-describe('module util/validation', () => {
+describe('util module validation', () => {
   describe('export itemsForChannel', () => {
     const sut = validation.itemsForChannel.params.channel;
 

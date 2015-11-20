@@ -1,6 +1,7 @@
 import { default as React, Component } from 'react';
 import types from './../../action/types';
 import registry from './../../action';
+import Setting from './../../setting/Setting';
 import libdebug from 'debug';
 
 const debug = libdebug('xeno:component:setting:checkbox');
@@ -29,7 +30,7 @@ export default class Checkbox extends Component {
      */
     window.setTimeout(() => {
       this.checked = toState;
-      (registry.getHandler(types.settingUpdate, preventDefault))({ id: setting, value: toState }, event);
+      (registry.getHandler(types.settingUpdate, preventDefault))(new Setting(setting, toState), event);
     }, 0);
   }
 
