@@ -144,6 +144,12 @@ export default () => {
     setting: new SettingStore(redisConnection),
   };
 
+  app.locals.host = process.env.HOST;
+  app.locals.port = process.env.PORT;
+  app.locals.lr_host = process.env.LR_HOST;
+  app.locals.lr_port = process.env.LR_PORT;
+  app.locals.google_analytics_id = process.env.GOOGLE_ANALYTICS_ID;
+
   /**
    * Common template vars
    */
@@ -151,10 +157,7 @@ export default () => {
     res.locals.passport = req.passport;
     res.locals.isAuthenticated = req.isAuthenticated();
     res.locals.env = app.get('env');
-    res.locals.host = process.env.HOST;
-    res.locals.port = process.env.PORT;
-    res.locals.lr_host = process.env.LR_HOST;
-    res.locals.lr_port = process.env.LR_PORT;
+
     next();
   });
 
