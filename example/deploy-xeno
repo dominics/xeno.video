@@ -1,0 +1,17 @@
+#!/bin/bash
+
+TARGET=$1
+REPO=dominics/xeno.video
+IMAGE="${REPO}:${TARGET}"
+
+echo "Pulling image: $IMAGE"
+docker pull $IMAGE
+
+docker run \
+    -d \
+    --name ${TARGET} \
+    --restart=on-failure:10 \
+    -p 3000:3000 \
+    --log-opt syslog-facility=daemon \
+    --log-opt tag="xeno-web" \
+    ${IMAGE}
