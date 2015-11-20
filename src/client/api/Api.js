@@ -16,7 +16,7 @@ export default class Api {
             resolve(data.data);
           },
           (xhr, status, error) => {
-            reject(error);
+            reject(new Error(error));
           }
         );
     });

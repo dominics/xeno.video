@@ -72,8 +72,8 @@ gulp.task('shell', () => shell.task([
 ]));
 
 gulp.task('pkill', () => shell.task([
-  'pkill -ef \'node ./index.js\' || true',
-]));
+  'pkill -ef index.js',
+], {verbose: true}));
 
 gulp.task('clean', () => {
   return del(config.outputs);

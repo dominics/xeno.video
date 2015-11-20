@@ -1,20 +1,22 @@
 import Setting from './../../../dist/client/api/Setting';
-import { Map } from 'immutable';
 
 describe('client api class Setting', function() {
   before(() => {
     this.server = sinon.fakeServer.create();
+    this.server.autoRespond = true;
+
+    global.XMLHttpRequest = this.server.xhr;
 
     this.server.respondWith('/setting/all', [
       200,
       { 'Content-Type': 'application/json' },
-      '[{ "id": "foo", "value": true }]',
+      '{"type": "setting", "data": [{ "id": "foo", "value": true }]}', //
     ]);
 
     this.setting = new Setting();
   });
 
-  after(() => {
+  after(() => { //
     this.server.restore();
   });
 
@@ -25,7 +27,7 @@ describe('client api class Setting', function() {
 
     it('eventually returns a map of settings', () => {
       return expect(this.setting.refresh())
-        .to.eventually.be.an.instanceOf(Map);
+        .to.eventually.be.instanceOf(Array);
     });
   });
 });
