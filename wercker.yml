@@ -23,6 +23,8 @@ deploy:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
         tag: $WERCKER_DEPLOYTARGET_NAME
+        cmd: /pipeline/source/bin/www
+        ports: "3000"
         repository: dominics/xeno.video
         registry: https://registry.hub.docker.com
 
@@ -46,6 +48,8 @@ deploy:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
         tag: $WERCKER_GIT_COMMIT
+        ports: "3000"
+        cmd: /pipeline/source/bin/www
         repository: dominics/xeno.video
         registry: https://registry.hub.docker.com
 

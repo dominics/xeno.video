@@ -5,17 +5,22 @@ const fs = require('fs');
 /**
  * Configuration
  */
-const conf = __dirname + '/../.env';
+const configPaths = ['/etc/xeno/env', __dirname + '/../.env'];
 
-if (fs.existsSync(conf)) {
-  require('node-env-file')(conf);
-}
-
-const debug = require('debug');
-const log = debug('server');
+configPaths.forEach(function(path) {
+  if (fs.existsSync(path)) {
+    require('node-env-file')(path);
+  }
+});
 
 if (!fs.existsSync(__dirname + '/../dist')) {
   throw new Error('You must run the server-side transpile build first (usually, gulp build)');
+}
+
+function requiredParameter(param) {
+  if (!process.env[param]) {
+    throw new Error('You must define ' + param + ' as an environment variable, or in .env');
+  }
 }
 
 [
@@ -27,12 +32,7 @@ if (!fs.existsSync(__dirname + '/../dist')) {
   'REDDIT_CONSUMER_SECRET',
   'REDIS_PORT',
   'REDIS_HOST',
-]
-  .forEach((param) => {
-    if (!process.env[param]) {
-      throw new Error('You must define ' + param + ' as an environment variable, or in .env');
-    }
-  });
+].forEach(requiredParameter);
 
 /**
  * Start the application

@@ -1,17 +1,53 @@
 #!/bin/bash
+#
+# This example deployment script assumes redis is running on the host, and
+# is listening on the docker0 interface. It restarts a single docker instance
+# of the app, on the specified port.
+#
+# To achieve zero-downtime deployments, you'd have to health-check and load-balance
+# this script across multiple containers. (TODO!)
+#
 
 TARGET=$1
 REPO=dominics/xeno.video
 IMAGE="${REPO}:${TARGET}"
+INSTANCE_NAME="xeno-web-${TARGET}"
+CONFIG=/etc/xeno # Put config in a file named 'env' in this directory
+HOSTIP=`ip -4 addr show scope global dev docker0 | grep inet | awk '{print \$2}' | cut -d / -f 1`
+BIND=127.0.0.1:3000
 
+if [[ -z ${TARGET} ]]; then
+    echo "You should specify a target tag to deploy (maybe 'production'?)" >&2
+    exit 1
+fi
+
+set -e
 echo "Pulling image: $IMAGE"
 docker pull $IMAGE
+set +e
 
+if [ -n $(docker ps -aqf name=${INSTANCE_NAME}) ]; then
+    echo "Instance running: stopping current instance"
+    docker stop ${INSTANCE_NAME}
+
+    echo "Removing previous container"
+    docker rm -f ${INSTANCE_NAME}
+else
+    echo "No existing instance running"
+fi
+
+echo -n "Running app..."
+
+set -x
 docker run \
     -d \
-    --name ${TARGET} \
+    --name ${INSTANCE_NAME} \
     --restart=on-failure:10 \
-    -p 3000:3000 \
-    --log-opt syslog-facility=daemon \
-    --log-opt tag="xeno-web" \
+    -p $BIND:3000 \
+    -v $CONFIG:/etc/xeno \
+    --add-host=redis:${HOSTIP} \
+    -e REDIS_HOST=redis \
     ${IMAGE}
+set +x
+
+echo "All done."

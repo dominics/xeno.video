@@ -17,7 +17,7 @@ export default class ItemStore extends Store {
   constructor(api, redis) {
     super(api, redis);
 
-    this.name = 'item';
+    this.type = 'item';
 
     this.queues.byChannel = Queue('item:by-channel');
     this.queues.byChannel.process(this.processGetByChannel.bind(this));
