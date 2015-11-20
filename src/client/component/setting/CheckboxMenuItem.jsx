@@ -22,7 +22,15 @@ export default class Checkbox extends Component {
    * @returns {function(this:Checkbox)}
    */
   handler(setting, toState, preventDefault = true, event) {
-    (registry.getHandler(types.settingUpdate, preventDefault))({ id: setting, checked: toState }, event);
+    event.persist();
+
+    /*
+     * Otherwise, click/change handler fires but the checkbox UI state doesn't update
+     */
+    window.setTimeout(() => {
+      this.checked = toState;
+      (registry.getHandler(types.settingUpdate, preventDefault))({ id: setting, value: toState }, event);
+    }, 0);
   }
 
   render() {
@@ -39,7 +47,7 @@ export default class Checkbox extends Component {
       <li className="setting-checkbox">
         <a onClick={this.handler.bind(this, this.props.id, next, true)}>
           <div className="checkbox">
-            <input type="checkbox" id={htmlId} defaultChecked={checked} onChange={this.handler.bind(this, id, next, false)} />
+            <input type="checkbox" id={htmlId} checked={checked} onChange={this.handler.bind(this, id, next, false)} />
 
             <label htmlFor={htmlId} onClick={this.handler.bind(this, id, next, true)}>
               {this.props.title}
