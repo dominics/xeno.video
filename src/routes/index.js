@@ -41,13 +41,13 @@ export default (app, passport) => {
     }
   });
 
-  router.get('/', authInteractive, (req, res) => {
+  router.get('/', (req, res) => {
     res.render('index', {
       title: 'xeno.video',
     });
   });
 
-  router.get('/about', authInteractive, (req, res) => {
+  router.get('/about', (req, res) => {
     res.render('about', {
       title: 'about xeno.video',
     });
@@ -74,7 +74,7 @@ export default (app, passport) => {
       .catch(err => next(err));
   });
 
-  router.get('/channel/all', authApi, (req, res) => {
+  router.get('/channel/all', (req, res) => {
     res.json({
       type: 'channel',
       data: [
@@ -84,7 +84,7 @@ export default (app, passport) => {
     });
   });
 
-  router.get('/item/channel/:channel', authApi, validate(validation.itemsForChannel), cache.route({ cache: 5 }), (req, res, next) => {
+  router.get('/item/channel/:channel', validate(validation.itemsForChannel), cache.route({ cache: 5 }), (req, res, next) => {
     debug('Getting items for ' + req.params.channel);
 
     const channel = req.params.channel;
