@@ -7,18 +7,19 @@ const debug = libdebug('xeno:api:setting');
 export default class Setting extends Api
 {
   refresh() {
-    debug('Refreshing Setting via API');
+    debug('Getting settings from API');
     return this.get(
       '/api/setting/all'
     ).then(this._toValueObjects);
   }
 
   update(data) {
+    debug('Updating settings via API', data);
     return this.patch(
       '/api/setting',
       {
         type: 'setting',
-        data: [], // TODO merge data
+        data: data,
       }
     ).then(this._toValueObjects);
   }
