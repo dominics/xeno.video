@@ -1,0 +1,14 @@
+nav.navbar.navbar-default.navbar-fixed-top {
+  @media (max-width: $screen-xs-max) {
+    position: absolute;
+  }
+
+  .navbar-brand {
+    h1 {
+      display: none;
+    }
+
+    font-size: 30px;
+    padding: 8px 1em;
+  }
+}

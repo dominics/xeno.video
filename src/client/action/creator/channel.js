@@ -3,7 +3,7 @@ import libdebug from 'debug';
 
 const debug = libdebug('xeno:actions:channel');
 
-export default (registry, api, store) => {
+export default (registry, api, _store) => {
   // On selecting a channel, refresh items in channel
   registry.wrap(types.channelSelect, (previous, err = null, channelId = null) => {
     if (err) {
