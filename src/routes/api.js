@@ -22,14 +22,14 @@ function auth(req, res, next) {
 }
 
 export default (settingStore, channelStore, itemStore) => (router) => {
-  router.get('/setting/all', auth, (req, res, next) => {
+  router.get('/api/setting/all', auth, (req, res, next) => {
     debug('Getting settings');
 
     if (!settingStore) {
       return next(new Error('Could not find setting store'));
     }
 
-    settingStore.getAll(req, res)
+    settingStore.getAll(req)
       .then(settings => {
         res.json({
           type: 'setting',
@@ -41,7 +41,27 @@ export default (settingStore, channelStore, itemStore) => (router) => {
       .catch(err => next(err));
   });
 
-  router.get('/channel/all', auth, (req, res) => {
+  router.patch('/api/setting', auth, validate(validation.settingUpdate), (req, res, next) => {
+    debug('Updating settings');
+
+    if (!settingStore) {
+      return next(new Error('Could not find setting store'));
+    }
+
+    settingStore.update(req)
+      .then(settings => {
+        res.json({
+          type: 'setting',
+          updated: true,
+          data: settings,
+        });
+
+        res.end();
+      })
+      .catch(err => next(err));
+  });
+
+  router.get('/api/channel/all', auth, (req, res) => {
     // channelStore
 
     res.json({
@@ -52,8 +72,8 @@ export default (settingStore, channelStore, itemStore) => (router) => {
       ],
     });
   });
-//
-  router.get('/item/channel/:channel', auth, validate(validation.itemsForChannel), (req, res, next) => {
+
+  router.get('/api/item/channel/:channel', auth, validate(validation.itemsForChannel), (req, res, next) => {
     debug('Getting items for ' + req.params.channel);
 
     const channel = req.params.channel;

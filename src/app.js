@@ -7,6 +7,7 @@ import compress from 'compression';
 import libdebug from 'debug';
 import cookieParser from 'cookie-parser';
 import { ValidationError } from 'express-validation';
+import fs from 'fs';
 
 const debug = libdebug('xeno:app');
 
@@ -27,7 +28,17 @@ export default (config) => {
   }
 
   app.use(favicon(path.join(__dirname, '..', 'public', 'favicon.png')));
-  app.use(logger('dev'));
+
+  if (config.NODE_ENV === 'development' && (typeof global.describe !== 'function')) { // not in functional tests
+    app.use(logger('dev'));
+  } else if (config.LOG_FILE) {
+    const log = fs.createWriteStream(config.LOG_FILE);
+    app.use(logger('combined', {stream: log}));
+  } else {
+    console.error('Access logging disabled');
+    // request logging disabled
+  }
+
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({extended: false}));
   app.use(cookieParser());

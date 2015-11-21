@@ -7,10 +7,10 @@ describe('client api class Setting', function() {
 
     global.XMLHttpRequest = this.server.xhr;
 
-    this.server.respondWith('/setting/all', [
+    this.server.respondWith('/api/setting/all', [
       200,
       { 'Content-Type': 'application/json' },
-      '{"type": "setting", "data": [{ "id": "foo", "value": true }]}', //
+      '{"type": "setting", "data": [{ "id": "foo", "value": true }]}',
     ]);
 
     this.setting = new Setting();
