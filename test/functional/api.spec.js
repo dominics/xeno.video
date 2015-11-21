@@ -3,10 +3,12 @@ import {outfile} from './../log';
 
 describe('functional test: API routes', function tests() {
   before(() => {
-    const config = deps.container.config;
-    config.LOG_FILE = outfile(['functional']);
+    this.container = deps().container;
 
-    this.app = deps.container.stack;
+    const config = this.container.config;
+    config.LOG_FILE = outfile(['functional', 'api']);
+
+    this.app = this.container.stack;
     this.request = request(this.app);
   });
 
@@ -63,6 +65,6 @@ describe('functional test: API routes', function tests() {
   });
 
   after(() => {
-    deps.container.redis.unref();
+    (this.container.shutdown)();
   });
 });
