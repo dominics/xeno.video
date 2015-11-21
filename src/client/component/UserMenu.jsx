@@ -1,4 +1,4 @@
-import { default as React, Component } from 'react/addons';
+import { default as React, Component } from 'react';
 import libdebug from 'debug';
 
 const debug = libdebug('xeno:component:UserMenu');

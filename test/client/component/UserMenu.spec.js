@@ -1,21 +1,16 @@
 import UserMenu from './../../../dist/client/component/UserMenu';
+import React from 'react';
 
-describe('UserMenu component', function() {
+function sut(props) {
+  return TestUtils.renderIntoDocument(
+    <UserMenu {...props} />
+  ).getDOMNode();
+}
 
-  before('render and locate element', () => {
-    const renderedComponent = TestUtils.renderIntoDocument(
-      <UserMenu done={false} name="Write Tutorial" />
-    );
-
-    const inputComponent = TestUtils.findRenderedDOMComponentWithTag(
-      renderedComponent,
-      'input'
-    );
-
-    this.inputElement = inputComponent.getDOMNode();
-  });
-
-  it('<input> should be of type "checkbox"', () => {
-    expect(this.inputElement.getAttribute('type')).to.be.eql('checkbox');
+describe('UserMenu component', () => {
+  it('throws an error when given invalid props', () => {
+    expect(() => {
+      sut({});
+    }).to.throw(Error);
   });
 });

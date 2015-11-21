@@ -1,4 +1,4 @@
-import { default as React, Component } from 'react/addons';
+import { default as React, Component } from 'react';
 import ItemList from './item/List';
 import Viewer from './Viewer';
 import NavBar from './NavBar';

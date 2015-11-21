@@ -1,8 +1,11 @@
 import path from 'path';
 
 describe('API functional tests', function tests() {
+  this.slow(5000);
+  this.timeout(10000);
+
   before(() => {
-    require('node-env-file')(path.join(__dirname, './../test/fixture/functional-env'));
+    require('node-env-file')(path.join(__dirname, './../.env'));
     [this.app] = require('./../dist/app')();
     this.request = request(this.app);
   });
