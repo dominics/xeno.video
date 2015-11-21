@@ -41,7 +41,7 @@ const config = {
   server: {
     entryPoint: 'bin/www',
     src: {
-      js: ['src/**/*.js?(x)', '!src/client/**'],
+      js: ['src/**/*.js?(x)'], // We include the client-side code, so we can unit-test it server-side
       jade: ['src/views/**/*.jade'],
     },
     output: 'dist',
