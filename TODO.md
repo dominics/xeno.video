@@ -2,12 +2,11 @@
 
 ## Required for MVP
 
-* Optional login
-* Hashchange
-* 18+ filter
-* Better list of channels
-* Check caching behaviour
+* Stateful settings
 * Autoplay
+* 18+ filter
+* Hashchange
+* Better list of channels
 
 ## First iteration
 
@@ -15,3 +14,7 @@
 * Key shortcuts
 * Logo and styling
 * Get channels for user
+
+# Done
+
+* Handling of anonymous sessions

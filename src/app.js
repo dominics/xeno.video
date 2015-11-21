@@ -13,7 +13,7 @@ import { ValidationError } from 'express-validation';
 import Api from './reddit/Api';
 import ChannelStore from './reddit/ChannelStore';
 import ItemStore from './reddit/ItemStore';
-import session from './session';
+import { default as session, validate } from './session';
 import socket from 'socket.io';
 import indexRouter from './routes/index';
 import emitter from './emitter';
@@ -157,6 +157,7 @@ export default () => {
     res.locals.passport = req.passport;
     res.locals.isAuthenticated = req.isAuthenticated();
     res.locals.env = app.get('env');
+    res.locals.sessionValidation = validate(req);
 
     next();
   });

@@ -1,50 +1,14 @@
-// Flatly 3.3.5
+// Cyborg 3.3.5
 // Bootswatch
 // -----------------------------------------------------
 
-$web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic" !default;
+$web-font-path: "https://fonts.googleapis.com/css?family=Roboto:400,700" !default;
 
 @import url($web-font-path);
 
 // Navbar =====================================================================
 
-.navbar {
-  border-width: 0;
-
-  &-default {
-
-    .badge {
-      background-color: #fff;
-      color: $navbar-default-bg;
-    }
-  }
-
-  &-inverse {
-
-    .badge {
-      background-color: #fff;
-      color: $navbar-inverse-bg;
-    }
-  }
-
-  &-brand {
-    line-height: 1;
-  }
-}
-
 // Buttons ====================================================================
-
-.btn {
-  border-width: 2px;
-}
-
-.btn:active {
-  @include box-shadow(none);
-}
-
-.btn-group.open .dropdown-toggle {
-  @include box-shadow(none);
-}
 
 // Typography =================================================================
 
@@ -73,12 +37,21 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic"
   color: $brand-info;
 }
 
+.bg-success,
+.bg-info,
+.bg-warning,
+.bg-danger {
+  color: #fff;
+}
+
 // Tables =====================================================================
 
 table,
 .table {
+  color: #fff;
 
   a:not(.btn) {
+    color: #fff;
     text-decoration: underline;
   }
 
@@ -86,49 +59,16 @@ table,
     text-decoration: none;
   }
 
-  .success,
-  .warning,
-  .danger,
-  .info {
-    color: #fff;
-
-    > th > a,
-    > td > a,
-    > a {
-      color: #fff;
-    }
+  .text-muted {
+    color: $text-muted;
   }
+}
 
-  > thead > tr > th,
-  > tbody > tr > th,
-  > tfoot > tr > th,
-  > thead > tr > td,
-  > tbody > tr > td,
-  > tfoot > tr > td {
-    border: none;
-  }
-
-  &-bordered > thead > tr > th,
-  &-bordered > tbody > tr > th,
-  &-bordered > tfoot > tr > th,
-  &-bordered > thead > tr > td,
-  &-bordered > tbody > tr > td,
-  &-bordered > tfoot > tr > td {
-    border: 1px solid $table-border-color;
-  }
+.table-responsive > .table {
+  background-color: $table-bg;
 }
 
 // Forms ======================================================================
-
-.form-control,
-input, {
-  border-width: 2px;
-  @include box-shadow(none);
-
-  &:focus {
-    @include box-shadow(none);
-  }
-}
 
 .has-warning {
   .help-block,
@@ -146,10 +86,7 @@ input, {
   }
 
   .form-control,
-  .form-control:focus {
-    border: 2px solid $brand-warning;
-  }
-
+  .form-control:focus,
   .input-group-addon {
     border-color: $brand-warning;
   }
@@ -171,10 +108,7 @@ input, {
   }
 
   .form-control,
-  .form-control:focus {
-    border: 2px solid $brand-danger;
-  }
-
+  .form-control:focus,
   .input-group-addon {
     border-color: $brand-danger;
   }
@@ -196,42 +130,46 @@ input, {
   }
 
   .form-control,
-  .form-control:focus {
-    border: 2px solid $brand-success;
-  }
-
+  .form-control:focus,
   .input-group-addon {
     border-color: $brand-success;
   }
 }
 
-// Navs =======================================================================
-
-.nav {
-  .open > a,
-  .open > a:hover,
-  .open > a:focus {
-    border-color: transparent;
-  }
+legend {
+  color: #fff;
 }
 
-.pager {
-  a,
-  a:hover {
-    color: #fff;
-  }
+.input-group-addon {
+  background-color: $btn-default-bg;
+}
 
-  .disabled {
-    &>a,
-    &>a:hover,
-    &>a:focus,
-    &>span {
-      background-color: $pagination-disabled-bg;
-    }
+// Navs =======================================================================
+
+.nav-tabs,
+.nav-pills,
+.breadcrumb,
+.pager {
+
+  a {
+    color: #fff;
   }
 }
 
 // Indicators =================================================================
+
+.alert {
+
+  .alert-link,
+  a {
+    color: $alert-warning-text;
+    text-decoration: underline;
+  }
+
+  .close {
+    text-decoration: none;
+  }
+}
 
 .close {
   color: #fff;
@@ -245,29 +183,14 @@ input, {
   }
 }
 
-.alert {
-
-  .alert-link {
-    color: #fff;
-    text-decoration: underline;
-  }
-}
-
 // Progress bars ==============================================================
-
-.progress {
-  height: 10px;
-  @include box-shadow(none);
-  .progress-bar {
-    font-size: 10px;
-    line-height: 10px;
-  }
-}
 
 // Containers =================================================================
 
-.well {
-  @include box-shadow(none);
+a.thumbnail:hover,
+a.thumbnail:focus,
+a.thumbnail.active {
+  border-color: $thumbnail-border;
 }
 
 a.list-group-item {
@@ -312,20 +235,8 @@ a.list-group-item {
   }
 }
 
-.panel {
-  &-default {
-    .close {
-      color: $text-color;
-    }
+.jumbotron {
+  h1, h2, h3, h4, h5, h6 {
+    color: #fff;
   }
-}
-
-.modal {
-  .close {
-    color: $text-color;
-  }
-}
-
-.popover {
-  color: $text-color;
 }

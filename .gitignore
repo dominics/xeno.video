@@ -10,4 +10,4 @@ public/js/**/*.map
 .env
 dist
 dist-test
-_*
+_*/
