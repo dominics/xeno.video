@@ -7,7 +7,7 @@ const debug = libdebug('xeno:store:setting');
 export default class SettingStore extends MapStore {
   reduce(state, action) {
     switch (action.type) {
-      case types.settingReceiveAll:
+      case types.settingReceive:
         if (action.isError()) {
           debug('Setting store received error updating');
           return state;
