@@ -17,6 +17,11 @@ describe('functional test: API routes', function tests() {
       this.request
         .get('/api/channel/all')
         .expect('Content-Type', /application\/json/)
+        .expect(function(res) {
+          expect(res.body).to.be.an('object');
+          expect(res.body.type).to.be.eql('channel');
+          expect(res.body.data).to.be.instanceOf(Array);
+        })
         .expect(200, done);
     });
   });
@@ -26,6 +31,11 @@ describe('functional test: API routes', function tests() {
       this.request
         .get('/api/setting/all')
         .expect('Content-Type', /application\/json/)
+        .expect(function(res) {
+          expect(res.body).to.be.an('object');
+          expect(res.body.type).to.be.eql('setting');
+          expect(res.body.data).to.be.instanceOf(Array);
+        })
         .expect(200, done);
     });
   });
@@ -50,6 +60,7 @@ describe('functional test: API routes', function tests() {
         .expect(function(res) {
           expect(res.body).to.be.an('object');
           expect(res.body.type).to.be.eql('setting');
+          expect(res.body.data).to.deep.include.members([{ id: 'nsfw', value: true }]);
         })
         .expect(200, done);
     });
@@ -60,6 +71,11 @@ describe('functional test: API routes', function tests() {
       this.request
         .get('/api/item/channel/videos')
         .expect('Content-Type', /application\/json/)
+        .expect(function(res) {
+          expect(res.body).to.be.an('object');
+          expect(res.body.type).to.be.eql('item');
+          expect(res.body.data).to.be.instanceOf(Array);
+        })
         .expect(200, done);
     });
   });
