@@ -4,24 +4,9 @@ import libdebug from 'debug';
 
 const debug = libdebug('xeno:routes:api');
 
-function auth(req, res, next) {
-  switch (validation.session(req)) {
-    case 'refresh.first': // @todo Refresh tokens
-    case 'refresh.proactive':
-    case 'fail.access_token':
-    case 'fail.session_age':
-      res.sendStatus(401);
-      res.end();
-      return next('fail.session_age');
-    case 'fail.auth':
-    case 'pass':
-      return next();
-    default:
-      throw Error('Unexpected action from session strategy');
-  }
-}
+export default (sessionValidator, settingStore, channelStore, itemStore) => (router) => {
+  const auth = sessionValidator.api.bind(undefined, false); // auth not required
 
-export default (settingStore, channelStore, itemStore) => (router) => {
   router.get('/api/setting/all', auth, (req, res, next) => {
     debug('Getting settings');
 

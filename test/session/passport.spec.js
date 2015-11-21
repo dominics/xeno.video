@@ -1,4 +1,4 @@
-import { default as passport, validate } from './../dist/passport';
+import passport from './../../dist/session/passport';
 
 describe('module passport', () => {
   describe('export default()', () => {
@@ -6,6 +6,4 @@ describe('module passport', () => {
       expect(passport).to.be.a('function');
     });
   });
-
-
 });

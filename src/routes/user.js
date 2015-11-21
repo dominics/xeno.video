@@ -9,7 +9,7 @@ export default (passport) => (router) => {
 
     passport.authenticate('reddit', {
       state: req.session.state,
-      duration: 'temporary',
+      duration: 'permanent',
       scope: 'identity,read,vote',
     })(req, res, next);
   });
