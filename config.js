@@ -127,13 +127,12 @@ const config = {
 
 config.karma.browsers = process.env.TEST_USE_CHROME !== '1' ? ['PhantomJS'] : ['PhantomJS', 'Chrome'];
 
-config.outputs = [
+config.clean = [
   config.client.output,
   config.server.output,
   config.test.output,
   config.css.output,
   config.bower.output.font,
-  config.build.output,
 ];
 
 config.browserifyOptions = Object.assign({

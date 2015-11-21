@@ -76,7 +76,7 @@ gulp.task('pkill', () => shell.task([
 ], {verbose: true}));
 
 gulp.task('clean', () => {
-  return del(config.outputs);
+  return del(config.clean);
 });
 
 /* Build tasks */
