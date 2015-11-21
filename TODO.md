@@ -12,9 +12,9 @@
 
 * Score on item list, maybe links too
 * Key shortcuts
-* Logo and styling
 * Get channels for user
 
 # Done
 
 * Handling of anonymous sessions
+* Logo and styling
