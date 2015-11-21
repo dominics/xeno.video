@@ -9,11 +9,13 @@ export default class UserMenu extends Component {
   };
 
   static _slider(setting, state, title) {
+    const id = 'setting-' + setting;
+
     return (
-      <li>
+      <li key={id}>
         <div className="checkbox">
-          <input type="checkbox" id={'setting-' + setting} />
-          <label htmlFor={setting}>
+          <input type="checkbox" id={id} />
+          <label htmlFor={id}>
             {title}
           </label>
         </div>
@@ -25,16 +27,16 @@ export default class UserMenu extends Component {
     const options = [];
 
     if (!settings.authenticated) {
-      options.push(<li><a href="/login">Login with Reddit</a></li>);
-      options.push(<li role="separator" className="divider" />);
+      options.push(<li key="login"><a href="/login">Login with Reddit</a></li>);
+      options.push(<li key="login-separator" role="separator" className="divider" />);
     }
 
     options.push(UserMenu._slider('autoplay', settings.autoplay, 'Autoplay'));
     options.push(UserMenu._slider('nsfw', settings.nsfw, 'Show NSFW'));
 
     if (settings.authenticated) {
-      options.push(<li role="separator" className="divider" />);
-      options.push(<li><a href="/logout">Logout</a></li>);
+      options.push(<li key="logout-separator" role="separator" className="divider" />);
+      options.push(<li key="logout"><a href="/logout">Logout</a></li>);
     }
 
     return options;
