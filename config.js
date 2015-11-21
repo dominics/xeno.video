@@ -1,6 +1,5 @@
 const path = require('path');
 const babelify = require('babelify');
-const fs = require('fs');
 const loadConfiguration = require('./dist/config');
 
 loadConfiguration();
@@ -111,8 +110,10 @@ config.karma.browsers = process.env.TEST_USE_CHROME !== '1' ? ['PhantomJS'] : ['
 config.outputs = [
   config.client.output,
   config.server.output,
+  config.test.output,
   config.css.output,
   config.bower.output.font,
+  config.build.output,
 ];
 
 config.browserifyOptions = Object.assign({
