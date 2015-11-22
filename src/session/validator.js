@@ -40,11 +40,7 @@ function doValidate(refresh, authRequired, req) {
     const authenticated = _.get(req, 'session.passport.user.authenticated', null);
     const age = (Date.now() / 1000) - authenticated;
 
-    if (!accessToken) {
-      return doRefresh(refresh, req);
-    }
-
-    if (age > (MAX_AGE - PREEMPT_REFRESH) && refreshToken) {
+    if (!accessToken || age > (MAX_AGE - PREEMPT_REFRESH)) {
       return doRefresh(refresh, req);
     }
 
@@ -66,6 +62,7 @@ function middleware(refresh, failureHandler, authRequired, req, res, next) {
 
 export default (refresh) => {
   return {
+    validate: doValidate.bind(undefined, refresh),
     api: middleware.bind(undefined, refresh, (err) => {
       res.sendStatus(401);
       res.end();
