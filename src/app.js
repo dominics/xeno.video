@@ -19,6 +19,9 @@ import indexRouter from './routes/index';
 import emitter from './emitter';
 import SettingStore from './setting/SettingStore';
 
+Promise.promisifyAll(redis.RedisClient.prototype);
+Promise.promisifyAll(redis.Multi.prototype);
+
 const debug = libdebug('xeno:app');
 
 export default () => {
@@ -105,11 +108,8 @@ export default () => {
    */
   const server = http.createServer(app);
 
-  Promise.promisifyAll(redis.RedisClient.prototype);
-  Promise.promisifyAll(redis.Multi.prototype);
-
   const redisConnection = redis.createClient(
-    process.env.REDIS_PORT,
+    parseInt(process.env.REDIS_PORT, 10),
     process.env.REDIS_HOST,
     {}
   );
