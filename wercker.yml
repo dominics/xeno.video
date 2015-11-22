@@ -1,6 +1,9 @@
 box: node:4.2
 
 build:
+  services:
+    - redis
+
   steps:
     - npm-install
 
@@ -63,5 +66,3 @@ deploy:
         repository: dominics/xeno.video
         registry: https://registry.hub.docker.com
 
-services:
-  - redis
