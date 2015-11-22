@@ -17,10 +17,6 @@ module.exports = function loadConfiguration(additionalSearchPath) {
     }
   });
 
-  if (!fs.existsSync(path.join(__dirname, '/../dist'))) {
-    throw new Error('You must run the server-side transpile build first (usually, gulp build)');
-  }
-
   function requiredParameter(param) {
     if (!process.env[param]) {
       throw new Error('You must define ' + param + ' as an environment variable, or in .env');
