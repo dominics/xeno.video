@@ -196,7 +196,8 @@ gulp.task('css', ['bowerInstall'], () => {
 });
 
 /* Test tasks */
-gulp.task('test', ['coverage'], () => {
+//gulp.task('test', ['coverage'], () => {
+gulp.task('test', () => {
   mkdirp(config.build.output);
 
   return gulp.src(config.test.tests, {read: false})
