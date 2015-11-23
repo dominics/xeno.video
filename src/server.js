@@ -1,40 +1,17 @@
 import http from 'http';
 
-/**
- * The split between this and app.js is this contains
- * daemonization and connections, whereas the app is a
- * pure module that can be used without side-effects.
- */
-
-function normalizePort(val) {
-  const port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
-}
-
-export default (app) => {
+export default (app, config) => {
   /**
    * Create HTTP server.
    */
   const server = http.createServer(app);
-
 
   server.on('error', (error) => {
     if (error.syscall !== 'listen') {
       throw error;
     }
 
-    const port = app.get('port');
+    const port = config.port;
     const bind = typeof port === 'string'
       ? 'Pipe ' + port
       : 'Port ' + port;
@@ -61,4 +38,8 @@ export default (app) => {
 
     debug('Listening on ' + bind);
   });
+
+  server.listen(config.PORT);
+
+  return server;
 };

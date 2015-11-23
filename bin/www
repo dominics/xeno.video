@@ -2,22 +2,17 @@
 
 const fs = require('fs');
 const path = require('path');
-const appModule = require('./../dist/app');
-
-require('./../dist/config')();
 
 if (!fs.existsSync(path.join(__dirname, '/../dist'))) {
   throw new Error('You must run the server-side transpile build first (usually, gulp build)');
 }
 
-/**
- * Start the application
- */
-const _ = appModule();
-const app = _[0];
-const server = _[1];
+const deps = require('./../dist/deps');
+const container = deps().container;
+
+const server = container.server;
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-server.listen(app.get('port'));
+

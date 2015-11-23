@@ -48,9 +48,26 @@ function requiredParameter(param) {
   }
 }
 
+function normalizePort(val) {
+  const port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
 module.exports = () => {
   const config = getMergedConfig();
   Object.keys(_.pick(schema, v => v)).forEach(requiredParameter);
+  config.PORT = normalizePort(config.PORT);
   process.env = config;
   return config;
 };

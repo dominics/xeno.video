@@ -7,7 +7,7 @@ function sut(props) {
   ).getDOMNode();
 }
 
-describe('UserMenu component', () => {
+describe('client component UserMenu', () => {
   it('throws an error when given invalid props', () => {
     expect(() => {
       sut({});
