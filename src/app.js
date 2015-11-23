@@ -9,7 +9,7 @@ import libdebug from 'debug';
 import http from 'http';
 import cookieParser from 'cookie-parser';
 import { ValidationError } from 'express-validation';
-import { default as session, validate } from './session';
+import { default as session, validate } from './passport';
 
 
 const debug = libdebug('xeno:app');
@@ -87,14 +87,14 @@ export default (config) => {
    * Common template vars
    */
   // @todo
-  //app.use((req, res, next) => {
-  //  res.locals.passport = req.passport;
-  //  res.locals.isAuthenticated = req.isAuthenticated();
-  //  res.locals.env = app.get('env');
-  //  res.locals.sessionValidation = validate(req);
-  //
-  //  next();
-  //});
+  app.use((req, res, next) => {
+    res.locals.passport = req.passport;
+    res.locals.isAuthenticated = req.isAuthenticated();
+    res.locals.env = app.get('env');
+    res.locals.sessionValidation = validate(req);
+
+    next();
+  });
 
   ///**
   // * Routes

@@ -72,7 +72,7 @@ gulp.task('shell', () => shell.task([
 ]));
 
 gulp.task('pkill', () => shell.task([
-  'pkill -f \' bin/www \' || true',
+  'pkill -f \' index.js \' || true',
 ]));
 
 gulp.task('clean', () => {

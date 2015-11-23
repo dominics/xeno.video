@@ -1,3 +1,5 @@
+import path from 'path';
+
 describe('API functional tests', function tests() {
   this.slow(5000);
   this.timeout(10000);
