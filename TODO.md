@@ -2,13 +2,12 @@
 
 ## Required for MVP
 
-* App-level credentials for Reddit
 * 18+ filter
 * Better list of channels
 * Hashchange
 * Autoplay
 * Fix bug: array of nulls on items for channel
-* Warm cache
+* Warm cache (app-level credentials for Reddit?)
 
 ## First iteration
 
@@ -22,6 +21,7 @@
 
 # Done
 
+* Refresh token handling
 * Handling of anonymous sessions
 * Logo and styling
 * Unit testing

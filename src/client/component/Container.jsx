@@ -53,7 +53,13 @@ class ContainerComponent extends Component {
       : null;
 
     current.channelItems = current.channelId
-      ? state.itemByChannel.get(current.channelId, []).map(itemId => state.item.get(itemId)).filter(v => !!v)
+      ? state.itemByChannel.get(current.channelId, [])
+        .map(itemId => {
+          return state.item.get(itemId);
+        })
+        .filter((item) => {
+          return !!item && (state.setting.get('nsfw', false).value || !item.over_18);
+        })
       : null;
 
     current.next = null;
