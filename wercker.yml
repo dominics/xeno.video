@@ -15,8 +15,8 @@ build:
     - script:
         name: export linked container details
         code: |
-          export REDIS_HOST=REDIS_PORT_6379_TCP_HOST
-          export REDIS_PORT=REDIS_PORT_6379_TCP_PORT
+          export REDIS_HOST=$REDIS_PORT_6379_TCP_HOST
+          export REDIS_PORT=$REDIS_PORT_6379_TCP_PORT
 
     - script:
          name: env
