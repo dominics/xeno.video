@@ -1,10 +1,13 @@
 import http from 'http';
+import libdebug from 'debug';
 
-export default (app, config) => {
+const debug = libdebug('xeno:server');
+
+export default (config, app) => {
   /**
    * Create HTTP server.
    */
-  const server = http.createServer(app);
+  const server = http.createServer(app); //
 
   server.on('error', (error) => {
     if (error.syscall !== 'listen') {

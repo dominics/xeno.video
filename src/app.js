@@ -11,12 +11,7 @@ import cookieParser from 'cookie-parser';
 import { ValidationError } from 'express-validation';
 import { default as session, validate } from './passport';
 
-
 const debug = libdebug('xeno:app');
-
-// todo deprecate app.locals.redis
-// todo deprecate app.locals.stores
-// todo deprecate app.locals.redditApi
 
 export default (config) => {
   const app = express();
@@ -73,39 +68,19 @@ export default (config) => {
   /**
    * Get port from environment and store in Express.
    */
-
-
   app.set('port', config.PORT);
   app.set('env', config.NODE_ENV);
 
   /**
-   * Store other configuration
-   */
-
-
-  /**
    * Common template vars
    */
-  // @todo
   app.use((req, res, next) => {
-    res.locals.passport = req.passport;
     res.locals.isAuthenticated = req.isAuthenticated();
     res.locals.env = app.get('env');
     res.locals.sessionValidation = validate(req);
 
     next();
   });
-
-  ///**
-  // * Routes
-  // */
-  //const index = indexRouter(app, passport);
-  //app.use('/', index);
-  //
-  ///**
-  // * Start emitter
-  // */
-  //emitter(app);
 
   return app;
 };

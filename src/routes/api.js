@@ -1,3 +1,9 @@
+import validate from 'express-validation';
+import * as validation from './../util/validation';
+import libdebug from 'debug';
+
+const debug = libdebug('xeno:routes:api');
+
 function auth(req, res, next) {
   switch (res.locals.sessionValidation) {
     case 'refresh.first': // @todo Refresh tokens
@@ -15,20 +21,13 @@ function auth(req, res, next) {
   }
 }
 
-export default (stores, router) => {
-  console.log('api stores', stores);
-
-  router.use();
-
-
+export default (router, settingStore, channelStore, itemStore) => {
   router.get('/setting/all', auth, (req, res, next) => {
     debug('Getting settings');
 
-    if (!stores || !stores.setting) {
+    if (!settingStore) {
       return next(new Error('Could not find setting store'));
     }
-
-    const settingStore = stores.setting;
 
     settingStore.getAll(req, res)
       .then(settings => {
@@ -43,6 +42,8 @@ export default (stores, router) => {
   });
 
   router.get('/channel/all', auth, (req, res) => {
+    // channelStore
+
     res.json({
       type: 'channel',
       data: [
@@ -51,17 +52,15 @@ export default (stores, router) => {
       ],
     });
   });
-
-  router.get('/item/channel/:channel', auth, validate(validation.itemsForChannel), cache.route({ cache: 5 }), (req, res, next) => {
+//
+  router.get('/item/channel/:channel', auth, validate(validation.itemsForChannel), (req, res, next) => {
     debug('Getting items for ' + req.params.channel);
 
     const channel = req.params.channel;
 
-    if (!stores || !stores.item) {
+    if (!itemStore) {
       return next(new Error('Could not find item store'));
     }
-
-    const itemStore = stores.item;
 
     itemStore.getByChannel(channel, req, res)
       .then(items => {

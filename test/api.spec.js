@@ -1,11 +1,12 @@
 import path from 'path';
+import deps from './../dist/deps';
 
 describe('API functional tests', function tests() {
   this.slow(5000);
   this.timeout(10000);
 
   before(() => {
-    this.app = deps().container.app;
+    this.app = deps.container.app;
     this.request = request(this.app);
   });
 

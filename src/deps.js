@@ -1,13 +1,14 @@
 import libdebug from 'debug';
 import Bottle from 'bottlejs';
 import socket from 'socket.io';
+import express from 'express';
+import redisCache from 'express-redis-cache';
 
 import config from './config';
 import app from './app';
 import emitter from './emitter';
 import server from './server';
 import passport from './passport';
-import router from './router';
 import redis from './redis';
 
 import Api from './reddit/Api';
@@ -32,19 +33,31 @@ deps.service('redis', redis, 'config');
 deps.service('app', app, 'config');
 
 deps.service('server', server, 'config', 'app');
-deps.service('passport', passport, 'config', 'app', 'io', 'redis');
 
 deps.service('io', socket, 'server');
 
+deps.service('passport', passport, 'config', 'app', 'io', 'redis');
 deps.service('emitter', emitter, 'config', 'io');
 
-deps.service('store.channel', storeChannel, 'api', 'redis');
-deps.service('store.item', storeItem, 'api', 'redis');
-deps.service('store.setting', storeSetting, 'api', 'redis');
+deps.service('storeChannel', storeChannel, 'api', 'redis');
+deps.service('storeItem', storeItem, 'api', 'redis');
+deps.service('storeSetting', storeSetting, 'api', 'redis');
 
-deps.service('route.index', routeIndex, 'router.main');
-deps.service('route.api', routeApi, 'router.main', 'store');
-deps.service('route.user', routeUser, 'router.main', 'passport');
-deps.service('route.error', routeError, 'router.main');
+deps.service('router.root', (passport, settingStore, channelStore, itemStore) => {
+  const router = express.Router();
 
-deps.service('router.root', router, 'route');
+  // Mount root routes
+  routeIndex(router);
+  routeUser(router, passport);
+  routeApi(
+    router,
+    settingStore,
+    channelStore,
+    itemStore
+  );
+  routeError(router);
+
+  return router;
+}, 'passport', 'storeSetting', 'storeChannel', 'storeItem');
+
+export default deps;
