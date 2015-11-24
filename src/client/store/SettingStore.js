@@ -28,7 +28,7 @@ export default class SettingStore extends MapStore {
         }
 
         debug('Setting was updated, mutating', action.data);
-        return state.set(action.data.id, action.data.state);
+        return state.set(action.data.id, action.data.value);
       default:
         return state;
     }
