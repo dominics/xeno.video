@@ -43,7 +43,7 @@ function mkdirp(dir) {
     .then(stat => {
       return stat.isDirectory ? Promise.resolve() : Promise.reject(Error('Could not mkdirp: path already exists'));
     })
-    .catch(err => fs.mkdirAsync(dir))
+    .catch(_err => fs.mkdirAsync(dir))
     .catch(err => { if (err.errno !== -17) throw err; /* already created */ });
 }
 
@@ -72,7 +72,7 @@ gulp.task('shell', () => shell.task([
 ]));
 
 gulp.task('pkill', () => shell.task([
-  'pkill -f \' bin/www \' || true',
+  'pkill -f \' index.js \' || true',
 ]));
 
 gulp.task('clean', () => {
@@ -224,11 +224,11 @@ gulp.task('watch', ['build'], () => {
   };
 
   const restart = (file) => {
+    // Needs debouncing
+
     return server.stop().then(() => {
-      console.log('In callback after server stop');
       return server.start();
     }).then(() => {
-      console.log('In callback after server restarted?');
       return notify(file);
     });
   };

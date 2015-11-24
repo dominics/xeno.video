@@ -1,3 +1,17 @@
+/**
+ * This is the build configuration
+ *
+ * It optionally reads .env into the environment. It only
+ * makes use of only a few variables, though. It's mostly static
+ * paths, and it has to be; it has to be completely valid
+ * ES5+ for the current node parser; this is read before
+ * any transpilation happens.
+ *
+ * Options:
+ *   NODE_ENV: string, development|production
+ *   TEST_USE_CHROME 1|0
+ *   DEBUG_PORT int
+ */
 const path = require('path');
 const babelify = require('babelify');
 const fs = require('fs');
@@ -39,7 +53,7 @@ const config = {
   },
 
   server: {
-    entryPoint: 'bin/www',
+    entryPoint: './index.js',
     src: {
       js: ['src/**/*.js?(x)'], // We include the client-side code, so we can unit-test it server-side
       jade: ['src/views/**/*.jade'],

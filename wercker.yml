@@ -28,7 +28,7 @@ dev:
     - npm-install
 
     - internal/watch:
-        code: node bin/www
+        code: node index.js
         reload: true
 
 deploy:
@@ -42,7 +42,7 @@ deploy:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
         tag: $WERCKER_DEPLOYTARGET_NAME
-        cmd: /pipeline/source/bin/www
+        cmd: /pipeline/source/index.js
         ports: "3000"
         repository: dominics/xeno.video
         registry: https://registry.hub.docker.com
@@ -68,7 +68,7 @@ deploy:
         password: $DOCKER_PASSWORD
         tag: $WERCKER_GIT_COMMIT
         ports: "3000"
-        cmd: /pipeline/source/bin/www
+        cmd: /pipeline/source/index.js
         repository: dominics/xeno.video
         registry: https://registry.hub.docker.com
 
