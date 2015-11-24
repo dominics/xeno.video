@@ -2,6 +2,7 @@ import libdebug from 'debug';
 
 import Store from './Store';
 import { mapSchema } from './../util';
+import { session as validateSession } from './../util/validation';
 
 const Queue = require('../queue');
 import Promise from 'bluebird';
@@ -24,7 +25,6 @@ export default class ItemStore extends Store {
   }
 
   /**
-   *
    * @param channel
    * @param req
    * @param res
@@ -33,7 +33,7 @@ export default class ItemStore extends Store {
   getByChannel(channel, req, res) {
     debug('Getting items by channel', channel);
 
-    const addToQueue = res.locals.sessionValidation === 'pass' ? this.queues.byChannel.add({
+    const addToQueue = validateSession(req) === 'pass' ? this.queues.byChannel.add({
       channel: channel,
       token: req.session.passport.user.accessToken,
     }, {
@@ -50,7 +50,9 @@ export default class ItemStore extends Store {
       this._key('by-channel', channel), 0, 100
     );
 
-    return Promise.join(addToQueue, getFromDb, (_queue, ids) => {
+    return Promise.join(addToQueue, getFromDb, (queue, ids) => {
+      debug(`Response from enqueue: ${queue}`);
+
       if (!ids || !ids.length) {
         return Promise.resolve([]);
       }
@@ -90,6 +92,7 @@ export default class ItemStore extends Store {
           return Promise.resolve();
         }
 
+        debug(`Getting items for ${channel} in background...`);
         return this._processGetByChannel(channel, token)
           .then((results) => {
             debug(`Stored ${results.length} items, setting refresh key to ${now}`);
