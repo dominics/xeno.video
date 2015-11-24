@@ -8,15 +8,15 @@ Promise.promisifyAll(redis.RedisClient.prototype);
 Promise.promisifyAll(redis.Multi.prototype);
 
 export default (config) => {
-  const redisConnection = redis.createClient(
+  const client = redis.createClient(
     parseInt(config.REDIS_PORT, 10),
     config.REDIS_HOST,
     {}
   );
 
-  redisConnection.on('error', (err) => {
+  client.on('error', (err) => {
     debug(err);
   });
 
-  return redisConnection;
+  return client;
 };
