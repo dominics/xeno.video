@@ -5,7 +5,7 @@ import libdebug from 'debug';
 const debug = libdebug('xeno:routes:api');
 
 function auth(req, res, next) {
-  switch (res.locals.sessionValidation) {
+  switch (validation.session(req)) {
     case 'refresh.first': // @todo Refresh tokens
     case 'refresh.proactive':
     case 'fail.access_token':
@@ -21,7 +21,7 @@ function auth(req, res, next) {
   }
 }
 
-export default (router, settingStore, channelStore, itemStore) => {
+export default (settingStore, channelStore, itemStore) => (router) => {
   router.get('/setting/all', auth, (req, res, next) => {
     debug('Getting settings');
 

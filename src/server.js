@@ -42,7 +42,5 @@ export default (config, app) => {
     debug('Listening on ' + bind);
   });
 
-
-
   return server;
 };

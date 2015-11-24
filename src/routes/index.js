@@ -1,9 +1,10 @@
 import libdebug from 'debug';
+import * as validation from './../util/validation';
 
 const debug = libdebug('xeno:routes:index');
 
 function auth(req, res, next) {
-  switch (res.locals.sessionValidation) {
+  switch (validation.session(req)) {
     case 'refresh.first': // @todo Refresh tokens
     case 'refresh.proactive':
     case 'fail.access_token':
@@ -20,7 +21,7 @@ function auth(req, res, next) {
   }
 }
 
-export default (router) => {
+export default () => (router) => {
   router.get('/', auth, (req, res) => {
     res.render('index', {
       title: 'xeno.video',

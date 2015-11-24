@@ -2,14 +2,16 @@ import libdebug from 'debug';
 import Bottle from 'bottlejs';
 import socket from 'socket.io';
 import express from 'express';
-import redisCache from 'express-redis-cache';
 
 import config from './config';
 import app from './app';
 import emitter from './emitter';
 import server from './server';
-import passport from './passport';
 import redis from './redis';
+import stack from './stack';
+
+import session from './session';
+import passport from './passport';
 
 import Api from './reddit/Api';
 
@@ -32,32 +34,37 @@ deps.service('api', Api, 'config');
 deps.service('redis', redis, 'config');
 deps.service('app', app, 'config');
 
-deps.service('server', server, 'config', 'app');
+deps.service('session', session, 'config', 'redis');
+deps.service('passport', passport, 'config');
 
-deps.service('io', socket, 'server');
+deps.service('store.setting', storeSetting, 'api', 'redis');
+deps.service('store.channel', storeChannel, 'api', 'redis');
+deps.service('store.item', storeItem, 'api', 'redis');
 
-deps.service('passport', passport, 'config', 'app', 'io', 'redis');
-deps.service('emitter', emitter, 'config', 'io');
+deps.service('route.index', routeIndex);
+deps.service('route.user', routeUser, 'passport');
+deps.service('route.api', routeApi, 'store.setting', 'store.channel', 'store.item');
+deps.service('route.error', routeError);
 
-deps.service('storeChannel', storeChannel, 'api', 'redis');
-deps.service('storeItem', storeItem, 'api', 'redis');
-deps.service('storeSetting', storeSetting, 'api', 'redis');
-
-deps.service('router.root', (passport, settingStore, channelStore, itemStore) => {
+deps.service('router', () => {
   const router = express.Router();
 
-  // Mount root routes
-  routeIndex(router);
-  routeUser(router, passport);
-  routeApi(
-    router,
-    settingStore,
-    channelStore,
-    itemStore
-  );
-  routeError(router);
+  deps.digest([
+    'route.index',
+    'route.user',
+    'route.api',
+    'route.error',
+  ]).forEach((route) => {
+    route(router);
+  });
 
   return router;
-}, 'passport', 'storeSetting', 'storeChannel', 'storeItem');
+});
+
+deps.service('stack', stack, 'app', 'session', 'passport', 'router');
+
+deps.service('server', server, 'config', 'stack');
+deps.service('socket', socket, 'server');
+deps.service('emitter', emitter, 'config', 'socket', 'session');
 
 export default deps;

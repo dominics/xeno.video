@@ -8,16 +8,10 @@ if (!fs.existsSync(path.join(__dirname, 'dist'))) {
 }
 
 const deps = require('./dist/deps');
-
-deps.digest(['config']);
-
 const container = deps.container;
 
-const config = container.config;
-
-const app = container.app;
-app.use('/', container.router.root);
+const emitter = container.emitter;
+emitter.emit('Hello!');
 
 const server = container.server;
-server.listen(config.PORT);
-
+server.listen(container.config.PORT);
