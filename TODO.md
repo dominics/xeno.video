@@ -2,11 +2,12 @@
 
 ## Required for MVP
 
+* 18+ filter
+* Better list of channels
+* Hashchange
 * Stateful settings
 * Autoplay
-* 18+ filter
-* Hashchange
-* Better list of channels
+* Fix bug: array of nulls on items for channel
 
 ## First iteration
 
@@ -14,8 +15,13 @@
 * Key shortcuts
 * Get channels for user
 
+## Future
+
+* Selenium testing
+
 # Done
 
 * Handling of anonymous sessions
 * Logo and styling
-* Initial tests
+* Unit testing
+* Functional testing

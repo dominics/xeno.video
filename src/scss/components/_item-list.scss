@@ -22,7 +22,7 @@
   }
 
   .item-thumbnail {
-    max-height: 200px;
+    height: 200px;
 
     img {
       min-height: 100%;
@@ -95,7 +95,7 @@
 
   .item {
     .item-thumbnail {
-      max-height: 270px;
+      height: 270px;
     }
   }
 }

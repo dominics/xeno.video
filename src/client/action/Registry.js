@@ -89,9 +89,10 @@ export default class ActionRegistry {
    * to send data
    *
    * @param {string} type
+   * @param {boolean} preventDefault
    * @returns {function(*, Event): string}
    */
-  getHandler(type) {
+  getHandler(type, preventDefault = true) {
     this._validateType(type);
 
     // The actual event handler that will be called
@@ -99,9 +100,11 @@ export default class ActionRegistry {
       debug(`Handling event as ${type}`, event, data);
       this.getCreator(type)(null, data);
 
-      event.preventDefault();
-      event.stopPropagation();
-      return false;
+      if (preventDefault) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      }
     };
   }
 

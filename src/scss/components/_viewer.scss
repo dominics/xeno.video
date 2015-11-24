@@ -58,21 +58,6 @@
         max-height: none;
       }
     }
-
-    footer {
-      section.info {
-        ul {
-          display: inline-block;
-          margin: 0;
-          padding: 0;
-
-          li {
-            display: inline;
-            padding: 0 2em;
-          }
-        }
-      }
-    }
   }
 }
 
@@ -86,4 +71,21 @@
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: $screen-lg-min) {
 
+}
+
+@media (min-width: 1400px) {
+  footer {
+    section.info {
+      ul {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+
+        li {
+          display: inline;
+          padding: 0 2em;
+        }
+      }
+    }
+  }
 }
