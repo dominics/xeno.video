@@ -30,7 +30,7 @@ const deps = Bottle.pop('main');
 
 deps.service('config', config);
 
-deps.service('api', Api, 'config');
+deps.service('api', Api);
 deps.service('redis', redis, 'config');
 deps.service('app', app, 'config');
 

@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import libdebug from 'debug';
 
 const debug = libdebug('xeno:routes:user');
