@@ -3,7 +3,14 @@ import _ from 'lodash';
 
 export const itemsForChannel = {
   params: {
-    channel: Joi.string().required().min(3).max(128),
+    channel: Joi.string().required().alphanum().min(3).max(128),
+  },
+};
+
+export const settingUpdate = {
+  body: {
+    type: Joi.string().required().valid('setting'),
+    data: Joi.array().required(),
   },
 };
 

@@ -43,7 +43,7 @@ function mkdirp(dir) {
     .then(stat => {
       return stat.isDirectory ? Promise.resolve() : Promise.reject(Error('Could not mkdirp: path already exists'));
     })
-    .catch(_err => fs.mkdirAsync(dir))
+    .catch(err => fs.mkdirAsync(dir))
     .catch(err => { if (err.errno !== -17) throw err; /* already created */ });
 }
 

@@ -8,7 +8,7 @@ export default class Channel extends Api
   refresh() {
     debug('Refreshing Channel via API');
     return this.getJSON(
-      '/channel/all'
+      '/api/channel/all'
     );
   }
 }

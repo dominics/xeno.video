@@ -9,6 +9,9 @@ const path = require('path');
 const _ = require('lodash');
 const envFile = require('node-env-file');
 
+/**
+ * true for required, false for not required
+ */
 const schema = {
   NODE_ENV: true,
   HOST: true,
@@ -20,6 +23,7 @@ const schema = {
   REDIS_HOST: true,
   DEBUG: false,
   GOOGLE_ANALYTICS_ID: false,
+  LOG_FILE: false,
 };
 
 function filter(settings) {

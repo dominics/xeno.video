@@ -9,7 +9,7 @@ export default class Setting extends Api
   refresh() {
     debug('Refreshing Setting via API');
     return this.getJSON(
-      '/setting/all'
+      '/api/setting/all'
     ).then((data) => {
       return Promise.resolve(data.map(setting => new SettingValue(setting.id, setting.value)));
     });

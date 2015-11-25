@@ -5,11 +5,16 @@ import _ from 'lodash';
 export default class SettingStore {
   redis = null;
 
+  static WRITABLE = {
+    'nsfw': true,
+    'autoplay': true,
+  };
+
   constructor(redis) {
     this.redis = redis;
   }
 
-  getAll(req, _res) {
+  getAll(req) {
     return new Promise((resolve, _reject) => {
       const state = new Map({
         authenticated: req.isAuthenticated(),
@@ -20,6 +25,16 @@ export default class SettingStore {
       });
 
       return resolve(state.map((v, k) => ({ 'id': k, 'value': v })).toArray());
+    });
+  }
+
+  update(req) {
+    return new Promise((resolve, reject) => {
+      if (req.method !== 'PATCH') {
+        return reject(new Error('Only PATCH requests are supported'));
+      }
+
+      return resolve('Updated?');
     });
   }
 }
