@@ -1,8 +1,14 @@
 import deps from './../../dist/deps';
+import {outfile} from './../log';
 
 describe('functional test: index routes', function tests() {
   before(() => {
-    this.app = deps.container.stack;
+    this.container = deps().container;
+
+    const config = this.container.config;
+    config.LOG_FILE = outfile(['functional', 'index']);
+
+    this.app = this.container.stack;
     this.request = request(this.app);
   });
 
@@ -14,6 +20,6 @@ describe('functional test: index routes', function tests() {
   });
 
   after(() => {
-    (deps.container.shutdown)();
+    (this.container.shutdown)();
   });
 });

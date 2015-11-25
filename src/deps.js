@@ -27,56 +27,63 @@ import routeError from './routes/error';
 
 const debug = libdebug('xeno:deps');
 
-const deps = Bottle.pop('main');
+export default (configInstance = null) => {
 
-deps.service('config', config);
+  const deps = new Bottle();
 
-deps.service('api', Api);
-deps.service('redis', redis, 'config');
-deps.service('app', app, 'config');
+  if (configInstance !== null) {
+    deps.constant('config', configInstance); // A direct config instance was passed
+  } else {
+    deps.service('config', config); // Lazily discover the configuration when it's needed
+  }
 
-deps.service('session', session, 'config', 'redis');
-deps.service('passport', passport, 'config');
+  deps.service('api', Api);
+  deps.service('redis', redis, 'config');
+  deps.service('app', app, 'config');
 
-deps.service('store.setting', storeSetting, 'api', 'redis');
-deps.service('store.channel', storeChannel, 'api', 'redis');
-deps.service('store.item', storeItem, 'api', 'redis', 'queue.itemByChannel');
+  deps.service('session', session, 'config', 'redis');
+  deps.service('passport', passport, 'config');
 
-deps.service('route.index', routeIndex);
-deps.service('route.user', routeUser, 'passport');
-deps.service('route.api', routeApi, 'store.setting', 'store.channel', 'store.item');
-deps.service('route.error', routeError);
+  deps.service('store.setting', storeSetting, 'api', 'redis');
+  deps.service('store.channel', storeChannel, 'api', 'redis');
+  deps.service('store.item', storeItem, 'api', 'redis', 'queue.itemByChannel');
 
-deps.service('queue.factory', queue, 'config');
+  deps.service('route.index', routeIndex);
+  deps.service('route.user', routeUser, 'passport');
+  deps.service('route.api', routeApi, 'store.setting', 'store.channel', 'store.item');
+  deps.service('route.error', routeError);
 
-deps.factory('queue.itemByChannel', (container) => {
-  return container.factory('item:by-channel');
-});
+  deps.service('queue.factory', queue, 'config');
 
-deps.service('router', () => {
-  const router = express.Router();
-
-  deps.digest([
-    'route.index',
-    'route.user',
-    'route.api',
-    'route.error',
-  ]).forEach((route) => {
-    route(router);
+  deps.factory('queue.itemByChannel', (container) => {
+    return container.factory('item:by-channel');
   });
 
-  return router;
-});
+  deps.service('router', () => {
+    const router = express.Router();
 
-deps.service('stack', stack, 'app', 'session', 'passport', 'router');
+    deps.digest([
+      'route.index',
+      'route.user',
+      'route.api',
+      'route.error',
+    ]).forEach((route) => {
+      route(router);
+    });
 
-deps.service('server', server, 'config', 'stack');
-deps.service('socket', socket, 'server');
-deps.service('emitter', emitter, 'config', 'socket', 'session');
+    return router;
+  });
 
-deps.factory('shutdown', (container) => () => {
-  container.redis.unref();
-  container.queue.itemByChannel.close();
-}, 'redis', 'queue');
+  deps.service('stack', stack, 'app', 'session', 'passport', 'router');
 
-export default deps;
+  deps.service('server', server, 'config', 'stack');
+  deps.service('socket', socket, 'server');
+  deps.service('emitter', emitter, 'config', 'socket', 'session');
+
+  deps.factory('shutdown', (container) => () => {
+    container.redis.unref();
+    container.queue.itemByChannel.close();
+  }, 'redis', 'queue');
+
+  return deps;
+};
