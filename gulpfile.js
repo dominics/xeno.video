@@ -72,7 +72,7 @@ gulp.task('shell', () => shell.task([
 ]));
 
 gulp.task('pkill', () => shell.task([
-  'pkill -f \' index.js \' || true',
+  'pkill -ef \'node ./index.js\' || true',
 ]));
 
 gulp.task('clean', () => {
@@ -85,7 +85,7 @@ gulp.task('bowerInstall', () => {
     .pipe(gulp.dest(config.bower.src));
 });
 
-gulp.task('bowerJs', ['bowerInstall'], () => {
+gulp.task('bowerJs', () => {
   const files = bowerFiles({overrides: config.bower.overrides})
     .self()
     .camelCase(false)
@@ -106,7 +106,7 @@ gulp.task('bowerJs', ['bowerInstall'], () => {
     .pipe(gulp.dest(config.bower.output.js));
 });
 
-gulp.task('bowerFont', ['bowerInstall'], () => {
+gulp.task('bowerFont', () => {
   const files = bowerFiles({overrides: config.bower.overrides})
     .self()
     .camelCase(false)

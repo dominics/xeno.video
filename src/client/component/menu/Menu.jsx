@@ -1,8 +1,8 @@
 import { default as React, Component } from 'react';
 import libdebug from 'debug';
-import ChannelList from './channel/List';
+import ChannelList from './../channel/List';
 // import ChannelSearch from './channel/Search';
-import UserMenu from './UserMenu';
+import MenuUser from './MenuUser';
 import { Map } from 'immutable';
 
 const debug = libdebug('xeno:component:navBar');
@@ -38,7 +38,7 @@ export default class NavBar extends Component {
 
             {/* <ChannelSearch /> */}
 
-            <UserMenu
+            <MenuUser
               setting={this.props.setting} />
           </div>
         </section>

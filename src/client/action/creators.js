@@ -1,9 +1,9 @@
-import init from './creator/init';
 import item from './creator/item';
 import channel from './creator/channel';
+import setting from './creator/setting';
 
 export default {
-  init: init,
   item: item,
   channel: channel,
+  setting: setting,
 };

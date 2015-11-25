@@ -1,9 +1,9 @@
-import UserMenu from './../../../dist/client/component/UserMenu';
+import MenuUser from './../../../../dist/client/component/menu/MenuUser';
 import React from 'react';
 
 function sut(props) {
   return TestUtils.renderIntoDocument(
-    <UserMenu {...props} />
+    <MenuUser {...props} />
   ).getDOMNode();
 }
 

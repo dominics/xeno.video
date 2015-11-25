@@ -4,6 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 import supertest from 'supertest';
 import jsdom from 'jsdom';
 import TestUtils from 'react-addons-test-utils';
+import jquery from './../bower_components/jquery/dist/jquery';
 
 chai.use(chaiAsPromised);
 
@@ -15,3 +16,4 @@ global.expect = chai.expect;
 global.sinon = sinon;
 global.request = supertest;
 global.TestUtils = TestUtils;
+global.$ = jquery(global.window);
