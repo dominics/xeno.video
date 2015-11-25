@@ -8,6 +8,8 @@ import jquery from './../bower_components/jquery/dist/jquery';
 
 chai.use(chaiAsPromised);
 
+sinon.xhr.supportsCORS = true;
+
 global.document = jsdom.jsdom('<!doctype html><html><body></body></html>');
 global.window = document.defaultView;
 global.XMLHttpRequest = global.window.XMLHttpRequest;
