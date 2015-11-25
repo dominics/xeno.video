@@ -30,7 +30,7 @@ export default class Checkbox extends Component {
      */
     window.setTimeout(() => {
       this.checked = toState;
-      (registry.getHandler(types.settingUpdate, preventDefault))(new Setting(setting, toState), event);
+      (registry.getHandler(types.settingUpdate, preventDefault))([new Setting(setting, toState)], event);
     }, 0);
   }
 

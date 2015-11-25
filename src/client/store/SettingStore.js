@@ -53,7 +53,7 @@ export default class SettingStore extends MapStore {
   }
 
   _merge(state, settings) {
-    debug('Merging settings into state', action.data);
+    debug('Merging settings into state', settings);
 
     return state.withMutations(map => {
       let mutated = map;

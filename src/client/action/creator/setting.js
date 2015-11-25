@@ -45,6 +45,9 @@ export default (registry, api, store) => {
     }
 
     debug('Beginning setting update');
+    // TODO send to server
+
+    return previous(err, settings);
   }
 
   registry.wrap(types.initialize, initialize);

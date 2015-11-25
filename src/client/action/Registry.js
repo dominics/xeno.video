@@ -97,7 +97,7 @@ export default class ActionRegistry {
 
     // The actual event handler that will be called
     return (data, event) => {
-      debug(`Handling event as ${type}`, event, data);
+      debug(`Handling event as ${type}`, data, event);
       this.getCreator(type)(null, data);
 
       if (preventDefault) {
