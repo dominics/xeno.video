@@ -13,7 +13,7 @@ export default (config, redis) => {
     resave: false, // if true, saves unaltered sessions, possibly causing race conditions
     saveUninitialized: false,
     cookie: {
-      maxAge: SESSION_TTL,
+      maxAge: SESSION_TTL * 1000,
     },
     store: new RedisStore({
       client: redis,
