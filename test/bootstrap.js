@@ -10,6 +10,7 @@ chai.use(chaiAsPromised);
 
 global.document = jsdom.jsdom('<!doctype html><html><body></body></html>');
 global.window = document.defaultView;
+global.XMLHttpRequest = global.window.XMLHttpRequest;
 global.navigator = {userAgent: 'node.js'};
 global.chai = chai;
 global.expect = chai.expect;
