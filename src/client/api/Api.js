@@ -15,8 +15,8 @@ export default class Api {
           (data) => {
             resolve(data.data);
           },
-          (xhr, status, error) => {
-            reject(new Error(error));
+          (xhr, status, err) => {
+            reject(new Error(err));
           }
         );
     });
@@ -30,8 +30,8 @@ export default class Api {
         type: 'PATCH',
         dataType: 'json',
         contentType: 'application/json',
-        success: (response) => {
-          resolve(response);
+        success: (data) => {
+          resolve(data.data);
         },
         error: (xhr, status, err) => {
           reject(new Error(err));
