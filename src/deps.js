@@ -44,7 +44,7 @@ export default (configInstance = null) => {
   deps.service('session', session, 'config', 'redis');
   deps.service('passport', passport, 'config');
 
-  deps.service('store.setting', storeSetting, 'api', 'redis');
+  deps.service('store.setting', storeSetting);
   deps.service('store.channel', storeChannel, 'api', 'redis');
   deps.service('store.item', storeItem, 'api', 'redis', 'queue.itemByChannel');
 

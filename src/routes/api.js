@@ -29,16 +29,14 @@ export default (settingStore, channelStore, itemStore) => (router) => {
       return next(new Error('Could not find setting store'));
     }
 
-    settingStore.getAll(req)
-      .then(settings => {
-        res.json({
-          type: 'setting',
-          data: settings,
-        });
+    const settings = settingStore.getAll(req);
 
-        res.end();
-      })
-      .catch(err => next(err));
+    res.json({
+      type: 'setting',
+      data: settings,
+    });
+
+    res.end();
   });
 
   router.patch('/api/setting', auth, validate(validation.settingUpdate), (req, res, next) => {
@@ -48,17 +46,15 @@ export default (settingStore, channelStore, itemStore) => (router) => {
       return next(new Error('Could not find setting store'));
     }
 
-    settingStore.update(req)
-      .then(settings => {
-        res.json({
-          type: 'setting',
-          updated: true,
-          data: settings,
-        });
+    const settings = settingStore.update(req);
 
-        res.end();
-      })
-      .catch(err => next(err));
+    res.json({
+      type: 'setting',
+      updated: true,
+      data: settings,
+    });
+
+    res.end();
   });
 
   router.get('/api/channel/all', auth, (req, res) => {
