@@ -72,7 +72,7 @@ gulp.task('shell', () => shell.task([
 ]));
 
 gulp.task('pkill', () => shell.task([
-  'pkill -ef index.js',
+  'bash -c "pkill -e -f \'node.*index\.js$\' || true"',
 ], {verbose: true}));
 
 gulp.task('clean', () => {
@@ -214,7 +214,7 @@ gulp.task('test', ['coverage'], () => {
 });
 
 /* Watch tasks */
-gulp.task('watch', ['build'], () => {
+gulp.task('watch', ['build', 'pkill'], () => {
   const server = gls(config.server.entryPoint);
   server.start();
 

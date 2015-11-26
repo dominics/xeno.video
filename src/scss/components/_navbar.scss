@@ -13,39 +13,23 @@ nav.navbar.navbar-default.navbar-fixed-top {
   }
 
   .user-menu {
-    .checkbox {
-      margin: 0 0;
-    }
+    li.setting-checkbox > a {
+      padding-left: 20px;
 
-    .dropdown-menu > li > .dropdown-action {
-      display: block;
-      padding: 3px 20px;
-      clear: both;
-      font-weight: normal;
-      line-height: $line-height-base;
-      color: $dropdown-link-color;
-      white-space: nowrap;
-    }
-
-    // Hover/Focus state
-    .dropdown-menu > li > a {
-      &:hover,
-      &:focus {
-        text-decoration: none;
-        color: $dropdown-link-hover-color;
-        background-color: $dropdown-link-hover-bg;
+      &.checked {
+        &:before {
+          @include fa-icon;
+          content: $fa-var-check-square;
+          padding-right: 1em;
+        }
       }
-    }
 
-    // Active state
-    .dropdown-menu > .active > .dropdown-action {
-      &,
-      &:hover,
-      &:focus {
-        color: $dropdown-link-active-color;
-        text-decoration: none;
-        outline: 0;
-        background-color: $dropdown-link-active-bg;
+      &.unchecked {
+        &:before {
+          @include fa-icon;
+          content: $fa-var-square;
+          padding-right: 1em;
+        }
       }
     }
   }

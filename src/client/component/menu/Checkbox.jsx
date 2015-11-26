@@ -30,8 +30,11 @@ export default class Checkbox extends Component {
      */
     window.setTimeout(() => {
       this.checked = toState;
+      debug('Firing click handler for checkbox');
       (registry.getHandler(types.settingUpdate, preventDefault))([new Setting(setting, toState)], event);
     }, 0);
+
+    return false;
   }
 
   render() {
@@ -46,14 +49,8 @@ export default class Checkbox extends Component {
 
     return (
       <li className="setting-checkbox">
-        <a onClick={this.handler.bind(this, this.props.id, next, true)}>
-          <div className="checkbox">
-            <input type="checkbox" id={htmlId} checked={checked} onChange={this.handler.bind(this, id, next, false)} />
-
-            <label htmlFor={htmlId} onClick={this.handler.bind(this, id, next, true)}>
-              {this.props.title}
-            </label>
-          </div>
+        <a onClick={this.handler.bind(this, this.props.id, next, true)} className={checked ? 'checked' : 'unchecked'}>
+          {this.props.title}
         </a>
       </li>
     );
