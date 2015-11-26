@@ -28,8 +28,6 @@ import routeUser from './routes/user';
 import routeApi from './routes/api';
 import routeError from './routes/error';
 
-const debug = libdebug('xeno:deps');
-
 export default (configInstance = null) => {
   const deps = new Bottle();
 

@@ -1,7 +1,8 @@
 /**
- * This is the runtime configuration.
+ * This is the runtime configuration
  *
- * We don't support some types of
+ * Don't include the debug library until the config files have had a change to define
+ * DEBUG, DEBUG_COLORS, etc.
  */
 
 const fs = require('fs');
@@ -74,8 +75,12 @@ function normalizePort(val) {
 
 module.exports = () => {
   const config = getMergedConfig();
+
+  // Validate required parameter (TODO: move to Joi)
   Object.keys(_.pick(schema, v => v)).forEach(requiredParameter);
+
   config.PORT = normalizePort(config.PORT);
+
   process.env = config;
   return config;
 };
