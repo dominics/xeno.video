@@ -19,4 +19,8 @@ describe('functional test: user routes', function tests() {
         .expect(302, done);
     });
   });
+
+  after(() => {
+    (this.container.shutdown)();
+  });
 });
