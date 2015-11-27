@@ -78,7 +78,7 @@ export default (configInstance = null) => {
     return LogSettings;
   }, 'cli.argv');
 
-  deps.service('command.prewarm', prewarm, 'config', 'cli.argv', 'cli.log', 'queue.itemByChannel'); //
+  deps.service('command.prewarm', prewarm, 'config', 'cli.argv', 'cli.log', 'session.refresh', 'queue.itemByChannel');
 
   deps.service('router', () => {
     const router = express.Router();
