@@ -17,15 +17,13 @@ function doRefresh(refresh, req) {
 
     debug('Refreshing access token');
 
-    refresh.requestNewAccessToken('reddit', refreshToken, (err, accessToken, newRefreshToken) => {
+    refresh.requestNewAccessToken('reddit', refreshToken, (err, accessToken) => {
       if (err) {
         debug('Failed to get new access token', err);
         return reject(err);
       }
 
-      debug('Successfully refreshed access token');
       req.session.passport.user.accessToken = accessToken;
-      req.session.passport.user.refreshToken = newRefreshToken;
       req.session.passport.user.authenticated = Date.now() / 1000;
 
       return resolve();
@@ -39,10 +37,11 @@ function doValidate(refresh, authRequired, req) {
   }
 
   const accessToken = _.get(req, 'session.passport.user.accessToken', null);
+  const refreshToken = _.get(req, 'session.passport.user.refreshToken', null);
   const authenticated = _.get(req, 'session.passport.user.authenticated', null);
   const age = (Date.now() / 1000) - authenticated;
 
-  if (!accessToken || age > (MAX_AGE - PREEMPT_REFRESH)) {
+  if (refreshToken && (!accessToken || age > (MAX_AGE - PREEMPT_REFRESH))) {
     return doRefresh(refresh, req);
   }
 
