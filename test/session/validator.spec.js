@@ -35,7 +35,7 @@ describe('session module validator', () => {
     const refresh = sinon.stub.returns(Promise.resolve('foo'));
     const authRequired = true;
 
-    expect(validator().validate(refresh, authRequired, goodRequest)).to.eventually.be.resolved;
-    expect(validator().validate(refresh, authRequired, badRequest)).to.eventually.be.rejected;
+    expect(validator(refresh).validate(authRequired, goodRequest)).to.eventually.be.resolved;
+    expect(validator(refresh).validate(authRequired, badRequest)).to.eventually.be.rejected;
   });
 });
