@@ -56,8 +56,6 @@ export default class ItemStore extends Store {
     );
 
     return Promise.join(addToQueue, getFromDb, (queue, ids) => {
-      debug(`Response from enqueue: ${queue}`);
-
       if (!ids || !ids.length) {
         return Promise.resolve([]);
       }
