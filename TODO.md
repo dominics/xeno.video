@@ -6,7 +6,6 @@
 * Hashchange
 * Autoplay
 * Fix bug: array of nulls on items for channel
-* Warm cache (app-level credentials for Reddit?)
 
 ## First iteration
 
@@ -20,6 +19,8 @@
 
 # Done
 
+* App-level default credentials
+* Prewarm CLI task
 * 18+ filter
 * Refresh token handling
 * Handling of anonymous sessions
