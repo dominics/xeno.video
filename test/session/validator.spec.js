@@ -6,7 +6,7 @@ describe('session module validator', () => {
   });
 
   it('validates a request is authenticated', () => {
-    const mockRequest = {
+    const goodRequest = {
       isAuthenticated: sinon.stub().returns(true),
       session: {
         passport: {
@@ -19,9 +19,23 @@ describe('session module validator', () => {
       },
     };
 
+    const badRequest = {
+      isAuthenticated: sinon.stub().returns(true),
+      session: {
+        passport: {
+          user: {
+            accessToken: 'fooAccessToken',
+            refreshToken: 'fooRefreshToken',
+            authenticated: (Date.now() / 1000) - (100 * 60 * 60),
+          },
+        },
+      },
+    };
+
     const refresh = sinon.stub.returns(Promise.resolve('foo'));
     const authRequired = true;
 
-    expect(validator().validate(refresh, authRequired, mockRequest)).to.eventually.eql('pass');
+    expect(validator().validate(refresh, authRequired, goodRequest)).to.eventually.be.resolved;
+    expect(validator().validate(refresh, authRequired, badRequest)).to.eventually.be.rejected;
   });
 });

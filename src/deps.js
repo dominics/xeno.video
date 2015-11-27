@@ -49,7 +49,7 @@ export default (configInstance = null) => {
 
   deps.service('store.setting', storeSetting);
   deps.service('store.channel', storeChannel, 'api', 'redis');
-  deps.service('store.item', storeItem, 'api', 'redis', 'queue.itemByChannel');
+  deps.service('store.item', storeItem, 'api', 'redis', 'session.validator', 'queue.itemByChannel');
 
   deps.service('route.index', routeIndex, 'session.validator');
   deps.service('route.user', routeUser, 'session.passport');

@@ -2,7 +2,6 @@ import libdebug from 'debug';
 
 import Store from './Store';
 import { mapSchema } from './../util';
-import { session as validateSession } from './../util/validation';
 
 import Promise from 'bluebird';
 const debug = libdebug('xeno:store:item');
@@ -10,16 +9,18 @@ const workerLog = libdebug('xeno:store:item:worker');
 
 export default class ItemStore extends Store {
   queues = {};
+  validator = null;
 
   static CACHE_TTL_ITEMS = 60 * 60 * 24;
   static CACHE_TTL_CHANNEL_ITEMS = 300;
 
-  constructor(api, redis, queueByChannel) {
+  constructor(api, redis, validator, queueByChannel) {
     super(api, redis);
 
     this.type = 'item';
-
+    this.validator = validator;
     this.queues.byChannel = queueByChannel;
+
     this.queues.byChannel.process(this.processGetByChannel.bind(this));
   }
 
@@ -32,18 +33,23 @@ export default class ItemStore extends Store {
   getByChannel(channel, req, res) {
     debug('Getting items by channel', channel);
 
-    const addToQueue = validateSession(req) === 'pass' ? this.queues.byChannel.add({
-      channel: channel,
-      token: req.session.passport.user.accessToken,
-    }, {
-      delay: 100,
-      attempts: 3,
-      backoff: {
-        type: 'exponential',
-        delay: 10000,
-      },
-      timeout: 20000,
-    }) : Promise.resolve('Skipping enqueue because not fully authenticated');
+    const addToQueue = this.validator.validate(true, req)
+      .then(() => {
+        return this.queues.byChannel.add({
+          channel: channel,
+          token: req.session.passport.user.accessToken,
+        }, {
+          delay: 100,
+          attempts: 3,
+          backoff: {
+            type: 'exponential',
+            delay: 10000,
+          },
+          timeout: 20000,
+        });
+      }).catch((err) => {
+        return Promise.resolve('Skipping enqueue because not fully authenticated: ' + err);
+      });
 
     const getFromDb = this.redis.lrangeAsync(
       this._key('by-channel', channel), 0, 60 // todo slicing
