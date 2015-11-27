@@ -2,7 +2,6 @@
 
 ## Required for MVP
 
-* 18+ filter
 * Better list of channels
 * Hashchange
 * Autoplay
@@ -21,6 +20,7 @@
 
 # Done
 
+* 18+ filter
 * Refresh token handling
 * Handling of anonymous sessions
 * Logo and styling
