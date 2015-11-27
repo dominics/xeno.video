@@ -1,5 +1,4 @@
 import deps from './../../dist/deps';
-import {outfile} from './../log';
 
 describe('functional test: index routes', function tests() {
   before(() => {

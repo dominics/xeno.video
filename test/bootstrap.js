@@ -5,13 +5,15 @@ import supertest from 'supertest';
 import jsdom from 'jsdom';
 import TestUtils from 'react-addons-test-utils';
 import jquery from './../bower_components/jquery/dist/jquery';
-import { logTo } from './log';
+import log from './../dist/util/log';
+import path from 'path';
+import config from './../config';
 
 chai.use(chaiAsPromised);
 
 sinon.xhr.supportsCORS = true;
 
-global.logTo = logTo;
+global.log = log;
 global.document = jsdom.jsdom('<!doctype html><html><body></body></html>');
 global.window = document.defaultView;
 global.XMLHttpRequest = global.window.XMLHttpRequest;
@@ -22,3 +24,8 @@ global.sinon = sinon;
 global.request = supertest;
 global.TestUtils = TestUtils;
 global.$ = jquery(global.window);
+
+global.outfile = (ident = [], extension = '.log') => {
+  const identifier = (Array.isArray(ident) && ident.length > 1) ? ident.join('-') : 'xeno';
+  return path.join(config.build.output, `${identifier}-${(new Date()).getTime()}${extension}`);
+};
