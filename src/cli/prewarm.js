@@ -43,6 +43,10 @@ export default (config, argv, log, refresh, itemByChannelQueue) => {
     }).then((token) => {
       return Promise.all([
         prewarmChannel('videos', token),
+        prewarmChannel('aww', token),
+        prewarmChannel('music', token),
+        prewarmChannel('deepintoyoutube', token),
+        prewarmChannel('all', token),
       ]);
     });
   };

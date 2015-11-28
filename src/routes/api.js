@@ -49,6 +49,9 @@ export default (sessionValidator, settingStore, channelStore, itemStore) => (rou
       type: 'channel',
       data: [
         {id: 'videos', title: 'Videos'},
+        {id: 'aww', title: 'Aww'},
+        {id: 'music', title: 'Music'},
+        {id: 'deepintoyoutube', title: 'DeepIntoYouTube'},
         {id: 'all', title: 'All'},
       ],
     });
