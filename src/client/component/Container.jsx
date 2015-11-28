@@ -1,12 +1,12 @@
 import { default as React, Component } from 'react';
 import ItemList from './item/List';
-import Viewer from './Viewer';
+import Viewer from './viewer/Viewer';
 import Menu from './menu/Menu';
 import { Container as FluxContainer } from 'flux/utils';
 import libdebug from 'debug';
 import stores from './../store';
-import registry from '../action';
-import types from '../action/types';
+import registry from './../action';
+import types from './../action/types';
 import _ from 'lodash';
 const debug = libdebug('xeno:component:container');
 

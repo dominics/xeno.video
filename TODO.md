@@ -2,9 +2,7 @@
 
 ## Required for MVP
 
-* Hashchange
 * Autoplay
-* Fix bug: array of nulls on items for channel
 
 ## First iteration
 
@@ -18,6 +16,7 @@
 
 # Done
 
+* Hashchange
 * App-level default credentials
 * Prewarm CLI task
 * 18+ filter
