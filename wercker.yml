@@ -1,4 +1,4 @@
-box: node:4.2
+box: node:5.2
 
 build:
   services:
