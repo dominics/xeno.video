@@ -1,5 +1,6 @@
 import types from './../types';
 import libdebug from 'debug';
+import {build as fragment} from './../../fragment';
 
 const debug = libdebug('xeno:actions:item');
 
@@ -10,8 +11,13 @@ export default (registry, _api, _store) => {
     }
 
     const item = $('#item-' + itemId);
+    const channelId = _store.currentChannel.getState().get('selected');
 
-    if (item.eq(0)) {
+    if (channelId) {
+      window.location = '#' + fragment(channelId, itemId);
+    }
+
+    if (item.eq(0) && item.offset()) {
       if ($(window).width() > 768) { // 768 is scss $screen-sm-min
         // @todo: iff bottom of item is below viewport, scroll until it's somewhere in the upper quarter (lax-follow)
         window.scrollTo(item.offset().left, item.offset().top - 200);

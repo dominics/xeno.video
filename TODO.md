@@ -2,7 +2,6 @@
 
 ## Required for MVP
 
-* Better list of channels
 * Hashchange
 * Autoplay
 * Fix bug: array of nulls on items for channel
@@ -11,7 +10,7 @@
 
 * Score on item list, maybe links too
 * Key shortcuts
-* Get channels for user
+* Dynamic channel list, get channels for user
 
 ## Future
 

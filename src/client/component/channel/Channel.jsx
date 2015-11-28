@@ -12,8 +12,6 @@ export default class Channel extends Component {
   };
 
   render() {
-    debug('Rendering channel');
-
     return (
       <li className={'channel' + (this.props.selected ? ' active' : '')} id={'channel-' + this.props.id}>
         <a href="#" onClick={registry.getHandler(types.channelSelect).bind(undefined, this.props.id)} role="button">

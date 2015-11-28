@@ -12,7 +12,6 @@ export default (registry, api, store) => {
     }
 
     debug('Beginning channel initialization');
-
     const channelReceiveToken = api.channel
       .refresh()
       .then((data) => {

@@ -13,6 +13,9 @@ const debug = libdebug('xeno:component:container');
 class ContainerComponent extends Component {
   componentDidMount() {
     debug('Initializing the app');
+
+    window.onhashchange = registry.getHandler(types.hashchange).bind(undefined, null);
+
     registry.getCreator(types.initialize)(null, {
       status: 'starting up the app!',
     });

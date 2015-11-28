@@ -1,5 +1,6 @@
 export default {
   initialize: 'initialize',
+  hashchange: 'hashchange',
   pending: 'pending',
   channelSelect: 'channelSelect',
   channelSelected: 'channelSelected',
