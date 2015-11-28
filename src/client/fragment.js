@@ -1,11 +1,15 @@
 /**
- * Parse the current fragment into a route
+ * Gets the current fragment, minus the # itself
+ *
+ * @returns {string}
  */
 export function fragment() {
   return window.location.hash.substr(1);
 }
 
 /**
+ * Parse the current fragment into a route
+ *
  * @returns {{channel: boolean, item: boolean}}
  */
 export function currentRoute() {

@@ -4,17 +4,20 @@ import {build as fragment} from './../../fragment';
 
 const debug = libdebug('xeno:actions:item');
 
-export default (registry, _api, _store) => {
+export default (registry, api, store) => {
   registry.wrap(types.itemSelect, (previous, err = null, itemId = null) => {
     if (err || !itemId) {
       return previous(err, itemId);
     }
 
     const item = $('#item-' + itemId);
-    const channelId = _store.currentChannel.getState().get('selected');
+    const channelId = store.currentChannel.latest();
 
     if (channelId) {
+      // Hackity
+      window.ignoreHashChange = true;
       window.location = '#' + fragment(channelId, itemId);
+      window.ignoreHashChange = false;
     }
 
     if (item.eq(0) && item.offset()) {

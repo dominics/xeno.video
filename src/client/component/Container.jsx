@@ -14,7 +14,7 @@ class ContainerComponent extends Component {
   componentDidMount() {
     debug('Initializing the app');
 
-    window.onhashchange = registry.getHandler(types.hashchange).bind(undefined, null);
+    window.onhashchange = registry.getHandler(types.hashchange, false).bind(undefined, null);
 
     registry.getCreator(types.initialize)(null, {
       status: 'starting up the app!',

@@ -7,13 +7,17 @@ const debug = libdebug('xeno:store:currentChannel');
 
 export default class CurrentChannelStore extends MapStore
 {
-  state = Map({
+  _state = Map({
     pending: null,
     selected: null,
   });
 
   hasChannel() {
     return !!this._state.get('selected', null);
+  }
+
+  latest() {
+    return this._state.get('pending', null) || this._state.get('selected', null);
   }
 
   reduce(state, action) {

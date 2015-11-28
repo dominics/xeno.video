@@ -4,16 +4,16 @@ import {fragment, currentRoute} from './../../fragment';
 
 const debug = libdebug('xeno:actions:window');
 
-export default (registry, _api, _store) => {
+export default (registry, api, store) => {
   function handle(channel = null, item = null) {
     debug('Handling hashchange', channel, item);
 
-    if (channel) {
-      registry.getCreator(types.channelSelect)(null, channel, null);
+    if (channel && store.currentChannel.latest() !== channel) {
+      registry.getCreator(types.channelSelect)(null, channel);
     }
 
-    if (item) {
-      registry.getCreator(types.itemSelect)(null, item, null);
+    if (item && store.item.has(item) && store.currentItem.getState() !== item) {
+      registry.getCreator(types.itemSelect)(null, item);
     }
   }
 
@@ -35,6 +35,10 @@ export default (registry, _api, _store) => {
   function hashchange(previous, err = null, event = null) {
     if (err || !event) {
       return previous(err, event);
+    }
+
+    if (window.ignoreHashChange) {
+      return null;
     }
 
     const {channel, item} = currentRoute();
