@@ -1,11 +1,5 @@
 # TODO
 
-## Required for MVP
-
-* Autoplay
-
-## First iteration
-
 * Score on item list, maybe links too
 * Key shortcuts
 * Dynamic channel list, get channels for user
@@ -16,6 +10,7 @@
 
 # Done
 
+* Autoplay
 * Hashchange
 * App-level default credentials
 * Prewarm CLI task
