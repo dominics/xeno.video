@@ -50,6 +50,11 @@ export default (registry, api, store) => {
    * @return void
    */
   function handle(channel, item = null) {
+    if (window.ignoreHashChange) {
+      debug('Ignorning hashchange');
+      return;
+    }
+
     debug('Handling hashchange', channel, item);
 
     if (!channel) {
@@ -95,6 +100,10 @@ export default (registry, api, store) => {
   function initialize(previous, err = null, _data = null) {
     if (err) {
       return previous(err);
+    }
+
+    if (window.ignoreHashChange) {
+      return null;
     }
 
     const current = fragment();

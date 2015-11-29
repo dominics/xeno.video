@@ -11,6 +11,5 @@ export default {
   itemSelectRelative: 'itemSelectRelative',
   viewStart: 'viewStart',
   viewEnd: 'viewEnd',
-  videoMounted: 'videoMounted',
-  videoUnmounted: 'videoUnmounted',
+  refScreen: 'refScreen',
 };

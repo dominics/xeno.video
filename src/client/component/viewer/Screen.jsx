@@ -1,7 +1,9 @@
 import { default as React, Component } from 'react';
 import libdebug from 'debug';
+import _ from 'lodash';
 import registry from './../../action';
 import types from './../../action/types';
+import autoplay from './../../action/autoplay';
 
 const debug = libdebug('xeno:component:viewer:screen');
 
@@ -16,76 +18,72 @@ export default class Screen extends Component {
     next: React.PropTypes.object,
   };
 
-  componentDidMount() {
-    if (this.props.autoplay) {
-      this.startAutoplay();
-    } else {
-      debug('Not autoplaying: autoplay disabled');
-    }
-  }
+  parsedContent(content) {
+    const root = $(content);
 
-  componentWillUnmount() {
-    this.player = null; // https://github.com/embedly/player.js/issues/20
-    this.iframe = null;
-  }
-
-  player = null;
-  iframe = null;
-
-  startAutoplay() {
-    if (!this.iframe) {
-      debug('Not autoplaying: missing iframe');
-      return;
+    if (!root.is('iframe') || !root.hasClass('embedly-embed')) {
+      return {
+        raw: {
+          __html: content,
+        },
+      };
     }
 
-    // Attach this.section to player
-    debug('Attaching player.js');
+    return {
+      src: root.attr('src'),
+    };
+  }
 
-    this.player = window.playerjs.Player(this.iframe);
+  render() {
+    if (!this.props.embed.content) {
+      return (<section id="screen" />);
+    }
 
-    this.player.on('ready', () => {
-      debug('Player is ready, starting play');
-      this.player.play();
-    });
+    debug('Screen is being rendered');
 
-    this.player.on('ended', () => {
+    const rawEmbed = {
+      __html: this.props.embed.content,
+    };
+
+    const next = () => {
       if (!this.props.next) {
         debug('No next item, skipping autoplay continue');
         return;
       }
 
       registry.getCreator(types.itemSelect)(null, this.props.next.id);
-    });
-  }
-
-  render() {
-    if (!this.props.embed.content) {
-      return null;
-    }
-
-    if (!window.playerjs) {
-      return null;
-    }
-
-    const rawEmbed = {
-      __html: this.props.embed.content,
     };
 
-    const ref = (section) => {
-      if (!section) {
-        this.iframe = null;
-        return;
-      }
+    const debounced = _.debounce(autoplay, 1000);
 
-      const iframe = $(section).find('iframe').eq(0);
-
-      if (iframe) {
-        this.iframe = iframe;
+    const reference = (ref) => {
+      if (ref && this.props.autoplay && window.playerjs) {
+        debug('Starting autoplay on ref', ref);
+        debounced(ref, next);
+      } else {
+        debug('Autoplay disabled');
+        debounced.cancel();
       }
     };
+
+    const content = this.parsedContent(this.props.embed.content); //
 
     return (
-      <section id="screen" ref={ref} dangerouslySetInnerHTML={rawEmbed} />
+      typeof content.raw === 'object'
+      ? <section id="screen" dangerouslySetInnerHTML={content.raw} />
+      : (
+        <section id="screen">
+          <iframe
+            className="embedly-embed"
+            src={content.src}
+            width={this.props.embed.width}
+            height={this.props.embed.height}
+            scrolling="no"
+            frameBorder="0"
+            allowFullScreen="allowfullscreen"
+          ></iframe>
+        </section>
+      )
     );
   }
 }

@@ -56,6 +56,7 @@ const config = {
     entryPoint: './index.js',
     src: {
       js: ['src/**/*.js?(x)'], // We include the client-side code, so we can unit-test it server-side
+      jsExcl: ['src/**/*.js?(x)', '!src/client/**/*.js?(x)'],
       jade: ['src/views/**/*.jade'],
     },
     output: 'dist',

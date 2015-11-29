@@ -27,6 +27,7 @@ const vinylSource = require('vinyl-source-stream');
 const uglify = require('gulp-uglify');
 const sourcemaps = require('gulp-sourcemaps');
 const sourcemapify = require('sourcemapify');
+const _ = require('lodash');
 
 Promise.promisifyAll(fs);
 
@@ -223,15 +224,13 @@ gulp.task('watch', ['build', 'pkill'], () => {
     return server.notify.apply(server, [file]);
   };
 
-  const restart = (file) => {
-    // Needs debouncing
-
+  const restart = _.debounce((file) => {
     return server.stop().then(() => {
       return server.start();
     }).then(() => {
       return notify(file);
     });
-  };
+  }, 5000);
 
   // Restart the server when file changes
   gulp.watch(['public/*.html', 'public/images/*'], notify);
