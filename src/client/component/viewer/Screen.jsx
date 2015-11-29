@@ -18,19 +18,23 @@ export default class Screen extends Component {
     next: React.PropTypes.object,
   };
 
-  parsedContent(content) {
-    const root = $(content);
+  iframeProperties(embed) {
+    let src = embed.attr('src');
 
-    if (!root.is('iframe') || !root.hasClass('embedly-embed')) {
-      return {
-        raw: {
-          __html: content,
-        },
-      };
+    if (this.props.autoplay) {
+      src = src + '&autoplay=1';
     }
 
+    debug('Source for iframe is', src);
+
     return {
-      src: root.attr('src'),
+      src: src,
+      width: this.props.embed.width,
+      height: this.props.embed.height,
+      className: 'embedly-embed',
+      scrolling: 'no',
+      frameBorder: '0',
+      allowFullScreen: 'allowfullscreen',
     };
   }
 
@@ -41,16 +45,13 @@ export default class Screen extends Component {
 
     debug('Screen is being rendered');
 
-    const rawEmbed = {
-      __html: this.props.embed.content,
-    };
-
     const next = () => {
       if (!this.props.next) {
         debug('No next item, skipping autoplay continue');
         return;
       }
 
+      debug('End of video, moving to next item');
       registry.getCreator(types.itemSelect)(null, this.props.next.id);
     };
 
@@ -66,24 +67,16 @@ export default class Screen extends Component {
       }
     };
 
-    const content = this.parsedContent(this.props.embed.content); //
+    const embed = $(this.props.embed.content);
 
-    return (
-      typeof content.raw === 'object'
-      ? <section id="screen" dangerouslySetInnerHTML={content.raw} />
+    return (!embed.is('iframe') || !embed.hasClass('embedly-embed'))
+      ? <section id="screen" ref={reference} dangerouslySetInnerHTML={{__html: this.props.embed.content}} />
       : (
-        <section id="screen">
-          <iframe
-            className="embedly-embed"
-            src={content.src}
-            width={this.props.embed.width}
-            height={this.props.embed.height}
-            scrolling="no"
-            frameBorder="0"
-            allowFullScreen="allowfullscreen"
-          ></iframe>
-        </section>
-      )
+      <section id="screen" ref={reference}>
+        <iframe
+          {...this.iframeProperties(embed)}
+        ></iframe>
+      </section>
     );
   }
 }
