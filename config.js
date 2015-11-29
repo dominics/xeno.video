@@ -13,7 +13,6 @@
  *   DEBUG_PORT int
  */
 const path = require('path');
-const babelify = require('babelify');
 const fs = require('fs');
 
 const conf = __dirname + '/.env';
@@ -108,25 +107,7 @@ const config = {
     },
     output: 'public/css',
   },
-
-  babelOptions: {
-    server: {
-      optional: ['es7.classProperties', 'runtime'],
-      loose: ['es6.classes', 'es6.properties.computed', 'es6.modules', 'es6.forOf'],
-    },
-    client: {
-      optional: debug
-        ? ['es7.classProperties', 'runtime']
-        : ['es7.classProperties', 'runtime', 'optimisation.react.inlineElements', 'optimisation.react.constantElements'],
-      loose: ['es6.classes', 'es6.properties.computed', 'es6.modules', 'es6.forOf'],
-      sourceMapRelative: path.join(__dirname, 'public/js'),
-    },
-  },
-
-  karma: {},
 };
-
-config.karma.browsers = process.env.TEST_USE_CHROME !== '1' ? ['PhantomJS'] : ['PhantomJS', 'Chrome'];
 
 config.clean = [
   config.client.output,
@@ -135,14 +116,5 @@ config.clean = [
   config.css.output,
   config.bower.output.font,
 ];
-
-config.browserifyOptions = Object.assign({
-  entries: config.client.entryPoint,
-  debug: config.browserifyDebug,
-  transform: [babelify.configure(config.babelOptions.client)],
-  extensions: ['.jsx'],
-  cache: {},
-  packageCache: {},
-});
 
 module.exports = config;

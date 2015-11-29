@@ -2,6 +2,7 @@
 
 const autoprefixer = require('gulp-autoprefixer');
 const babel = require('gulp-babel');
+const babelify = require('babelify');
 const bower = require('gulp-bower');
 const bowerFiles = require('bower-files');
 const browserify = require('browserify');
@@ -45,7 +46,10 @@ function mkdirp(dir) {
       return stat.isDirectory ? Promise.resolve() : Promise.reject(Error('Could not mkdirp: path already exists'));
     })
     .catch(err => fs.mkdirAsync(dir))
-    .catch(err => { if (err.errno !== -17) throw err; /* already created */ });
+    .catch(err => {
+      if (err.errno !== -17) throw err;
+      /* already created */
+    });
 }
 
 /*
@@ -74,7 +78,7 @@ gulp.task('shell', () => shell.task([
 
 gulp.task('pkill', () => shell.task([
   'bash -c "pkill -e -f \'node.*index\.js$\' || true"',
-], {verbose: true}));
+], { verbose: true }));
 
 gulp.task('clean', () => {
   return del(config.clean);
@@ -87,7 +91,7 @@ gulp.task('bowerInstall', () => {
 });
 
 gulp.task('bowerJs', () => {
-  const files = bowerFiles({overrides: config.bower.overrides})
+  const files = bowerFiles({ overrides: config.bower.overrides })
     .self()
     .camelCase(false)
     .join({
@@ -99,16 +103,16 @@ gulp.task('bowerJs', () => {
     .files;
 
   return gulp.src(files.concat(config.socket))
-    .pipe(debug({title: 'bower-build'}))
-    .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
+    .pipe(debug({ title: 'bower-build' }))
+    .pipe(gulpif(config.sourcemap, sourcemaps.init({ loadMaps: true })))
     .pipe(concat('common.js'))
-    .pipe(gulpif(config.compress, uglify({mangle: false})))
+    .pipe(gulpif(config.compress, uglify({ mangle: false })))
     .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
     .pipe(gulp.dest(config.bower.output.js));
 });
 
 gulp.task('bowerFont', () => {
-  const files = bowerFiles({overrides: config.bower.overrides})
+  const files = bowerFiles({ overrides: config.bower.overrides })
     .self()
     .camelCase(false)
     .join({
@@ -119,23 +123,30 @@ gulp.task('bowerFont', () => {
     .files;
 
   return gulp.src(files)
-    .pipe(debug({title: 'bower-font'}))
+    .pipe(debug({ title: 'bower-font' }))
     .pipe(gulp.dest(config.bower.output.font));
 });
 
 gulp.task('jsClient', () => {
-  return browserify(config.browserifyOptions)
+  return browserify({
+    entries: config.client.entryPoint,
+    debug: config.browserifyDebug,
+    extensions: ['.jsx'],
+    cache: {},
+    packageCache: {},
+  })
+    .transform('babelify')
     .plugin(sourcemapify, { base: 'public/js' })
     .bundle()
     .on('error', gutil.log.bind(gutil, 'Browserify error'))
     .pipe(vinylSource(config.client.compiled))
-    .pipe(debug({title: 'browserify-bundle-output'}))
+    .pipe(debug({ title: 'browserify-bundle-output' }))
     .pipe(buffer())
-    .pipe(debug({title: 'client-build-input'}))
-    .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
-    .pipe(gulpif(config.compress, uglify({mangle: false})))
+    .pipe(debug({ title: 'client-build-input' }))
+    .pipe(gulpif(config.sourcemap, sourcemaps.init({ loadMaps: true })))
+    .pipe(gulpif(config.compress, uglify({ mangle: false })))
     .pipe(gulpif(config.sourcemap, sourcemaps.write('./')))
-    .pipe(debug({title: 'client-build-output'}))
+    .pipe(debug({ title: 'client-build-output' }))
     .pipe(gulp.dest(config.client.output));
 });
 
@@ -147,9 +158,9 @@ gulp.task('lintClient', () => {
 
 gulp.task('jsServer', () => {
   return gulp.src(config.server.src.js)
-    .pipe(debug({title: 'server-build'}))
+    .pipe(debug({ title: 'server-build' }))
     .pipe(gulpif(config.sourcemap, sourcemaps.init()))
-    .pipe(babel(config.babelOptions.server))
+    .pipe(babel())
     .pipe(gulpif(config.sourcemap, sourcemaps.write('.')))
     .pipe(gulp.dest(config.server.output));
 });
@@ -162,23 +173,23 @@ gulp.task('lintServer', () => {
 
 gulp.task('jsTest', () => {
   return gulp.src(config.test.src)
-    .pipe(debug({title: 'test-build'}))
+    .pipe(debug({ title: 'test-build' }))
     .pipe(gulpif(config.sourcemap, sourcemaps.init()))
-    .pipe(babel(config.babelOptions.server))
+    .pipe(babel())
     .pipe(gulpif(config.sourcemap, sourcemaps.write('.')))
     .pipe(gulp.dest(config.test.output));
 });
 
 gulp.task('coverage', () => {
   return gulp.src(config.test.coverage)
-    .pipe(istanbul({instrumenter: isparta.Instrumenter}))
+    .pipe(istanbul({ instrumenter: isparta.Instrumenter }))
     .pipe(istanbul.hookRequire());
 });
 
 gulp.task('css', ['bowerInstall'], () => {
   return gulp.src(config.css.entryPoint)
-    .pipe(debug({title: 'css-build'}))
-    .pipe(gulpif(config.sourcemap, sourcemaps.init({loadMaps: true})))
+    .pipe(debug({ title: 'css-build' }))
+    .pipe(gulpif(config.sourcemap, sourcemaps.init({ loadMaps: true })))
     .pipe(sass({
       outputStyle: config.compress ? 'compressed' : 'expanded',
       includePaths: [
@@ -200,7 +211,7 @@ gulp.task('css', ['bowerInstall'], () => {
 gulp.task('test', ['coverage'], () => {
   mkdirp(config.build.output);
 
-  return gulp.src(config.test.tests, {read: false})
+  return gulp.src(config.test.tests, { read: false })
     .pipe(mocha({
       ui: 'bdd',
       reporter: 'spec',
@@ -210,7 +221,7 @@ gulp.task('test', ['coverage'], () => {
     }))
     .pipe(istanbul.writeReports({
       dir: config.build.lcov,
-      reporters: [ 'lcov' ],
+      reporters: ['lcov'],
     }));
 });
 

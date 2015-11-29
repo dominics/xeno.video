@@ -1,3 +1,4 @@
+import javascript from 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Container from './component/Container';

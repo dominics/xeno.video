@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const javascript = require('babel-polyfill');
 const fs = require('fs');
 const path = require('path');
 
