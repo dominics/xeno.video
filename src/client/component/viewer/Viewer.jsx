@@ -41,7 +41,7 @@ export default class Viewer extends Component {
 
         <Screen
           embed={item.embed}
-          autoplay={this.props.setting.get('autoplay', true)}
+          autoplay={this.props.setting.get('autoplay').value}
           next={this.props.next}
         />
 
@@ -50,6 +50,7 @@ export default class Viewer extends Component {
             next={this.props.next}
             previous={this.props.previous}
           />
+
           <Info
             url={item.url}
             commentsUrl={commentsUrl}

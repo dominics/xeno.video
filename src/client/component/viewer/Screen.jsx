@@ -13,14 +13,14 @@ export default class Screen extends Component {
   static propTypes = {
     embed:  React.PropTypes.object.isRequired,
     autoplay: React.PropTypes.bool.isRequired,
-    next: React.PropTypes.object.isRequired,
+    next: React.PropTypes.object,
   };
 
   componentDidMount() {
-    if (this.iframe && this.props.autoplay) {
+    if (this.props.autoplay) {
       this.startAutoplay();
     } else {
-      debug('Not autoplaying: missing iframe or autoplay disabled');
+      debug('Not autoplaying: autoplay disabled');
     }
   }
 
@@ -33,9 +33,15 @@ export default class Screen extends Component {
   iframe = null;
 
   startAutoplay() {
+    if (!this.iframe) {
+      debug('Not autoplaying: missing iframe');
+      return;
+    }
+
     // Attach this.section to player
     debug('Attaching player.js');
-    this.player = window.playerjs.Player(iframe);
+
+    this.player = window.playerjs.Player(this.iframe);
 
     this.player.on('ready', () => {
       debug('Player is ready, starting play');

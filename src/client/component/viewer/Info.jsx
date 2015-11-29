@@ -1,10 +1,10 @@
 import { default as React } from 'react';
+import moment from 'moment';
 
 /**
  * @returns {XML}
  */
 export default ({url, commentsUrl, createdUtc, numComments}) => {
-
   const relativeDate = moment(createdUtc * 1000).fromNow();
 
   return (

@@ -12,11 +12,11 @@ export default ({next, previous}) => {
   return (
     <nav>
       <a href="#" rel="next" className={'btn btn-default goto-next pull-right' + (nextHandler !== null ? '' : ' disabled')} onClick={nextHandler}>
-        Next <span className="fa fa-arrow-right" />
+        Next <span className="fa fa-arrow-right"></span>
       </a>
 
       <a href="#" rel="prev" className={'btn btn-default goto-prev pull-left' + (previousHandler !== null ? '' : ' disabled')} onClick={previousHandler}>
-        <span className="fa fa-arrow-left" /> Previous
+        <span className="fa fa-arrow-left"></span> Previous
       </a>
     </nav>
   );
