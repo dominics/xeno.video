@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const javascript = require('babel-polyfill');
+const polyfill = require('babel-polyfill');
 const fs = require('fs');
 const path = require('path');
 
@@ -8,7 +8,7 @@ if (!fs.existsSync(path.join(__dirname, 'dist'))) {
   throw new Error('You must run the server-side transpile build first (usually, gulp build)');
 }
 
-const deps = require('./dist/deps')();
+const deps = require('./dist/deps').default();
 const container = deps.container;
 
 const config = container.config;
