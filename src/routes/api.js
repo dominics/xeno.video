@@ -42,19 +42,23 @@ export default (sessionValidator, settingStore, channelStore, itemStore) => (rou
     res.end();
   });
 
-  router.get('/api/channel/all', auth, (req, res) => {
-    // channelStore
+  router.get('/api/channel/all', auth, (req, res, next) => {
+    if (!channelStore) {
+      return next(new Error('Could not find channel store'));
+    }
 
-    res.json({
-      type: 'channel',
-      data: [
-        {id: 'videos', title: 'Videos'},
-        {id: 'aww', title: 'Aww'},
-        {id: 'music', title: 'Music'},
-        {id: 'deepintoyoutube', title: 'DeepIntoYouTube'},
-        {id: 'all', title: 'All'},
-      ],
-    });
+    channelStore.getAll(req, res)
+      .then(channels => {
+        debug('Got as channels', channels);
+
+        res.json({
+          type: 'channel',
+          data: channels,
+        });
+
+        res.end();
+      })
+      .catch(err => next(err));
   });
 
   router.get('/api/item/channel/:channel', auth, validate(validation.itemsForChannel), (req, res, next) => {

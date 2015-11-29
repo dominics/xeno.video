@@ -241,7 +241,7 @@ gulp.task('watch', ['build', 'pkill'], () => {
     }).then(() => {
       return notify(file);
     });
-  }, 5000);
+  }, 3000);
 
   // Restart the server when file changes
   gulp.watch(['public/*.html', 'public/images/*'], notify);

@@ -51,8 +51,8 @@ export default (configInstance = null) => {
   deps.service('session.strategy', strategy, 'config');
   deps.service('session.validator', validator, 'session.refresh');
 
-  deps.service('store.setting', storeSetting);
-  deps.service('store.channel', storeChannel, 'api', 'redis');
+  deps.service('store.setting', storeSetting, 'api', 'redis');
+  deps.service('store.channel', storeChannel, 'api', 'redis', 'session.validator', 'session.session', 'queue.channelsForUser');
   deps.service('store.item', storeItem, 'api', 'redis', 'session.validator', 'queue.itemByChannel');
 
   deps.service('route.index', routeIndex, 'session.validator');
@@ -64,6 +64,10 @@ export default (configInstance = null) => {
 
   deps.factory('queue.itemByChannel', (container) => {
     return container.factory('item:by-channel');
+  });
+
+  deps.factory('queue.channelsForUser', (container) => {
+    return container.factory('channel:for-user');
   });
 
   deps.service('cli.argv', yargs, 'config');

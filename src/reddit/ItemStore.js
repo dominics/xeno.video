@@ -18,6 +18,9 @@ function mapSchema(obj, schema) {
 }
 
 export default class ItemStore extends Store {
+  /**
+   * @type {{byChannel: Queue}}
+   */
   queues = {};
   validator = null;
 
@@ -30,7 +33,6 @@ export default class ItemStore extends Store {
     this.type = 'item';
     this.validator = validator;
     this.queues.byChannel = queueByChannel;
-
     this.queues.byChannel.process(this.processGetByChannel.bind(this));
   }
 
@@ -49,13 +51,12 @@ export default class ItemStore extends Store {
           channel: channel,
           token: req.session.passport.user.accessToken,
         }, {
-          delay: 100,
           attempts: 3,
           backoff: {
             type: 'exponential',
             delay: 10000,
           },
-          timeout: 20000,
+          timeout: 30000,
         });
       }).catch((err) => {
         return Promise.resolve('Skipping enqueue because not fully authenticated: ' + err);
