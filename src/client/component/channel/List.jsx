@@ -48,6 +48,7 @@ export default class List extends Component {
         <ListFavourites current={currentId} favourites={favourites} />
         <DropdownSubscribed current={currentId} subscribed={subscribed} />
         <DropdownMultis current={currentId} multis={multis} />
+        <Search />
       </ol>
     );
   }

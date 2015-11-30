@@ -1,4 +1,5 @@
 import { default as React, Component } from 'react';
+import ChannelAdd from './ChannelAdd';
 
 export default (props) => {
   const { multis, current } = props;
@@ -9,7 +10,7 @@ export default (props) => {
         <ChannelAdd
           key={channel.id}
           id={'+' + channel.id}
-          selected={channel.id === currentId} />
+          selected={channel.id === current} />
       );
     }
   ).toArray();
@@ -17,11 +18,11 @@ export default (props) => {
   return (
     <li className="dropdown">
       <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-        Subreddits <span className="caret"></span>
+        Multis <span className="caret"></span>
       </a>
       <ul className="dropdown-menu">
         {channels}
       </ul>
     </li>
   );
-}
+};

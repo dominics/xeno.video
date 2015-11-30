@@ -1,13 +1,25 @@
-import { default as React, Component } from 'react';
+import { default as React } from 'react';
 
 import ChannelFavourite from './ChannelFavourite';
 
-export default ({ current, favourites }) => {
-  return favourites.map(
+export default (props) => {
+  const { current, favourites } = props; //
+
+  const items = favourites.map(
     (channel) => {
       return (
-        <ChannelFavourite id={channel.id} selected={channel.id === current} />
+        <ChannelFavourite
+          key={channel.id}
+          id={channel.id}
+          selected={channel.id === current}
+        />
       );
     }
+  );
+
+  return (
+    <ol className="nav navbar-nav">
+      {items}
+    </ol>
   );
 };

@@ -1,4 +1,5 @@
 import { default as React, Component } from 'react';
+import ChannelAdd from './ChannelAdd';
 
 export default (props) => {
   const { subscribed, current } = props;
@@ -9,7 +10,7 @@ export default (props) => {
         <ChannelAdd
           key={channel.id}
           id={channel.id}
-          selected={channel.id === currentId} />
+          selected={channel.id === current} />
       );
     }
   ).toArray();
@@ -24,4 +25,4 @@ export default (props) => {
       </ul>
     </li>
   );
-}
+};
