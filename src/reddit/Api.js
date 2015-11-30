@@ -24,13 +24,8 @@ export default class Api {
     this.token = token;
   }
 
-  /**
-   * @param subreddit string
-   * @param sort string
-   * @returns Promise.<Array>
-   */
-  listing(subreddit, sort) {
-    debug('getting listing for', subreddit);
+  subreddit(sub, sort) {
+    debug('getting listing for', sub);
 
     const listingParams = {
       raw_json: 1,
@@ -42,8 +37,25 @@ export default class Api {
       // sr_detail
     };
 
-    return this._get(`/r/${subreddit}/${sort}.json`, listingParams).then((responseData) => {
+    return this._get(`/r/${subreddit}/${sort}.json`, listingParams)
+      .then(this._listing);
+  }
+
+  /**
+   * @param {Promise.<IncomingMessage>} response
+   * @returns Promise.<Array>
+   */
+  _listing(response) {
+    debug('Calling _listing on response', typeof response, response.name); //
+
+    if (!response) {
+      throw new Error('You must pass a response to _listing');
+    }
+
+    return response.then((responseData) => {
       const items = [];
+
+      debug(Object.keys(responseData));
 
       const info = JSON.parse(responseData.body);
 
@@ -64,11 +76,16 @@ export default class Api {
   }
 
   subscribed() {
+    const a = this._get(`/subreddits/mine/subscriber`);
+    console.log(a);
 
+    return a
+      .then((response) => this._listing(response));
   }
 
   meta() {
-
+    return this._get(`/api/multi/mine`)
+      .then((response) => this._listing(response)); //
   }
 
   /**
@@ -87,6 +104,7 @@ export default class Api {
     const url = urllib.format(options);
 
     debug('Making reddit API request to ' + url);
+    debug('Using token', this.token);
 
     return this._getJSON(url);
   }

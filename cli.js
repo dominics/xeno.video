@@ -7,12 +7,12 @@ if (!fs.existsSync(path.join(__dirname, 'dist'))) {
   throw new Error('You must run the server-side transpile build first (usually, gulp build)');
 }
 
-const deps = require('./dist/deps').default();
-const container = deps.container;
-
-const config = container.config;
+const config = require('./dist/config').default;
 const debug = require('debug'); // This must be the first use of 'debug' (after config is loaded)
 debug('xeno:main')('Starting xeno.video CLI interface');
+
+const deps = require('./dist/deps').default(config);
+const container = deps.container;
 
 const argv = container.cli.argv;
 const logSettings = container.cli.logSettings;

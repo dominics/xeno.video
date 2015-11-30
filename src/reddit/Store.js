@@ -8,6 +8,7 @@ export default class Store {
   redis = null;
   validator = null;
   queues = {};
+  log = null;
 
   /**
    * @param {Api} api
@@ -20,6 +21,7 @@ export default class Store {
     this.redis = redis;
     this.validator = validator;
     this.queues = queues;
+    this.log = libdebug('xeno:store');
   }
 
   ensureAuthenticated(req) {

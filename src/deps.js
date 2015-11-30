@@ -7,7 +7,6 @@ import yargs from './cli/yargs';
 import prewarm from './cli/prewarm';
 import {default as log, Log as LogSettings} from './util/log';
 
-import config from './config';
 import app from './app';
 import emitter from './emitter';
 import server from './server';
@@ -33,14 +32,10 @@ import routeUser from './routes/user';
 import routeApi from './routes/api';
 import routeError from './routes/error';
 
-export default (configInstance = null) => {
+export default (configInstance) => {
   const deps = new Bottle();
 
-  if (configInstance !== null) {
-    deps.constant('config', configInstance); // A direct config instance was passed
-  } else {
-    deps.service('config', config); // Lazily discover the configuration when it's needed
-  }
+  deps.constant('config', configInstance);
 
   deps.service('api', Api);
   deps.service('redis', redis, 'config');

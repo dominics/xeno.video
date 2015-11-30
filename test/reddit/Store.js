@@ -11,9 +11,11 @@ export default (store) => {
 };
 
 export function queue() {
-  const callback = sinon.stub();
+  const process = sinon.stub();
+  const add = sinon.stub();
 
   return {
-    process: callback,
+    process,
+    add,
   };
 }

@@ -117,7 +117,7 @@ export default class ItemStore extends Store {
 
     this.api.setToken(token);
 
-    return this.api.listing(channel, 'hot').then((items) => {
+    return this.api.subreddit(channel, 'hot').then((items) => {
       return this.prepareList(keyList).then((listLength) => {
         const mapped = items
           .filter((item) => {

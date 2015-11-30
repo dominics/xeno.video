@@ -1,11 +1,10 @@
 import deps from './../../dist/deps';
+import config from './../../dist/config';
 
 describe('functional test: API routes', function tests() {
   before(() => {
-    this.container = deps().container;
-
-    const config = this.container.config;
-    config.LOG_FILE = outfile(['functional', 'api']);
+    this.container = deps(config()).container;
+    this.container.config.LOG_FILE = outfile(['functional', 'api']);
 
     this.app = this.container.stack;
     this.request = request(this.app);
