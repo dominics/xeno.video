@@ -110,6 +110,7 @@ export default (configInstance = null) => {
   deps.factory('shutdown', (container) => () => {
     container.redis.unref();
     container.queue.itemByChannel.close();
+    container.queue.channelsForUser.close();
   }, 'redis', 'queue');
 
   return deps;

@@ -3,7 +3,7 @@ const session = require('express-session');
 import libdebug from 'debug';
 const debug = libdebug('xeno:session:session');
 
-const SESSION_COOKIE_TTL =  7 * 24 * 60 * 60;
+const SESSION_COOKIE_TTL = 7 * 24 * 60 * 60;
 
 export default (config, store) => {
   return session({
