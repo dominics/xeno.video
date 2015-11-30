@@ -33,8 +33,11 @@ import routeApi from './routes/api';
 import routeError from './routes/error';
 
 export default (configInstance) => {
-  const deps = new Bottle();
+  if (typeof configInstance !== 'object' || !configInstance) {
+    throw new Error('You must provide a config to the container');
+  }
 
+  const deps = new Bottle();
   deps.constant('config', configInstance);
 
   deps.service('api', Api);

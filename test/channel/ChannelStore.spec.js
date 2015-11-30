@@ -38,10 +38,14 @@ describe('store (channel) concrete', function() {
       const res = null; //
 
       const result = this.sut.getAll(req, res);
-      return expect(result).to.eventually.be.an.instanceOf(Array).then((channels) => {
-        channels.forEach((channel) => {
-          expect(channel).to.be.a('object').and.have.ownProperty('id').and.ownProperty('title');
-        });
+      return expect(result).to.eventually.be.an('object').then((subscriptions) => {
+        expect(subscriptions).to.haveOwnProperty('multis')
+          .and.haveOwnProperty('subscribed')
+          .and.haveOwnProperty('defaults');
+
+        expect(subscriptions.multis).to.be.an.instanceof(Array);
+        expect(subscriptions.subscribed).to.be.an.instanceof(Array);
+        expect(subscriptions.defaults).to.be.an.instanceof(Array);
       });
     });
   });

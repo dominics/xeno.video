@@ -18,7 +18,10 @@ describe('functional test: API routes', function tests() {
         .expect(function(res) {
           expect(res.body).to.be.an('object');
           expect(res.body.type).to.be.eql('channel');
-          expect(res.body.data).to.be.instanceOf(Array);
+          expect(res.body.data).to.be.a('object');
+          expect(res.body.data.subscribed).to.be.an.instanceof(Array);
+          expect(res.body.data.multis).to.be.an.instanceof(Array);
+          expect(res.body.data.defaults).to.be.an.instanceof(Array);
         })
         .expect(200, done);
     });

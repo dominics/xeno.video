@@ -24,6 +24,97 @@ export default class Api {
     this.token = token;
   }
 
+  /**
+   * @param {{json: object, response: object}} data
+   * @returns Promise.<Array>
+   */
+  _itemListing(data) {
+    if (!data.json) {
+      return Promise.reject(new Error('You must pass a response to _itemListing'));
+    }
+
+    const items = [];
+
+    if (!data.json.kind || data.json.kind !== 'Listing') {
+      return Promise.reject(new Error('Invalid response kind: ' + data.json.kind));
+    }
+
+    if (!data.json.data || !data.json.data.children) {
+      return Promise.reject(new Error('No data in response: ' + data.json.data));
+    }
+
+    for (let item of data.json.data.children) { // eslint-disable-line prefer-const
+      items.push(item);
+    }
+
+    return Promise.resolve(items);
+  }
+
+
+  _multiListing(data) {
+    if (!data.json) {
+      return Promise.reject(new Error('You must pass a response to _multiListing'));
+    }
+
+    if (!data.json instanceof Array) {
+      return Promise.reject('data.json should be an array for a multi listing');
+    }
+
+    const multis = [];
+
+    for (const item of data.json) {
+      if (item.kind !== 'LabeledMulti') {
+        return Promise.reject(new Error('Unknown kind for multi listing:' + multi.kind()));
+      }
+
+      const multi = item.data;
+
+      if (!multi.subreddits) {
+        debug('No subreddits', multi);
+        continue;
+      }
+
+      multis.push({
+        id: multi.name,
+        title: multi.display_name,
+        subreddits: multi.subreddits,
+      });
+    }
+
+    return Promise.resolve(multis);
+  }
+
+  _subredditListing(data) {
+    if (!data.json) {
+      return Promise.reject(new Error('You must pass a response to _subredditListing'));
+    }
+
+    if (!data.json.kind || data.json.kind !== 'Listing') {
+      return Promise.reject(new Error('Invalid response kind: ' + data.json.kind));
+    }
+
+    if (!data.json.data || !data.json.data.children) {
+      return Promise.reject(new Error('No data in response: ' + data.json.data));
+    }
+
+    const subreddits = [];
+
+    for (const subreddit of data.json.data.children) { // eslint-disable-line prefer-const
+      if (subreddit.kind !== 't5') {
+        debug('Invalid kind encountered in _toSubreddits: ', subreddit.kind);
+        continue;
+      }
+
+      subreddits.push({
+        redditId: subreddit.data.id,
+        id: subreddit.data.display_name,
+        title: subreddit.data.title,
+      });
+    }
+
+    return Promise.resolve(subreddits);
+  }
+
   subreddit(sub, sort) {
     debug('getting listing for', sub);
 
@@ -37,55 +128,18 @@ export default class Api {
       // sr_detail
     };
 
-    return this._get(`/r/${subreddit}/${sort}.json`, listingParams)
-      .then(this._listing);
+    return this._get(`/r/${sub}/${sort}.json`, listingParams)
+      .then((data) => this._itemListing(data));
   }
 
-  /**
-   * @param {Promise.<IncomingMessage>} response
-   * @returns Promise.<Array>
-   */
-  _listing(response) {
-    debug('Calling _listing on response', typeof response, response.name); //
-
-    if (!response) {
-      throw new Error('You must pass a response to _listing');
-    }
-
-    return response.then((responseData) => {
-      const items = [];
-
-      debug(Object.keys(responseData));
-
-      const info = JSON.parse(responseData.body);
-
-      if (!info.kind || info.kind !== 'Listing') {
-        throw new Error('Invalid response kind');
-      }
-
-      if (!info.data || !info.data.children) {
-        throw new Error('No data in response');
-      }
-
-      for (let item of info.data.children) { // eslint-disable-line prefer-const
-        items.push(item);
-      }
-
-      return Promise.resolve(items);
-    });
+  multis() {
+    return this._get(`/api/multi/mine.json`)
+      .then((data) => this._multiListing(data)); //
   }
 
   subscribed() {
-    const a = this._get(`/subreddits/mine/subscriber`);
-    console.log(a);
-
-    return a
-      .then((response) => this._listing(response));
-  }
-
-  meta() {
-    return this._get(`/api/multi/mine`)
-      .then((response) => this._listing(response)); //
+    return this._get(`/subreddits/mine/subscriber.json`)
+      .then((data) => this._subredditListing(data));
   }
 
   /**
@@ -140,9 +194,11 @@ export default class Api {
           return;
         }
 
+        debug('Has response type ' + response.headers['content-type']);
+
         const data = {
           response: response,
-          body:     body,
+          json: JSON.parse(body),
         };
 
         resolve(data);
