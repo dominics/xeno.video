@@ -8,7 +8,6 @@ const debug = libdebug('xeno:component:channel:search');
  * Channel search widget on the navbar
  */
 export default class Search extends Component {
-
   render() {
     debug('Rendering channel search'); //
 

@@ -91,7 +91,9 @@ class ContainerComponent extends Component {
         <Menu
           setting={this.state.setting}
           channel={this.state.channel}
-          currentChannel={current.channel} />
+          favouriteChannel={this.state.favouriteChannel}
+          currentChannel={current.channel}
+        />
 
         <Viewer
           setting={this.state.setting}

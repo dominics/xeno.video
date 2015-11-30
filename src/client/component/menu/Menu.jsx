@@ -34,7 +34,9 @@ export default class NavBar extends Component {
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ChannelList
               channel={this.props.channel}
-              currentChannel={this.props.currentChannel} />
+              currentChannel={this.props.currentChannel}
+              favouriteChannel={this.props.favouriteChannel}
+            />
 
             {/* <ChannelSearch /> */}
 

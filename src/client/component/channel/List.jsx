@@ -1,6 +1,11 @@
 import { default as React, Component } from 'react';
 
-import Channel from './Channel';
+import ListFavourites from './ListFavourites';
+import DropdownMultis from './DropdownMultis';
+import DropdownSubscribed from './DropdownSubscribed';
+import CurrentIndicator from './CurrentIndicator';
+import Search from './Search';
+
 import libdebug from 'debug';
 import { Map } from 'immutable';
 
@@ -11,72 +16,10 @@ const debug = libdebug('xeno:component:channel:list');
  */
 export default class List extends Component {
   static propTypes = {
-    channel:        React.PropTypes.instanceOf(Map).isRequired,
-    currentChannel: React.PropTypes.object,
+    channel:          React.PropTypes.instanceOf(Map).isRequired,
+    favouriteChannel: React.PropTypes.instanceOf(Map).isRequired,
+    currentChannel:   React.PropTypes.object,
   };
-
-  /**
-   * @param {Immutable.Map} channels
-   * @returns {Array.<Channel>}
-   */
-  defaultNodes(channels) {
-    if (!channels) {
-      return [];
-    }
-
-    const currentId = this.props.currentChannel
-      ? this.props.currentChannel.id
-      : null;
-
-    return channels.map(
-      (channel) => {
-        return (
-          <Channel
-            key={channel.id}
-            id={channel.id}
-            selected={channel.id === currentId}
-            title={channel.title} />
-        );
-      }
-    ).toArray();
-  }
-
-  /**
-   * @param {Immutable.Map} subscribed
-   * @returns {Array.<Channel>}
-   */
-  subscribedDropdown(subscribed) {
-    if (!subscribed) {
-      return [];
-    }
-
-    const currentId = this.props.currentChannel
-      ? this.props.currentChannel.id
-      : null;
-
-    const channels = subscribed.map(
-      (channel) => {
-        return (
-          <Channel
-            key={channel.id}
-            id={channel.id}
-            selected={channel.id === currentId}
-            title={channel.title} />
-        );
-      }
-    ).toArray();
-
-    return (
-      <li className="dropdown">
-        <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-          Subreddits <span className="caret"></span>
-        </a>
-        <ul className="dropdown-menu">
-          {channels}
-        </ul>
-      </li>
-    );
-  }
 
   /**
    * From left to right:
@@ -91,11 +34,20 @@ export default class List extends Component {
   render() {
     debug('Rendering channel list', this.props.channel);
 
+    const currentId = this.props.currentChannel
+      ? this.props.currentChannel.id
+      : null;
+
+    const favourites = this.props.favouriteChannel.toArray();
+    const subscribed = this.props.channel.get('subscribed', new Map());
+    const multis = this.props.channel.get('multis', new Map());
+
     return (
       <ol className="nav navbar-nav">
-
-        {this.defaultNodes(this.props.channel.get('defaults', new Map()))}
-        {this.subscribedDropdown(this.props.channel.get('subscribed', new Map()))}
+        <CurrentIndicator id={currentId} />
+        <ListFavourites current={currentId} favourites={favourites} />
+        <DropdownSubscribed current={currentId} subscribed={subscribed} />
+        <DropdownMultis current={currentId} multis={multis} />
       </ol>
     );
   }
