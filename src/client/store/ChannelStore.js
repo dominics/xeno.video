@@ -1,6 +1,7 @@
 import { MapStore } from 'flux/utils';
 import types from '../action/types';
 import libdebug from 'debug';
+import { Map } from 'immutable';
 
 const debug = libdebug('xeno:store:channel');
 
@@ -19,12 +20,21 @@ export default class ChannelStore extends MapStore {
         }
 
         debug('Channel store received channel data, mutating', action.data);
-        return state.withMutations(map => {
-          let mutated = map;
 
-          for (const channel of action.data) {
-            mutated = mutated.set(channel.id, channel);
+        return state.withMutations(map => {
+          let subscribed = new Map();
+          let multis = new Map();
+
+          for (const channel of action.data.subscribed) {
+            subscribed = subscribed.set(channel.id, channel);
           }
+
+          for (const channel of action.data.multis) {
+            multis = multis.set(channel.id, channel);
+          }
+
+          map.set('subscribed', subscribed);
+          map.set('multis', multis);
         });
       default:
         return state;

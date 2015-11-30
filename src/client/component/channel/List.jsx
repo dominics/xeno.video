@@ -16,10 +16,10 @@ export default class List extends Component {
   };
 
   /**
-   * @param {Array} channels
+   * @param {Immutable.Map} channels
    * @returns {Array.<Channel>}
    */
-  channelNodes(channels) {
+  defaultNodes(channels) {
     if (!channels) {
       return [];
     }
@@ -41,27 +41,61 @@ export default class List extends Component {
     ).toArray();
   }
 
-  /*
-   <li className="dropdown">
-   <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span className="caret"></span></a>
-   <ul className="dropdown-menu">
-   <li><a href="#">Action</a></li>
-   <li><a href="#">Another action</a></li>
-   <li><a href="#">Something else here</a></li>
-   <li role="separator" className="divider"></li>
-   <li><a href="#">Separated link</a></li>
-   <li role="separator" className="divider"></li>
-   <li><a href="#">One more separated link</a></li>
-   </ul>
-   </li>
+  /**
+   * @param {Immutable.Map} subscribed
+   * @returns {Array.<Channel>}
    */
+  subscribedDropdown(subscribed) {
+    if (!subscribed) {
+      return [];
+    }
 
+    const currentId = this.props.currentChannel
+      ? this.props.currentChannel.id
+      : null;
+
+    const channels = subscribed.map(
+      (channel) => {
+        return (
+          <Channel
+            key={channel.id}
+            id={channel.id}
+            selected={channel.id === currentId}
+            title={channel.title} />
+        );
+      }
+    ).toArray();
+
+    return (
+      <li className="dropdown">
+        <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+          Subreddits <span className="caret"></span>
+        </a>
+        <ul className="dropdown-menu">
+          {channels}
+        </ul>
+      </li>
+    );
+  }
+
+  /**
+   * From left to right:
+   *   - The current channel, if there is one
+   *   - The list of bookmarked videos, in LRU order
+   *   - If the user is logged in, a drop-down of subreddits they are subscribed to
+   *   - If the user is logged in, a drop-down of their multis
+   *   - A search box for adding subreddits by name
+   *
+   * @returns {XML}
+   */
   render() {
     debug('Rendering channel list', this.props.channel);
 
     return (
       <ol className="nav navbar-nav">
-        {this.channelNodes(this.props.channel)}
+
+        {this.defaultNodes(this.props.channel.get('defaults', new Map()))}
+        {this.subscribedDropdown(this.props.channel.get('subscribed', new Map()))}
       </ol>
     );
   }

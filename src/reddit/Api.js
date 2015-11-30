@@ -50,7 +50,6 @@ export default class Api {
     return Promise.resolve(items);
   }
 
-
   _multiListing(data) {
     if (!data.json) {
       return Promise.reject(new Error('You must pass a response to _multiListing'));
@@ -76,7 +75,7 @@ export default class Api {
 
       multis.push({
         id: multi.name,
-        title: multi.display_name,
+        kind: 'multi',
         subreddits: multi.subreddits,
       });
     }
@@ -106,9 +105,8 @@ export default class Api {
       }
 
       subreddits.push({
-        redditId: subreddit.data.id,
         id: subreddit.data.display_name,
-        title: subreddit.data.title,
+        kind: 'subreddit',
       });
     }
 

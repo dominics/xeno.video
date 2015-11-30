@@ -1,11 +1,20 @@
 # TODO
 
+## Dynamic channel lists
+
+* Filter channels with strictly no items
+* Replace defaults with favourites
+* Current channel indicator
+* Search box for adding subreddits
+
+## Short term
+
 * Score on item list, maybe links too
 * Key shortcuts
-* Dynamic channel list, get channels for user
 
-## Future
+## Long term
 
+* Rand subreddit button
 * Selenium testing
 
 # Done

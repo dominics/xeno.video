@@ -134,15 +134,15 @@ export default class ChannelStore extends Store {
   }
 
   /**
-   * @returns {{id: string, title: string}[]}
+   * @returns {{id: string}[]}
    */
   static getDefaults() {
     return [
-      { id: 'videos', title: 'Videos' },
-      { id: 'aww', title: 'Aww' },
-      { id: 'music', title: 'Music' },
-      { id: 'deepintoyoutube', title: 'DeepIntoYouTube' },
-      { id: 'all', title: 'All' },
+      { id: 'videos' },
+      { id: 'aww' },
+      { id: 'music' },
+      { id: 'deepintoyoutube' },
+      { id: 'all' },
     ];
   }
 }

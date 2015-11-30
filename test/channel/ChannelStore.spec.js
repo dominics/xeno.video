@@ -40,12 +40,10 @@ describe('store (channel) concrete', function() {
       const result = this.sut.getAll(req, res);
       return expect(result).to.eventually.be.an('object').then((subscriptions) => {
         expect(subscriptions).to.haveOwnProperty('multis')
-          .and.haveOwnProperty('subscribed')
-          .and.haveOwnProperty('defaults');
+          .and.haveOwnProperty('subscribed');
 
         expect(subscriptions.multis).to.be.an.instanceof(Array);
         expect(subscriptions.subscribed).to.be.an.instanceof(Array);
-        expect(subscriptions.defaults).to.be.an.instanceof(Array);
       });
     });
   });
