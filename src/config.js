@@ -20,6 +20,7 @@ const schema = {
   SESSION_SECRET: true,
   REDDIT_CONSUMER_KEY: true,
   REDDIT_CONSUMER_SECRET: true,
+  REDDIT_OAUTH_SCOPE: true,
   REDDIT_DEFAULT_REFRESH_TOKEN: false,
   REDIS_PORT: true,
   REDIS_HOST: true,
@@ -41,6 +42,7 @@ function getMergedConfig() {
   const configPaths = [
     '/etc/xeno/env',
     path.join(__dirname, '/../.env'),
+    path.join(__dirname, '/../.env.dist'),
   ];
 
   configPaths.forEach(function requirePath(configPath) {

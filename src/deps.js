@@ -15,6 +15,7 @@ import redis from './redis';
 import stack from './stack';
 import queue from './queue';
 
+import sessionStore from './session/store';
 import session from './session/session';
 import passport from './session/passport';
 import refresh from './session/refresh';
@@ -45,18 +46,19 @@ export default (configInstance = null) => {
   deps.service('redis', redis, 'config');
   deps.service('app', app, 'config');
 
-  deps.service('session.session', session, 'config', 'redis');
+  deps.service('session.store', sessionStore, 'redis');
+  deps.service('session.session', session, 'config', 'session.store');
   deps.service('session.passport', passport, 'session.strategy');
   deps.service('session.refresh', refresh, 'session.strategy');
   deps.service('session.strategy', strategy, 'config');
   deps.service('session.validator', validator, 'session.refresh');
 
   deps.service('store.setting', storeSetting, 'api', 'redis');
-  deps.service('store.channel', storeChannel, 'api', 'redis', 'session.validator', 'session.session', 'queue.channelsForUser');
+  deps.service('store.channel', storeChannel, 'api', 'redis', 'session.validator', 'session.store', 'queue.channelsForUser');
   deps.service('store.item', storeItem, 'api', 'redis', 'session.validator', 'queue.itemByChannel');
 
   deps.service('route.index', routeIndex, 'session.validator');
-  deps.service('route.user', routeUser, 'session.passport');
+  deps.service('route.user', routeUser, 'config', 'session.passport');
   deps.service('route.api', routeApi, 'session.validator', 'store.setting', 'store.channel', 'store.item');
   deps.service('route.error', routeError);
 

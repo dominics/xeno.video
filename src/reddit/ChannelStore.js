@@ -9,6 +9,8 @@ export default class ChannelStore extends Store {
    * @type {{channelsForUser: Queue}}
    */
   queues = {};
+  validator = null;
+  sessionStore = null;
 
   /**
    * We can afford to be generous (low) here, because these
@@ -18,12 +20,12 @@ export default class ChannelStore extends Store {
    */
   static CACHE_TTL_CHANNELS = 600;
 
-  constructor(api, redis, validator, session, queueChannelsForUser) {
+  constructor(api, redis, validator, sessionStore, queueChannelsForUser) {
     super(api, redis);
 
     this.type = 'channel';
     this.validator = validator;
-    this.session = session;
+    this.sessionStore = sessionStore;
     this.queues.channelsForUser = queueChannelsForUser;
     this.queues.channelsForUser.process(this.processChannelsForUser.bind(this));
   }
@@ -41,6 +43,7 @@ export default class ChannelStore extends Store {
 
         return this.queues.channelsForUser.add({
           id: req.sessionID,
+          token: req.session.passport.user.accessToken,
         }, {
           attempts: 3,
           backoff: {
@@ -69,12 +72,22 @@ export default class ChannelStore extends Store {
   }
 
   processChannelsForUser(job) {
-    workerLog('Background worker, received processChannelsForUser', job.data);
+    const {id, token} = job.data;
 
-    workerLog(this.session);
+    if (!id || !token) {
+      throw new Error('You must provide a session ID and token in job data');
+    }
 
+    const getSession = this.sessionStore.getAsync(id)
+      .then(session => {
+        workerLog('Got session', session);
+      })
+      .catch(err => {
+        workerLog('Error getting session', err);
+        console.err(err.trace);
+      });
 
-    return Promise.resolve([{ id: 'aww', title: 'Aww' }]);
+    return Promise.resolve();
   }
 
   getDefaults() {

@@ -3,14 +3,14 @@ import libdebug from 'debug';
 
 const debug = libdebug('xeno:routes:user');
 
-export default (passport) => (router) => {
+export default (config, passport) => (router) => {
   router.get('/login', (req, res, next) => {
     req.session.state = crypto.randomBytes(32).toString('hex');
 
     passport.authenticate('reddit', {
       state: req.session.state,
       duration: 'permanent',
-      scope: 'identity,read,vote',
+      scope: config.REDDIT_OAUTH_SCOPE,
     })(req, res, next);
   });
 

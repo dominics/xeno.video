@@ -8,7 +8,7 @@ export default (config) => {
     clientID:     config.REDDIT_CONSUMER_KEY,
     clientSecret: config.REDDIT_CONSUMER_SECRET,
     callbackURL:  config.HOST + '/callback',
-    scope:        'identity,read,vote',
+    scope:        config.REDDIT_OAUTH_SCOPE,
   }, (accessToken, refreshToken, profile, done) => {
     const data = {
       accessToken:   accessToken,
