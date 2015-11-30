@@ -1,6 +1,6 @@
 import libdebug from 'debug';
 
-import Store from './Store';
+import Store from './../reddit/Store';
 
 import Promise from 'bluebird';
 const debug = libdebug('xeno:store:item');
@@ -18,22 +18,14 @@ function mapSchema(obj, schema) {
 }
 
 export default class ItemStore extends Store {
-  /**
-   * @type {{byChannel: Queue}}
-   */
-  queues = {};
-  validator = null;
-
   static CACHE_TTL_ITEMS = 60 * 60 * 24;
   static CACHE_TTL_CHANNEL_ITEMS = 300;
 
-  constructor(api, redis, validator, queueByChannel) {
-    super(api, redis);
+  constructor(api, redis, validator, queues) {
+    super(api, redis, validator, queues);
 
     this.type = 'item';
-    this.validator = validator;
-    this.queues.byChannel = queueByChannel;
-    this.queues.byChannel.process(this.processGetByChannel.bind(this));
+    this.queues.itemByChannel.process(this.processGetByChannel.bind(this));
   }
 
   /**
@@ -47,7 +39,7 @@ export default class ItemStore extends Store {
 
     const addToQueue = this.validator.validate(true, req)
       .then(() => {
-        return this.queues.byChannel.add({
+        return this.queues.itemByChannel.add({
           channel: channel,
           token: req.session.passport.user.accessToken,
         }, {
@@ -149,8 +141,8 @@ export default class ItemStore extends Store {
               embed: 'media_embed',
             });
 
-            view.thumbnail = this._thumbnail(item);
-            view.embed = this._embed(item);
+            view.thumbnail = ItemStore.thumbnail(item);
+            view.embed = ItemStore.embed(item);
 
             return view;
           });
@@ -167,11 +159,11 @@ export default class ItemStore extends Store {
     });
   }
 
-  _embed(item) {
+  static embed(item) {
     return item.media_embed;
   }
 
-  _thumbnail(item) {
+  static thumbnail(item) {
     const details = {};
 
     if (typeof item.thumbnail === 'string' && item.thumbnail !== 'nsfw') {

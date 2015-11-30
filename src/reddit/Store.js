@@ -6,14 +6,20 @@ export default class Store {
   type = 'unknown';
   api = null;
   redis = null;
+  validator = null;
+  queues = {};
 
   /**
-   * @param api Api
-   * @param redis RedisClient
+   * @param {Api} api
+   * @param {RedisClient} redis
+   * @param {session.validator} validator
+   * @param {Object.<string,Queue>} queues
    */
-  constructor(api, redis) {
+  constructor(api, redis, validator, queues) {
     this.api = api;
     this.redis = redis;
+    this.validator = validator;
+    this.queues = queues;
   }
 
   _key(type, param = null) {

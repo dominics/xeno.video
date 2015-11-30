@@ -1,4 +1,4 @@
-import Store from './Store';
+import Store from './../reddit/Store';
 import Promise from 'bluebird';
 import libdebug from 'debug';
 const debug = libdebug('xeno:store:item');
@@ -6,10 +6,8 @@ const workerLog = libdebug('xeno:store:item:worker');
 
 export default class ChannelStore extends Store {
   /**
-   * @type {{channelsForUser: Queue}}
+   * @type {RedisStore}
    */
-  queues = {};
-  validator = null;
   sessionStore = null;
 
   /**
@@ -20,13 +18,11 @@ export default class ChannelStore extends Store {
    */
   static CACHE_TTL_CHANNELS = 600;
 
-  constructor(api, redis, validator, sessionStore, queueChannelsForUser) {
-    super(api, redis);
+  constructor(api, redis, validator, queues, sessionStore) {
+    super(api, redis, validator, queues);
 
     this.type = 'channel';
-    this.validator = validator;
     this.sessionStore = sessionStore;
-    this.queues.channelsForUser = queueChannelsForUser;
     this.queues.channelsForUser.process(this.processChannelsForUser.bind(this));
   }
 
@@ -56,7 +52,7 @@ export default class ChannelStore extends Store {
       .then((queued) => {
         const channels = (typeof req.session.channels === 'object')
           ? req.session.channels
-          : this.getDefaults();
+          : ChannelStore.getDefaults();
 
         return Promise.resolve(channels);
       })
@@ -67,7 +63,7 @@ export default class ChannelStore extends Store {
           console.error(err.stack);
         }
 
-        return Promise.resolve(this.getDefaults());
+        return Promise.resolve(ChannelStore.getDefaults());
       });
   }
 
@@ -90,7 +86,10 @@ export default class ChannelStore extends Store {
     return Promise.resolve();
   }
 
-  getDefaults() {
+  /**
+   * @returns {{id: string, title: string}[]}
+   */
+  static getDefaults() {
     return [
       { id: 'videos', title: 'Videos' },
       { id: 'aww', title: 'Aww' },

@@ -24,8 +24,8 @@ import validator from './session/validator';
 
 import Api from './reddit/Api';
 
-import storeChannel from './reddit/ChannelStore';
-import storeItem from './reddit/ItemStore';
+import storeChannel from './channel/ChannelStore';
+import storeItem from './item/ItemStore';
 import storeSetting from './setting/SettingStore';
 
 import routeIndex from './routes/index';
@@ -53,9 +53,11 @@ export default (configInstance = null) => {
   deps.service('session.strategy', strategy, 'config');
   deps.service('session.validator', validator, 'session.refresh');
 
-  deps.service('store.setting', storeSetting, 'api', 'redis');
-  deps.service('store.channel', storeChannel, 'api', 'redis', 'session.validator', 'session.store', 'queue.channelsForUser');
-  deps.service('store.item', storeItem, 'api', 'redis', 'session.validator', 'queue.itemByChannel');
+  const storeDeps = ['api', 'redis', 'session.validator', 'queue'];
+
+  deps.service('store.setting', storeSetting, ...storeDeps);
+  deps.service('store.channel', storeChannel, ...storeDeps, 'session.store');
+  deps.service('store.item', storeItem, ...storeDeps);
 
   deps.service('route.index', routeIndex, 'session.validator');
   deps.service('route.user', routeUser, 'config', 'session.passport');

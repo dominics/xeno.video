@@ -32,7 +32,7 @@ describe('session module validator', () => {
       },
     };
 
-    const refresh = sinon.stub.returns(Promise.resolve('foo'));
+    const refresh = sinon.stub().returns(Promise.resolve('foo'));
     const authRequired = true;
 
     expect(validator(refresh).validate(authRequired, goodRequest)).to.eventually.be.resolved;
