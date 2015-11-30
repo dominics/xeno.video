@@ -63,6 +63,14 @@ export default class Api {
     });
   }
 
+  subscribed() {
+
+  }
+
+  meta() {
+
+  }
+
   /**
    * @param pathname
    * @param params

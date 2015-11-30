@@ -22,6 +22,10 @@ export default class Store {
     this.queues = queues;
   }
 
+  ensureAuthenticated(req) {
+    return this.validator.validate(true, req);
+  }
+
   _key(type, param = null) {
     return param
       ? `${this.type}-store/${type}:${param}`

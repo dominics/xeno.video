@@ -27,13 +27,13 @@ export default class ChannelStore extends Store {
   }
 
   getAll(req, res) {
-    return this.validator.validate(true, req)
+    return this.ensureAuthenticated(req, ChannelStore.getDefaults())
       .then(() => {
         const now = Math.floor(Date.now() / 1000);
         const refreshed = req.session.channelsRefreshed;
 
         if (refreshed && refreshed > (now - ChannelStore.CACHE_TTL_CHANNELS)) {
-          debug('Skipped API refresh because of cool-down: ', val - (now - ChannelStore.CACHE_TTL_CHANNELS));
+          debug('Skipped API refresh because of cool-down: ', refreshed - (now - ChannelStore.CACHE_TTL_CHANNELS));
           return Promise.resolve();
         }
 
@@ -58,11 +58,6 @@ export default class ChannelStore extends Store {
       })
       .catch(err => {
         debug('Got error, resolving to default', err);
-
-        if (err) {
-          console.error(err.stack);
-        }
-
         return Promise.resolve(ChannelStore.getDefaults());
       });
   }
@@ -74,16 +69,25 @@ export default class ChannelStore extends Store {
       throw new Error('You must provide a session ID and token in job data');
     }
 
-    const getSession = this.sessionStore.getAsync(id)
-      .then(session => {
-        workerLog('Got session', session);
+    return this.sessionStore.getAsync(id)
+      .then((session) => {
+        return Promise.join(
+          this.api.subscribed(),
+          this.api.meta(),
+          (subscribed, meta) => {
+            debug('Got subscribed', subscribed);
+            debug('Got meta', meta);
+            return Promise.resolve([{id:'music', title: 'Music'}]);
+          }
+        )
       })
-      .catch(err => {
-        workerLog('Error getting session', err);
-        console.err(err.trace);
-      });
+      .then((channels) => {
+        debug('Got merged channels, saving', channels);
+        session.channels = channels;
+        session.channelsRefreshed = Date.now() / 1000;
 
-    return Promise.resolve();
+        return this.sessionStore.setAsync(id, session);
+      });
   }
 
   /**
