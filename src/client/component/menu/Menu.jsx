@@ -42,7 +42,9 @@ export default class Menu extends Component {
             />
 
             <MenuUser
-              setting={this.props.setting} />
+              setting={this.props.setting}
+              favouriteChannel={this.props.favouriteChannel}
+            />
           </div>
         </section>
       </nav>

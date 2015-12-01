@@ -68,10 +68,10 @@ export default class Search extends Component {
         </li>
       )
       : (
-        <li className="search" key="search-form">
+        <li className="search-open" key="search-form">
           <form className="navbar-form navbar-left" role="search">
             <button className="btn btn-default btn-sm" onClick={this.onOpen.bind(this)}>
-              <span className="fa fa-plus" />
+              <span className="fa fa-search" />
             </button>
           </form>
         </li>

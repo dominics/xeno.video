@@ -27,6 +27,11 @@ export default class FavouriteChannelStore extends ReduceStore {
     ]);
   }
 
+  static isDefault(state) {
+    const defaults = FavouriteChannelStore.defaults();
+    return state.isSubset(defaults) && defaults.isSubset(state);
+  }
+
   /**
    * @returns {List}
    */
@@ -62,14 +67,16 @@ export default class FavouriteChannelStore extends ReduceStore {
   }
 
   addAndSave(state, channel) {
-    const newState = state.unshift(channel).toOrderedSet().take(7).toList();
+    return this.save(state.unshift(channel).toOrderedSet().take(7).toList());
+  }
 
+  save(state) {
     FavouriteChannelStore.getStorage().setItem(
       FavouriteChannelStore._key('all'),
-      JSON.stringify(newState.toArray())
+      JSON.stringify(state.toArray())
     );
 
-    return newState;
+    return state;
   }
 
   /**
@@ -89,6 +96,9 @@ export default class FavouriteChannelStore extends ReduceStore {
       case types.channelSelected:
         debug('Adding selected channel to favourites', action.data.channelId);
         return this.addAndSave(state, action.data.channelId);
+      case types.channelReset:
+        debug('Resetting channels');
+        return this.save(FavouriteChannelStore.defaults());
       default:
         return state;
     }

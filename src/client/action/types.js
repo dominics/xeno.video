@@ -6,6 +6,7 @@ export default {
   channelSelected: 'channelSelected',
   channelReceive: 'channelReceive',
   channelAdd: 'channelAdd',
+  channelReset: 'channelReset',
   settingReceive: 'settingReceive',
   settingUpdate: 'settingUpdate',
   itemSelect: 'itemSelect',

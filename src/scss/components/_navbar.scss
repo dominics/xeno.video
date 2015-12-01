@@ -1,6 +1,10 @@
 nav.navbar.navbar-default.navbar-fixed-top {
   @media (max-width: $screen-xs-max) {
     position: absolute;
+
+    li form.navbar-form {
+      margin: 6px 0px;
+    }
   }
 
   .navbar-brand {
@@ -20,10 +24,14 @@ nav.navbar.navbar-default.navbar-fixed-top {
   }
 
   li.search form.navbar-form {
-    margin: 6px 0px;
-
     .btn {
       margin-left: 1em;
+    }
+  }
+
+  li.search-open form.navbar-form {
+    .btn {
+      margin-top: 4px;
     }
   }
 
