@@ -16,6 +16,26 @@ nav.navbar.navbar-default.navbar-fixed-top {
     padding: 8px 1em;
   }
 
+  ol.navbar-nav {
+    @media (min-width: $screen-sm-min) {
+      .channel:nth-child(n+5) {
+        display: none;
+      }
+    }
+
+    @media (min-width: $screen-md-min) {
+      .channel:nth-child(5) {
+        display: block;
+      }
+    }
+
+    @media (min-width: $screen-lg-min) {
+      .channel:nth-child(n+6) {
+        display: block;
+      }
+    }
+  }
+
   @media (min-width: $screen-sm-min) {
     li.dropdown.open > ul.dropdown-menu {
       overflow-y: auto;
