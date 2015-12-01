@@ -5,6 +5,7 @@ import express from 'express';
 
 import yargs from './cli/yargs';
 import prewarm from './cli/prewarm';
+import clean from './cli/clean';
 import {default as log, Log as LogSettings} from './util/log';
 
 import app from './app';
@@ -85,6 +86,7 @@ export default (configInstance) => {
   }, 'cli.argv');
 
   deps.service('command.prewarm', prewarm, 'config', 'cli.argv', 'cli.log', 'session.refresh', 'queue.itemByChannel');
+  deps.service('command.clean', clean, 'config', 'cli.argv', 'cli.log', 'queue');
 
   deps.service('router', () => {
     const router = express.Router();

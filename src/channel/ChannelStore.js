@@ -99,7 +99,7 @@ export default class ChannelStore extends Store {
           console.error(err.stack);
         }
 
-        throw err;
+        return Promise.reject(err);
       });
   }
 

@@ -8,7 +8,7 @@ export default (props) => {
     (channel) => {
       return (
         <ChannelAdd
-          key={channel.id}
+          key={'add-multi-' + channel.id}
           id={'+' + channel.id}
           selected={channel.id === current} />
       );
@@ -16,7 +16,7 @@ export default (props) => {
   ).toArray();
 
   return (
-    <li className="dropdown">
+    <li className="dropdown" key="dropdown-multis">
       <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
         multis <span className="caret"></span>
       </a>

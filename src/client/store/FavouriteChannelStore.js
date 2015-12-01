@@ -1,7 +1,7 @@
 import { ReduceStore } from 'flux/utils';
 import types from '../action/types';
 import libdebug from 'debug';
-import { List } from 'immutable';
+import { List, OrderedSet } from 'immutable';
 
 const debug = libdebug('xeno:store:favouriteChannel');
 
@@ -53,12 +53,23 @@ export default class FavouriteChannelStore extends ReduceStore {
         return state;
       }
 
-      return new List(data);
+      return (new List(data)).toOrderedSet().toList();
     } catch (e) {
       debug('Invalid map at storage key');
       storage.removeItem(key);
       return state;
     }
+  }
+
+  addAndSave(state, channel) {
+    const newState = state.unshift(channel).toOrderedSet().take(7).toList();
+
+    FavouriteChannelStore.getStorage().setItem(
+      FavouriteChannelStore._key('all'),
+      JSON.stringify(newState.toArray())
+    );
+
+    return newState;
   }
 
   /**
@@ -67,17 +78,17 @@ export default class FavouriteChannelStore extends ReduceStore {
    * @returns {List}
    */
   reduce(state, action) {
+    if (action.isError()) {
+      return state;
+    }
+
     switch (action.type) {
       case types.channelAdd:
         debug('Adding channel to favourites', action.data);
-        const newState = state.unshift(action.data);
-
-        FavouriteChannelStore.getStorage().setItem(
-          FavouriteChannelStore._key('all'),
-          JSON.stringify(newState.toArray())
-        );
-
-        return newState;
+        return this.addAndSave(state, action.data);
+      case types.channelSelected:
+        debug('Adding selected channel to favourites', action.data.channelId);
+        return this.addAndSave(state, action.data.channelId);
       default:
         return state;
     }

@@ -5,11 +5,6 @@ import _ from 'lodash';
 const debug = libdebug('xeno:actions:channel');
 
 export default (registry, api, store) => {
-  function refreshChannelData() {
-
-  }
-
-
   // On initialize action, receive channels and select the first one
   registry.wrap(types.initialize, (previous, err = null, originalData = null) => {
     if (err) {

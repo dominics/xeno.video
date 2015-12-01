@@ -34,7 +34,7 @@ export default (config, argv, log, refresh, itemByChannelQueue) => {
     return new Promise((resolve, reject) => {
       refresh.requestNewAccessToken('reddit', refreshToken, (err, accessToken) => {
         if (err) {
-          debug('Failed to get new access token', err);
+          log.error('Failed to get new access token', err);
           return reject(err);
         }
 

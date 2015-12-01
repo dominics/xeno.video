@@ -23,11 +23,17 @@ export default (config) => {
 
   argv = Yargs
     .strict()
-    .usage(`Usage: xeno <subcommand> [options]`)
+    .usage('Usage: xeno <subcommand> [options]')
     .help('help')
     .command('prewarm', 'Prewarm various caches', (yargs) => {
       argv = commonOptions(yargs)
-        .usage(`Usage: xeno prewarm [options]`)
+        .usage('Usage: xeno prewarm [options]')
+        .help('help')
+        .argv;
+    })
+    .command('clean', 'Clean queues', (yargs) => {
+      argv = commonOptions(yargs)
+        .usage('Usage: xeno clean [options]')
         .help('help')
         .argv;
     })

@@ -5,7 +5,7 @@ const WRITABLE_SETTINGS = ['nsfw', 'autoplay'];
 
 export const itemsForChannel = {
   params: {
-    channel: Joi.string().required().alphanum().min(3).max(128),
+    channel: Joi.string().required().min(3).max(128),
   },
 };
 

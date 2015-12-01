@@ -22,7 +22,7 @@ export default class DropdownSubscribed extends Component {
       (channel) => {
         return (
           <ChannelAdd
-            key={channel.id}
+            key={'add-' + channel.id}
             id={channel.id}
             selected={channel.id === this.props.current}
           />
@@ -31,7 +31,7 @@ export default class DropdownSubscribed extends Component {
     ).toArray();
 
     return (
-      <li className="dropdown">
+      <li className="dropdown" key="dropdown-subscribed">
         <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
            aria-expanded="false">
           subreddits <span className="caret"></span>
