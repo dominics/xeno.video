@@ -1,24 +1,24 @@
 # TODO
 
-## Dynamic channel lists
-
-* Filter channels with strictly no items
-* Replace defaults with favourites
-* Current channel indicator
-* Search box for adding subreddits
-
 ## Short term
 
+* Prewarm more than the defaults
+* Filter channels with strictly no items
 * Score on item list, maybe links too
 * Key shortcuts
 
 ## Long term
 
+* Watched items
+* Channel updates via websocket
 * Rand subreddit button
 * Selenium testing
 
 # Done
 
+* Replace defaults with favourites
+* Current channel indicator
+* Search box for adding subreddits
 * Autoplay
 * Hashchange
 * App-level default credentials
