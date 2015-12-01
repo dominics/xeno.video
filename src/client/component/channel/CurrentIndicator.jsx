@@ -1,11 +1,11 @@
 import { default as React } from 'react';
 
 export default (props) => {
-  const {id} = props;
+  const {current} = props;
 
   return (
-    <li className="channel active" id={'channel-' + id}>
-      {id}
+    <li className="channel active" id={'channel-' + current}>
+      {current}
     </li>
   );
 };

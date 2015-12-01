@@ -17,6 +17,12 @@ nav.navbar.navbar-default.navbar-fixed-top {
     max-height: 500px;
   }
 
+  form.navbar-form.search {
+    .btn {
+      margin-left: 1em;
+    }
+  }
+
   .user-menu {
     li.setting-checkbox > a {
       padding-left: 20px;

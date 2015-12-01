@@ -51,10 +51,6 @@ class ContainerComponent extends Component {
       ? state.item.get(current.itemId, null)
       : null;
 
-    current.channel = current.channelId
-      ? state.channel.get(current.channelId, null)
-      : null;
-
     current.channelItems = current.channelId
       ? state.itemByChannel.get(current.channelId, [])
         .map(itemId => {
@@ -86,13 +82,15 @@ class ContainerComponent extends Component {
   render() {
     const current = this._current(this.state);
 
+    debug('The current channel is', current.channelId);
+
     return (
       <section className="container-fluid">
         <Menu
           setting={this.state.setting}
           channel={this.state.channel}
           favouriteChannel={this.state.favouriteChannel}
-          currentChannel={current.channel}
+          currentChannelId={current.channelId}
         />
 
         <Viewer
@@ -100,13 +98,15 @@ class ContainerComponent extends Component {
           currentItem={current.item}
           socket={this.state.socket}
           next={current.next}
-          previous={current.previous} />
+          previous={current.previous}
+        />
 
         <ItemList
           currentChannelItems={current.channelItems}
           viewedItem={this.state.viewedItem}
           currentItemId={current.itemId}
-          currentChannel={current.channel} />
+          currentChannelId={current.channelId}
+        />
       </section>
     );
   }

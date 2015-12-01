@@ -12,13 +12,18 @@ export default class Search extends Component {
     debug('Rendering channel search'); //
 
     return (
-      <form className="navbar-form navbar-left" role="search">
+      <form className="navbar-form navbar-left search" role="search">
         <div className="form-group">
-          <input type="text" className="form-control" placeholder="Subreddit, Multireddit" />
-        </div> <button className="btn btn-success btn-sm">
-          <span className="fa fa-plus" />
-          <span> &nbsp; Add </span>
-        </button>
+          <div className="input-group">
+            <div className="input-group-addon"><span className="fa fa-search" /></div>
+            <input type="text" className="form-control" placeholder="subreddit" />
+          </div>
+          &nbsp;
+          <button className="btn btn-default btn-sm">
+            <span className="fa fa-plus" />
+            <span> &nbsp; Add </span>
+          </button>
+        </div>
       </form>
     );
   }

@@ -5,35 +5,36 @@ import _ from 'lodash';
 const debug = libdebug('xeno:actions:channel');
 
 export default (registry, api, store) => {
+  function refreshChannelData() {
+
+  }
+
+
   // On initialize action, receive channels and select the first one
   registry.wrap(types.initialize, (previous, err = null, originalData = null) => {
     if (err) {
       return previous(err);
     }
 
-    debug('Beginning channel initialization');
-    const channelReceiveToken = api.channel
+    if (!store.currentChannel.hasChannel()) {
+      const first = store.favouriteChannel.getState().first();
+      debug('Dispatching to channelSelect because no current channel', first);
+      registry.getCreator(types.channelSelect)(null, first);
+    }
+
+    const getChannels = api.channel
       .refresh()
       .then((data) => {
         debug('Got channel data', data);
-
-        debug('Dispatching to channelReceive');
-        const token = registry.getCreator(types.channelReceive)(null, data);
-
-        if (!store.currentChannel.hasChannel()) {
-          debug('Dispatching to channelSelect because no current channel');
-          registry.getCreator(types.channelSelect)(null, _.get(data, ['0', 'id'], null));
-        }
-
-        debug('Returning receive token');
-        return token;
+        return Promise.resolve(registry.getCreator(types.channelReceive)(null, data));
       })
       .catch((e) => {
         debug('Got error receiving channels', e);
-        return registry.getCreator(types.channelReceive)(e);
+        registry.getCreator(types.channelReceive)(e);
+        return Promise.reject(e);
       });
 
-    return previous(err, [originalData, channelReceiveToken]);
+    return previous(err, originalData);
   });
 
   // On selecting a channel, refresh items in channel

@@ -7,7 +7,7 @@ import CurrentIndicator from './CurrentIndicator';
 import Search from './Search';
 
 import libdebug from 'debug';
-import { Map } from 'immutable';
+import {Map, List as ImmutableList} from 'immutable';
 
 const debug = libdebug('xeno:component:channel:list');
 
@@ -17,8 +17,8 @@ const debug = libdebug('xeno:component:channel:list');
 export default class List extends Component {
   static propTypes = {
     channel:          React.PropTypes.instanceOf(Map).isRequired,
-    favouriteChannel: React.PropTypes.instanceOf(Map).isRequired,
-    currentChannel:   React.PropTypes.object,
+    favouriteChannel: React.PropTypes.instanceOf(ImmutableList).isRequired,
+    currentChannelId: React.PropTypes.string,
   };
 
   /**
@@ -32,22 +32,16 @@ export default class List extends Component {
    * @returns {XML}
    */
   render() {
-    debug('Rendering channel list', this.props.channel);
-
-    const currentId = this.props.currentChannel
-      ? this.props.currentChannel.id
-      : null;
-
     const favourites = this.props.favouriteChannel.toArray();
     const subscribed = this.props.channel.get('subscribed', new Map());
-    const multis = this.props.channel.get('multis', new Map());
+    const multis = this.props.channel.get('multis', new Map()); //
 
     return (
       <ol className="nav navbar-nav">
-        <CurrentIndicator id={currentId} />
-        <ListFavourites current={currentId} favourites={favourites} />
-        <DropdownSubscribed current={currentId} subscribed={subscribed} />
-        <DropdownMultis current={currentId} multis={multis} />
+        <CurrentIndicator current={this.props.currentChannelId} />
+        <ListFavourites current={this.props.currentChannelId} favourites={favourites} />
+        <DropdownSubscribed current={this.props.currentChannelId} subscribed={subscribed} />
+        <DropdownMultis current={this.props.currentChannelId} multis={multis} />
         <Search />
       </ol>
     );

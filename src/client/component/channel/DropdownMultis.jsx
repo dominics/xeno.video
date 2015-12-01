@@ -18,7 +18,7 @@ export default (props) => {
   return (
     <li className="dropdown">
       <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-        Multis <span className="caret"></span>
+        multis <span className="caret"></span>
       </a>
       <ul className="dropdown-menu">
         {channels}

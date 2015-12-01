@@ -12,7 +12,7 @@ export default class ItemList extends Component {
   static propTypes = {
     currentItemId: React.PropTypes.string,
     currentChannelItems: React.PropTypes.array,
-    currentChannel: React.PropTypes.object,
+    currentChannelId: React.PropTypes.string,
     viewedItem: React.PropTypes.instanceOf(Map).isRequired,
   };
 
@@ -44,7 +44,7 @@ export default class ItemList extends Component {
     debug('Rendering with current items', typeof this.props.currentChannelItems, this.props.currentChannelItems);
     const items = this.itemNodes(this.props.currentChannelItems, this.props.currentItemId);
 
-    const title = this.props.currentChannel ? <h2>{this.props.currentChannel.title}</h2> : null;
+    const title = this.props.currentChannelId ? <h2>{this.props.currentChannelId}</h2> : null;
 
     return (
       <nav className="item-list pull-right">
