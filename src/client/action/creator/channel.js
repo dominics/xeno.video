@@ -56,4 +56,15 @@ export default (registry, api, store) => {
 
     return previous(err, channelId);
   });
+
+  registry.wrap(types.channelAdd, (previous, err = null, channel = null) => {
+    if (err) {
+      return previous(err);
+    }
+
+    debug('Adding channel, kicking off channel selection too', channel);
+    registry.getCreator(types.channelSelect)(null, channel);
+
+    return previous(err, channel);
+  });
 };

@@ -27,7 +27,7 @@ export default class MenuUserSettings extends Component {
 
     if (!FavouriteChannelStore.isDefault(this.props.favouriteChannel)) {
       options.push(<li key="reset-separator" role="separator" className="divider" />);
-      options.push(<li className="reset-button">
+      options.push(<li key="reset-button" className="reset-button">
         <a onClick={registry.getHandler(types.channelReset, true).bind(undefined, null)}>
           Reset Channels
         </a>
