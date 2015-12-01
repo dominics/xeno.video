@@ -11,6 +11,7 @@ build:
         name: copy .env.dist to .env
         code: |
           cp $WERCKER_SOURCE_DIR/.env.dist $WERCKER_SOURCE_DIR/.env
+          echo 'LOG_FILE=build/access.log' >> $WERCKER_SOURCE_DIR/.env
 
     - script:
         name: export linked container details
