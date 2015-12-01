@@ -24,9 +24,9 @@ if (!argv._[0]) {
 }
 
 if (container.command && container.command[argv._[0]]) {
-  const execute = container.command[argv._[0]]();
+  const execute = container.command[argv._[0]];
 
-  execute.then(() => {
+  execute().then(() => {
     log.notice('All done!');
     process.exit(0);
   }).catch(err => {
@@ -40,6 +40,9 @@ if (container.command && container.command[argv._[0]]) {
       throw err;
     }
     process.exit(2);
+  }).finally(() => {
+    log.info('Shutting down container');
+    container.shutdown();
   });
 } else {
   log.error('No such command', argv);

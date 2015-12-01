@@ -3,11 +3,10 @@ import { default as React, Component } from 'react';
 import ChannelFavourite from './ChannelFavourite';
 import DropdownMultis from './DropdownMultis';
 import DropdownSubscribed from './DropdownSubscribed';
-import CurrentIndicator from './CurrentIndicator';
 import Search from './Search';
 
 import libdebug from 'debug'; //
-import {Map, List as ImmutableList} from 'immutable';
+import {Map, List as ImmutableList} from 'immutable'; //
 
 const debug = libdebug('xeno:component:channel:list');
 
@@ -33,12 +32,10 @@ export default class List extends Component {
    */
   render() {
     const subscribed = this.props.channel.get('subscribed', new Map());
-    const multis = this.props.channel.get('multis', new Map()); //
+    const multis = this.props.channel.get('multis', new Map());
 
     return (
       <ol className="nav navbar-nav">
-        <CurrentIndicator current={this.props.currentChannelId} />
-
         {
           this.props.favouriteChannel.map(
             (channel) => {

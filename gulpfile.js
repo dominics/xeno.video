@@ -82,8 +82,7 @@ gulp.task('pkill', () => shell.task([
 ], { verbose: true }));
 
 gulp.task('clean', () => {
-  //return;
-  //return del(config.clean);
+  return del(config.clean);
 });
 
 /* Build tasks */
@@ -252,10 +251,10 @@ gulp.task('watch', ['build', 'pkill'], () => {
 
   gulp.watch([
     config.client.src.js,
-  ], ['jsClient'], notify);
+  ], ['jsClient', 'jsServer'], notify);
 
   gulp.watch([
-    config.server.src.js,
+    config.server.src.jsExcl,
     config.server.src.jade,
   ], ['jsServer'], restart);
 

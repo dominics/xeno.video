@@ -13,9 +13,20 @@ chai.use(chaiAsPromised);
 
 sinon.xhr.supportsCORS = true;
 
+
+
 global.log = log;
 global.document = jsdom.jsdom('<!doctype html><html><body></body></html>');
 global.window = document.defaultView;
+
+global.window.localStorage = {
+  setItem: () => {},
+  removeItem: () => {},
+  key: () => {},
+  getItem: () => {},
+  length: 0,
+};
+
 global.XMLHttpRequest = global.window.XMLHttpRequest;
 global.navigator = { userAgent: 'node.js' };
 global.chai = chai;
