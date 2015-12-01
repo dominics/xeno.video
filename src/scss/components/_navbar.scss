@@ -12,12 +12,16 @@ nav.navbar.navbar-default.navbar-fixed-top {
     padding: 8px 1em;
   }
 
-  li.dropdown.open > ul.dropdown-menu {
-    overflow-y: auto;
-    max-height: 500px;
+  @media (min-width: $screen-sm-min) {
+    li.dropdown.open > ul.dropdown-menu {
+      overflow-y: auto;
+      max-height: 500px;
+    }
   }
 
-  form.navbar-form.search {
+  li.search form.navbar-form {
+    margin: 6px 0px;
+
     .btn {
       margin-left: 1em;
     }

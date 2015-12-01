@@ -33,6 +33,7 @@ export default class List extends Component {
   render() {
     const subscribed = this.props.channel.get('subscribed', new Map());
     const multis = this.props.channel.get('multis', new Map());
+    const _unused = <DropdownMultis current={this.props.currentChannelId} multis={multis} />;
 
     return (
       <ol className="nav navbar-nav">
@@ -51,7 +52,6 @@ export default class List extends Component {
         }
 
         <DropdownSubscribed current={this.props.currentChannelId} subscribed={subscribed} />
-        <DropdownMultis current={this.props.currentChannelId} multis={multis} />
         <Search />
       </ol>
     );

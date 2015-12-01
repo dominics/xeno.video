@@ -9,7 +9,9 @@ const debug = libdebug('xeno:component:channel:search');
  * Channel search widget on the navbar
  */
 export default class Search extends Component {
-  searchInput = null;
+  state = {
+    open: false,
+  };
 
   setSearchInput(ref) {
     debug('Received search input', ref);
@@ -17,39 +19,62 @@ export default class Search extends Component {
   }
 
   onAdd(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
     if (!this.searchInput) {
       debug('Add button clicked, no search input found');
-      return;
+      return false;
     }
 
     const channel = $(this.searchInput).val();
 
+    this.setState({ open: false });
+
     if (!channel) {
       debug('Add button clicked, no channel value');
-      return;
+      return false;
     }
 
     debug('Add button clicked, dispatching add');
     return registry.getHandler(types.channelAdd, true)(channel, event);
   }
 
-  render() {
-    debug('Rendering channel search'); //
+  onOpen(event) {
+    this.setState({
+      open: true,
+    });
 
-    return (
-      <form className="navbar-form navbar-left search" role="search" key="search-form">
-        <div className="form-group">
-          <div className="input-group">
-            <div className="input-group-addon"><span className="fa fa-search" /></div>
+    event.preventDefault();
+    event.stopPropagation();
+
+    return false;
+  }
+
+  render() {
+    debug('Rendering channel search');
+
+    return this.state.open
+      ? (
+        <li className="search" key="search-form">
+          <form className="navbar-form navbar-left" role="search">
             <input type="text" className="form-control" placeholder="subreddit" ref={this.setSearchInput.bind(this)} />
-          </div>
-          &nbsp;
-          <button className="btn btn-default btn-sm" onClick={this.onAdd.bind(this)}>
-            <span className="fa fa-plus" />
-            <span> &nbsp; Add </span>
-          </button>
-        </div>
-      </form>
-    );
+            &nbsp;
+            <button className="btn btn-default btn-sm" onClick={this.onAdd.bind(this)}>
+              <span className="fa fa-plus" />
+              <span> &nbsp; Add </span>
+            </button>
+          </form>
+        </li>
+      )
+      : (
+        <li className="search" key="search-form">
+          <form className="navbar-form navbar-left" role="search">
+            <button className="btn btn-default btn-sm" onClick={this.onOpen.bind(this)}>
+              <span className="fa fa-plus" />
+            </button>
+          </form>
+        </li>
+      );
   }
 }
