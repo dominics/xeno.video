@@ -57,13 +57,12 @@ function mkdirp(dir) {
  */
 // Abstract
 gulp.task('default', sequence('build', ['test', 'lint']));
-gulp.task('build', ['lib', 'css']);
+gulp.task('build', sequence('clean', ['lib', 'css']));
 gulp.task('lib', sequence('js', 'coverage'));
 
 // Concrete
 gulp.task('lint', ['lintClient', 'lintServer']);
 gulp.task('js', ['bower', 'jsClient', 'jsServer', 'jsTest']);
-gulp.task('js', ['jsClient', 'jsServer', 'jsTest']);
 gulp.task('bower', sequence('bowerInstall', 'bowerJs', 'bowerFont'));
 
 /*
