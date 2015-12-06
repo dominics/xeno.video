@@ -3,6 +3,10 @@ import Bottle from 'bottlejs';
 import socket from 'socket.io';
 import express from 'express';
 
+import yargs from './cli/yargs';
+import prewarm from './cli/prewarm';
+import {default as log, Log as LogSettings} from './util/log';
+
 import config from './config';
 import app from './app';
 import emitter from './emitter';
@@ -61,6 +65,20 @@ export default (configInstance = null) => {
   deps.factory('queue.itemByChannel', (container) => {
     return container.factory('item:by-channel');
   });
+
+  deps.service('cli.argv', yargs, 'config');
+
+  deps.service('cli.log', (argv) => {
+    log.debug('Received command line arguments', argv);
+    return log;
+  }, 'cli.argv');
+
+  deps.service('cli.logSettings', (argv) => {
+    LogSettings.setLevel(2 + argv.verbose - argv.quiet);
+    return LogSettings;
+  }, 'cli.argv');
+
+  deps.service('command.prewarm', prewarm, 'config', 'cli.argv', 'cli.log', 'queue.itemByChannel'); //
 
   deps.service('router', () => {
     const router = express.Router();
