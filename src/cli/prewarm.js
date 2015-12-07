@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 
-export default (config, argv, log, itemByChannelQueue) => {
+export default (config, argv, log, refresh, itemByChannelQueue) => {
   function prewarmChannel(channel, accessToken) {
     if (!accessToken) {
       return Promise.reject('No access token given');
@@ -18,17 +18,32 @@ export default (config, argv, log, itemByChannelQueue) => {
       },
       timeout: 20000,
     }).then(() => {
-      log.debug('Finished prewarming channel', channel);
+      log.info('Enqueued prewarm of channel', channel);
     });
   }
 
   return () => {
-    log.info('Starting prewarm process');
+    log.info('Starting prewarm');
 
-    let token = null;
+    const refreshToken = config.REDDIT_DEFAULT_REFRESH_TOKEN;
 
-    return Promise.all([
-      prewarmChannel('videos', token),
-    ]);
+    if (!refreshToken) {
+      return Promise.reject('No refresh token found');
+    }
+
+    return new Promise((resolve, reject) => {
+      refresh.requestNewAccessToken('reddit', refreshToken, (err, accessToken) => {
+        if (err) {
+          debug('Failed to get new access token', err);
+          return reject(err);
+        }
+
+        return resolve(accessToken);
+      });
+    }).then((token) => {
+      return Promise.all([
+        prewarmChannel('videos', token),
+      ]);
+    });
   };
 };

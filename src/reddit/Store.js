@@ -18,8 +18,8 @@ export default class Store {
 
   _key(type, param = null) {
     return param
-      ? `${this.name}-store/${type}:${param}`
-      : `${this.name}-store/${type}`;
+      ? `${this.type}-store/${type}:${param}`
+      : `${this.type}-store/${type}`;
   }
 
   /**
