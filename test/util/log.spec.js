@@ -1,7 +1,6 @@
 import log from './../../dist/util/log';
-import _outfile from './outfile';
 
-const outfile = _outfile.bind(undefined, 'log');
+const _outfile = (ident) => outfile.apply(undefined, ['util', 'log', ident]);
 
 describe('module log', () => {
   describe('class Log', () => {
@@ -21,9 +20,9 @@ describe('module log', () => {
 
       describe('.setFile(path)', () => {
         it('can accept multiple paths in a row', () => {
-          log.Log.setFile(outfile('initial'));
+          log.Log.setFile(_outfile('initial'));
           log.Log.log('Some message');
-          log.Log.setFile(outfile('second'));
+          log.Log.setFile(_outfile('second'));
           log.Log.log('Some message');
         });
       });
@@ -39,7 +38,7 @@ describe('module log', () => {
       log.debug,
     ];
 
-    log.Log.setFile(outfile('short-form'));
+    log.Log.setFile(_outfile('short-form'));
 
     tests.forEach((test) => {
       describe('function ' + test.name, () => {

@@ -38,11 +38,8 @@ export class Log {
   }
 
   static _doLog(message, level, context) {
-    const date = (new Date()).toString();
     const levelString = Log.label(level);
     const contextString = context ? '(' + JSON.stringify(context) + ')' : '';
-
-    // Log._write(`${date}: [${levelString}] ${message} ${contextString}\n`);
     Log._write(`[${levelString}] ${message} ${contextString}\n`);
   }
 
