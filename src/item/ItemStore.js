@@ -21,11 +21,14 @@ export default class ItemStore extends Store {
   static CACHE_TTL_ITEMS = 60 * 60 * 24;
   static CACHE_TTL_CHANNEL_ITEMS = 300;
 
-  constructor(api, redis, validator, queues) {
+  emitter = null;
+
+  constructor(api, redis, validator, queues, emitter) {
     super(api, redis, validator, queues);
 
     this.type = 'item';
     this.queues.itemByChannel.process(this.processGetByChannel.bind(this));
+    this.emitter = emitter;
   }
 
   /**

@@ -4,17 +4,17 @@ import libdebug from 'debug';
 
 const debug = libdebug('xeno:routes:api');
 
-export default (sessionValidator, settingStore, channelStore, itemStore) => (router) => {
+export default (sessionValidator, store) => (router) => {
   const auth = sessionValidator.api.bind(undefined, false); // auth not required
 
   router.get('/api/setting/all', auth, (req, res, next) => {
     debug('Getting settings');
 
-    if (!settingStore) {
+    if (!store.setting) {
       return next(new Error('Could not find setting store'));
     }
 
-    const settings = settingStore.getAll(req);
+    const settings = store.setting.getAll(req);
 
     res.json({
       type: 'setting',
@@ -27,11 +27,11 @@ export default (sessionValidator, settingStore, channelStore, itemStore) => (rou
   router.patch('/api/setting', auth, validate(validation.settingUpdate), (req, res, next) => {
     debug('Updating settings');
 
-    if (!settingStore) {
+    if (!store.setting) {
       return next(new Error('Could not find setting store'));
     }
 
-    const settings = settingStore.update(req);
+    const settings = store.setting.update(req);
 
     res.json({
       type: 'setting',
@@ -43,11 +43,11 @@ export default (sessionValidator, settingStore, channelStore, itemStore) => (rou
   });
 
   router.get('/api/channel/all', auth, (req, res, next) => {
-    if (!channelStore) {
+    if (!store.channel) {
       return next(new Error('Could not find channel store'));
     }
 
-    channelStore.getAll(req, res)
+    store.channel.getAll(req, res)
       .then(channels => {
         debug('Got as channels', channels);
 
@@ -66,11 +66,11 @@ export default (sessionValidator, settingStore, channelStore, itemStore) => (rou
 
     const channel = req.params.channel;
 
-    if (!itemStore) {
+    if (!store.item) {
       return next(new Error('Could not find item store'));
     }
 
-    itemStore.getByChannel(channel, req, res)
+    store.item.getByChannel(channel, req, res)
       .then(items => {
         res.json({
           type: 'item',

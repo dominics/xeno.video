@@ -56,22 +56,16 @@ export default (configInstance) => {
 
   deps.service('store.setting', storeSetting, ...storeDeps);
   deps.service('store.channel', storeChannel, ...storeDeps, 'session.store');
-  deps.service('store.item', storeItem, ...storeDeps);
+  deps.service('store.item', storeItem, ...storeDeps, 'emitter');
 
   deps.service('route.index', routeIndex, 'session.validator');
   deps.service('route.user', routeUser, 'config', 'session.passport');
-  deps.service('route.api', routeApi, 'session.validator', 'store.setting', 'store.channel', 'store.item');
+  deps.service('route.api', routeApi, 'session.validator', 'store');
   deps.service('route.error', routeError);
 
   deps.service('queue.factory', queue, 'config');
-
-  deps.factory('queue.itemByChannel', (container) => {
-    return container.factory('item:by-channel');
-  });
-
-  deps.factory('queue.channelsForUser', (container) => {
-    return container.factory('channel:for-user');
-  });
+  deps.service('queue.itemByChannel', (factory) => factory('item:by-channel'), 'queue.factory');
+  deps.service('queue.channelsForUser', (factory) => factory('channel:for-user'), 'queue.factory');
 
   deps.service('cli.argv', yargs, 'config');
 
@@ -88,20 +82,15 @@ export default (configInstance) => {
   deps.service('command.prewarm', prewarm, 'config', 'cli.argv', 'cli.log', 'session.refresh', 'queue.itemByChannel');
   deps.service('command.clean', clean, 'config', 'cli.argv', 'cli.log', 'queue');
 
-  deps.service('router', () => {
+  deps.service('router', (...routes) => {
     const router = express.Router();
 
-    deps.digest([
-      'route.index',
-      'route.user',
-      'route.api',
-      'route.error',
-    ]).forEach((route) => {
+    routes.forEach((route) => {
       route(router);
     });
 
     return router;
-  });
+  }, 'route.index', 'route.user', 'route.api', 'route.error');
 
   deps.service('stack', stack, 'app', 'session.session', 'session.passport', 'router');
 

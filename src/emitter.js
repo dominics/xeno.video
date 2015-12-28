@@ -4,9 +4,13 @@ import libdebug from 'debug';
 const debug = libdebug('xeno:emitter');
 
 export default (config, socket, sessionInstance) => {
+  socket.use((connection, next) => {
+    sessionInstance(connection.request, connection.request.res, next);
+  });
+
   socket.on('connection', (connection) => {
-    if (!_.get(connection, 'request.session.passport.user.id', false)) {
-      debug('Unauthenticated Socket.io client has been disconnected');
+    if (!_.get(connection, 'request.session', false)) {
+      debug('Sessionless Socket.io client has been disconnected');
       connection.disconnect();
       return;
     }
@@ -16,10 +20,6 @@ export default (config, socket, sessionInstance) => {
 
   socket.on('helo', (req) => {
     debug('Helo received', req);
-  });
-
-  socket.use((connection, next) => {
-    sessionInstance(connection.request, connection.request.res, next);
   });
 
   return socket;
