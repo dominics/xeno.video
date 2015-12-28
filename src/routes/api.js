@@ -49,8 +49,6 @@ export default (sessionValidator, store) => (router) => {
 
     store.channel.getAll(req, res)
       .then(channels => {
-        debug('Got as channels', channels);
-
         res.json({
           type: 'channel',
           data: channels,

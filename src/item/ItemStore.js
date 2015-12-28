@@ -106,6 +106,11 @@ export default class ItemStore extends Store {
           .then((results) => {
             debug(`Stored ${results.length} items, setting refresh key to ${now}`);
             return this.redis.setAsync(keyRefreshed, now, 'EX', 3 * ItemStore.CACHE_TTL_CHANNEL_ITEMS);
+          }).then(() => {
+            this.emitter.emit('channelUpdated', {
+              channel
+            });
+            return Promise.resolve();
           });
       }
     ).catch((err) => {

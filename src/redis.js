@@ -9,9 +9,11 @@ Promise.promisifyAll(redis.Multi.prototype);
 
 export default (config) => {
   const client = redis.createClient(
-    parseInt(config.REDIS_PORT, 10),
-    config.REDIS_HOST,
-    {}
+    {
+      host: config.REDIS_HOST,
+      port: parseInt(config.REDIS_PORT, 10),
+      return_buffers: true,
+    }
   );
 
   client.on('error', (err) => {
