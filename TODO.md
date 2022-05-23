@@ -2,11 +2,8 @@
 
 ## Refresh
 
-- Start a changelog, and tagging
-- Integrate semantic release
 - Replace wercker (with Github Actions?)
 - Replace gulp with webpack bundling
-
 - Update all dependencies
   - Replace superagent with fetch or axios
   - Replace browserify, bower with Webpack
@@ -17,6 +14,7 @@
 - Add Typescript configuration, start to convert our code where easy
 - Update React (currently 0.14!)
 - Replace container with serverless? or prepare container to run in AWS Lambda etc.?
+- Transition into SWR and next.js
 
 ## Other
 
