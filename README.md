@@ -1,6 +1,10 @@
 # xeno.video
 
+xeno.video is a site that can display a list of videos from a popular aggregator.
+It uses an Express backend, React frontend and Redis as the only required data-store.
+
 Visit [https://xeno.video/](https://xeno.video/) to see it in action.
+
 
 ## Configuration
 
