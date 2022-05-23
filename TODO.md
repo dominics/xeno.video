@@ -6,8 +6,11 @@
 - Integrate semantic release
 - Replace wercker (with Github Actions?)
 - Replace gulp with webpack bundling
-- Get rid of Bower
+
 - Update all dependencies
+  - Replace superagent with fetch or axios
+  - Replace browserify, bower with Webpack
+  - Remove babel (not needed with TS build to node-compatible ES6+)
 - Replace NPM with yarn
 - Replace karma (with Jest and Cypress?)
   - Maybe start a simple all-encompassing functional test with Cypress before going further?
