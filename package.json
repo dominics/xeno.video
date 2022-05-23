@@ -4,9 +4,11 @@
   "author": "Dominic Scheirlinck <dominic@xeno.video>",
   "private": true,
   "scripts": {
-    "prestart": "npm run build",
-    "prepublish": "npm run build",
-    "preversion": "npm run build && npm test",
+    "commit": "git-cz",
+    "release": "semantic-release",
+    "disabled-prestart": "run-s build",
+    "disabled-prepublish": "run-s build",
+    "disabled-preversion": "run-s build test",
     "build": "gulp build",
     "start": "./index.js",
     "test": "gulp test",
@@ -84,6 +86,7 @@
     "eslint-plugin-react": "^3.4.2",
     "isparta": "^4.0.0",
     "istanbul": "^0.4.0",
+    "jest": "28.1.0",
     "jsdom": "^7.0.2",
     "mocha": "^2.3.3",
     "react": "^0.14.2",
@@ -102,5 +105,14 @@
     "node": ">=16.0.0",
     "npm": "please-use-yarn",
     "yarn": ">=1.22.0"
+  },
+  "config": {
+    "ghooks": {
+      "pre-commit": "opt --in pre-commit --exec \"npm run validate\"",
+      "commit-msg": "opt --in commit-msg --exec validate-commit-msg"
+    },
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
   }
 }

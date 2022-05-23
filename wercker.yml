@@ -24,14 +24,6 @@ build:
 
     - npm-test
 
-dev:
-  steps:
-    - npm-install
-
-    - internal/watch:
-        code: node index.js
-        reload: true
-
 deploy:
   steps:
     - script:
