@@ -4,7 +4,7 @@
   "author": "Dominic Scheirlinck <dominic@xeno.video>",
   "private": true,
   "scripts": {
-    "commit": "git-cz",
+    "commit": "cz",
     "release": "semantic-release",
     "disabled-prestart": "run-s build",
     "disabled-prepublish": "run-s build",
@@ -12,7 +12,8 @@
     "build": "gulp build",
     "start": "./index.js",
     "test": "gulp test",
-    "cli": "./cli.js"
+    "cli": "./cli.js",
+    "prepare": "husky install"
   },
   "bin": {
     "xeno": "./cli.js"
@@ -84,11 +85,13 @@
     "eslint": "^1.5.0",
     "eslint-config-airbnb": "2.1.1",
     "eslint-plugin-react": "^3.4.2",
+    "husky": "8.0.1",
     "isparta": "^4.0.0",
     "istanbul": "^0.4.0",
     "jest": "28.1.0",
     "jsdom": "^7.0.2",
     "mocha": "^2.3.3",
+    "opt-cli": "^1.6.0",
     "react": "^0.14.2",
     "react-addons-test-utils": "^0.14.2",
     "react-dom": "^0.14.2",
@@ -107,12 +110,8 @@
     "yarn": ">=1.22.0"
   },
   "config": {
-    "ghooks": {
-      "pre-commit": "opt --in pre-commit --exec \"npm run validate\"",
-      "commit-msg": "opt --in commit-msg --exec validate-commit-msg"
-    },
     "commitizen": {
-      "path": "node_modules/cz-conventional-changelog"
+      "path": "cz-conventional-changelog"
     }
   }
 }
