@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+/*
+ Entrypoint for the command line application
+
+ Supports clean, prewarm
+ */
+
 const fs = require('fs');
 const path = require('path');
 

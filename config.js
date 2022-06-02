@@ -11,6 +11,8 @@
  *   NODE_ENV: string, development|production
  *   TEST_USE_CHROME 1|0
  *   DEBUG_PORT int
+ *
+ * @todo Move all of this into webpack configuration?
  */
 const path = require('path');
 const fs = require('fs');

@@ -1,4 +1,4 @@
-import ItemStore from './../../dist/item/ItemStore';
+import ItemStore from './../../src/item/ItemStore';
 import {default as storeTest, queue} from './../reddit/Store';
 
 describe('store (item) concrete', function () {
