@@ -1,4 +1,4 @@
-import ChannelStore from './../../dist/channel/ChannelStore';
+import ChannelStore from './../../src/channel/ChannelStore';
 import {default as storeTest, queue} from './../reddit/Store';
 
 describe('store (channel) concrete', function() {
