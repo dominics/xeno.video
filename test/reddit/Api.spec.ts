@@ -1,4 +1,4 @@
-import Api from './../../dist/reddit/Api';
+import Api from './../../src/reddit/Api';
 
 describe('class reddit.Api', function () {
   this.api = null;

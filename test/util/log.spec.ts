@@ -1,4 +1,4 @@
-import log from './../../dist/util/log';
+import log from './../../src/util/log';
 
 const _outfile = (ident) => outfile.apply(undefined, ['util', 'log', ident]);
 

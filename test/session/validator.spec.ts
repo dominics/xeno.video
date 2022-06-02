@@ -1,4 +1,4 @@
-import validator from './../../dist/session/validator';
+import validator from './../../src/session/validator';
 
 describe('session module validator', () => {
   it('is a constructor function', () => {

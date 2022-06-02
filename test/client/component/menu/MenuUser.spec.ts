@@ -1,4 +1,4 @@
-import MenuUser from './../../../../dist/client/component/menu/MenuUser';
+import MenuUser from './../../../../src/client/component/menu/MenuUser';
 import React from 'react';
 
 function sut(props) {

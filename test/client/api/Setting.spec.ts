@@ -1,4 +1,4 @@
-import Setting from './../../../dist/client/api/Setting';
+import Setting from './../../../src/client/api/Setting';
 
 describe('client api class Setting', function() {
   before(() => {

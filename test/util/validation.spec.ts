@@ -1,4 +1,4 @@
-import * as validation from './../../dist/util/validation';
+import * as validation from './../../src/util/validation';
 
 describe('util module validation', () => {
   describe('export itemsForChannel', () => {

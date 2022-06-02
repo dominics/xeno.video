@@ -1,4 +1,4 @@
-import config from './../dist/config';
+import config from './../src/config';
 
 describe('module config', () => {
   it('is a constructor function', () => {

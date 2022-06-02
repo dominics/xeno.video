@@ -1,4 +1,4 @@
-import passport from './../../dist/session/passport';
+import passport from './../../src/session/passport';
 
 describe('session module passport', () => {
   describe('export default()', () => {

@@ -4,8 +4,8 @@ import chaiAsPromised from 'chai-as-promised';
 import supertest from 'supertest';
 import jsdom from 'jsdom';
 import TestUtils from 'react-addons-test-utils';
-import jquery from './../bower_components/jquery/dist/jquery';
-import log from './../dist/util/log';
+import jquery from './../bower_components/jquery/src/jquery';
+import log from './../src/util/log';
 import path from 'path';
 import config from './../config';
 

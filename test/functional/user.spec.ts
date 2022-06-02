@@ -1,5 +1,5 @@
-import deps from './../../dist/deps';
-import config from './../../dist/config';
+import deps from './../../src/deps';
+import config from './../../src/config';
 
 describe('functional test: user routes', function tests() {
   before(() => {
