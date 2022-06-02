@@ -141,10 +141,9 @@
     "webpack-cli": "^4.9.2"
   },
   "engines": {
-    "node": ">=16.0.0",
-    "npm": "please-use-pnpm-instead",
-    "yarn": "please-use-pnpm-instead"
+    "node": ">=16.0.0"
   },
+  "packageManager": "pnpm@7.1.7",
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
