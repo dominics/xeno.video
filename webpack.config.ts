@@ -1,29 +1,29 @@
-import * as path from 'path'
-import * as webpack from 'webpack'
+import * as path from "path";
+import * as webpack from "webpack";
 
-const mode = 'development'
+const mode = "development";
 
 const server: webpack.Configuration = {
   mode,
-  target: 'node',
-  entry: './index.js',
+  target: "node",
+  entry: "./index.js",
   output: {
-    path: path.resolve(__dirname, './dist')
-  }
-}
+    path: path.resolve(__dirname, "./dist"),
+  },
+};
 
 const client: webpack.Configuration = {
   mode,
-  entry: './src/client/app.jsx',
+  entry: "./src/client/app.jsx",
   output: {
-    path: path.resolve(__dirname, './public/js')
+    path: path.resolve(__dirname, "./public/js"),
   },
   resolve: {
     fallback: {
-      path: require.resolve('path-browserify')
-    }
-  }
-}
+      path: require.resolve("path-browserify"),
+    },
+  },
+};
 
-const config = [server, client]
-export default config
+const config = [server, client];
+export default config;

@@ -41,8 +41,8 @@ deploy:
         registry: https://registry.hub.docker.com
 
     - add-to-known_hosts:
-        hostname:    $DEPLOYMENT_HOST
-        port:        $DEPLOYMENT_PORT
+        hostname: $DEPLOYMENT_HOST
+        port: $DEPLOYMENT_PORT
         fingerprint: $DEPLOYMENT_FINGERPRINT
 
     - add-ssh-key:
@@ -64,4 +64,3 @@ deploy:
         cmd: /pipeline/source/index.js
         repository: dominics/xeno.video
         registry: https://registry.hub.docker.com
-

@@ -24,5 +24,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Functional testing
 - Stateful settings
 
-[Unreleased]: https://github.com/dominics/xeno.video/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/dominics/xeno.video/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/dominics/xeno.video/releases/tag/v1.0.0

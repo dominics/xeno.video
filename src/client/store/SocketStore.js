@@ -1,9 +1,9 @@
-import { MapStore } from 'flux/utils';
-import io from './../io';
-import libdebug from 'debug';
-import types from './../action/types';
+import { MapStore } from "flux/utils";
+import libdebug from "debug";
+import io from "../io";
+import types from "../action/types";
 
-const debug = libdebug('xeno:store:socket');
+const debug = libdebug("xeno:store:socket");
 
 export default class SocketStore extends MapStore {
   io = null;
@@ -15,11 +15,11 @@ export default class SocketStore extends MapStore {
   connect() {
     this.io = io();
 
-    debug('Emitting HELO');
-    this.io.emit('helo', navigator.userAgent);
+    debug("Emitting HELO");
+    this.io.emit("helo", navigator.userAgent);
 
-    this.io.on('tv', (m) => {
-      debug('Received message on TV channel', m);
+    this.io.on("tv", (m) => {
+      debug("Received message on TV channel", m);
     });
   }
 

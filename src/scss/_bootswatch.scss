@@ -150,7 +150,6 @@ legend {
 .nav-pills,
 .breadcrumb,
 .pager {
-
   a {
     color: #fff;
   }
@@ -159,7 +158,6 @@ legend {
 // Indicators =================================================================
 
 .alert {
-
   .alert-link,
   a {
     color: $alert-warning-text;
@@ -194,7 +192,6 @@ a.thumbnail.active {
 }
 
 a.list-group-item {
-
   &.active,
   &.active:hover,
   &.active:focus {
@@ -236,7 +233,12 @@ a.list-group-item {
 }
 
 .jumbotron {
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     color: #fff;
   }
 }

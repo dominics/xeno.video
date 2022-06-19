@@ -1,19 +1,19 @@
-import * as validation from './../../src/util/validation';
+import * as validation from "../../src/util/validation";
 
-describe('util module validation', () => {
-  describe('export itemsForChannel', () => {
+describe("util module validation", () => {
+  describe("export itemsForChannel", () => {
     const sut = validation.itemsForChannel.params.channel;
 
     const valid = {
-      normalString: 'videos',
+      normalString: "videos",
     };
 
     const invalid = {
-      emptyString: '',
+      emptyString: "",
     };
 
     Object.keys(invalid).forEach((testcase) => {
-      it('rejects invalid parameter: ' + testcase, (done) => {
+      it(`rejects invalid parameter: ${  testcase}`, (done) => {
         sut.validate(invalid[testcase], (err, value) => {
           expect(err).toBeInstanceOf(Error);
           expect(Object.keys(value)).toHaveLength(0);
@@ -23,7 +23,7 @@ describe('util module validation', () => {
     });
 
     Object.keys(valid).forEach((testcase) => {
-      it('accepts valid parameter: ' + testcase, (done) => {
+      it(`accepts valid parameter: ${  testcase}`, (done) => {
         sut.validate(valid[testcase], done);
       });
     });

@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from "fs";
 
 export class Log {
   static levels = {
@@ -10,7 +10,9 @@ export class Log {
   };
 
   static level = 1;
+
   static out = process.stderr;
+
   static file = null;
 
   static setLevel(level) {
@@ -22,7 +24,7 @@ export class Log {
       Log.out.end();
     }
 
-    Log.out = fs.createWriteStream(file, {flags: 'a'});
+    Log.out = fs.createWriteStream(file, { flags: "a" });
   }
 
   static label(level) {
@@ -39,7 +41,7 @@ export class Log {
 
   static _doLog(message, level, context) {
     const levelString = Log.label(level);
-    const contextString = context ? '(' + JSON.stringify(context) + ')' : '';
+    const contextString = context ? `(${  JSON.stringify(context)  })` : "";
     Log._write(`[${levelString}] ${message} ${contextString}\n`);
   }
 
@@ -48,19 +50,24 @@ export class Log {
   }
 }
 
-export const error = (message, context) => Log.log(message, Log.levels.error, context);
-export const warning = (message, context) => Log.log(message, Log.levels.warning, context);
-export const notice = (message, context) => Log.log(message, Log.levels.notice, context);
-export const info = (message, context) => Log.log(message, Log.levels.info, context);
-export const debug = (message, context) => Log.log(message, Log.levels.debug, context);
+export const error = (message, context) =>
+  Log.log(message, Log.levels.error, context);
+export const warning = (message, context) =>
+  Log.log(message, Log.levels.warning, context);
+export const notice = (message, context) =>
+  Log.log(message, Log.levels.notice, context);
+export const info = (message, context) =>
+  Log.log(message, Log.levels.info, context);
+export const debug = (message, context) =>
+  Log.log(message, Log.levels.debug, context);
 
 export default {
   log: Log.log,
-  Log: Log,
+  Log,
 
-  error: error,
-  warning: warning,
-  notice: notice,
-  info: info,
-  debug: debug,
+  error,
+  warning,
+  notice,
+  info,
+  debug,
 };

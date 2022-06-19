@@ -1,19 +1,19 @@
-import { MapStore } from 'flux/utils';
-import libdebug from 'debug';
-import types from '../action/types';
-import { Map } from 'immutable';
-import Setting from './../setting/Setting';
+import { MapStore } from "flux/utils";
+import libdebug from "debug";
+import { Map } from "immutable";
+import types from "../action/types";
+import Setting from "../setting/Setting";
 
-const debug = libdebug('xeno:store:setting');
+const debug = libdebug("xeno:store:setting");
 
 export default class SettingStore extends MapStore {
   getInitialState() {
     return Map({
-      'authenticated': new Setting('authenticated', false),
-      'name': new Setting('name', null),
-      'userId': new Setting('userId', null),
-      'nsfw': new Setting('nsfw', false),
-      'autoplay': new Setting('autoplay', true),
+      authenticated: new Setting("authenticated", false),
+      name: new Setting("name", null),
+      userId: new Setting("userId", null),
+      nsfw: new Setting("nsfw", false),
+      autoplay: new Setting("autoplay", true),
     });
   }
 
@@ -33,11 +33,14 @@ export default class SettingStore extends MapStore {
    */
   _receive(state, action) {
     if (action.isError()) {
-      debug('Setting store received error on setting receive action');
+      debug("Setting store received error on setting receive action");
       return state;
     }
 
-    return this._merge(state, action.data.map(setting => setting.setConfirmed()));
+    return this._merge(
+      state,
+      action.data.map((setting) => setting.setConfirmed())
+    );
   }
 
   /*
@@ -45,17 +48,20 @@ export default class SettingStore extends MapStore {
    */
   _update(state, action) {
     if (action.isError()) {
-      debug('Setting store received error on setting update action');
+      debug("Setting store received error on setting update action");
       return state;
     }
 
-    return this._merge(state, action.data.map(setting => setting.setPending()));
+    return this._merge(
+      state,
+      action.data.map((setting) => setting.setPending())
+    );
   }
 
   _merge(state, settings) {
-    debug('Merging settings into state', settings);
+    debug("Merging settings into state", settings);
 
-    return state.withMutations(map => {
+    return state.withMutations((map) => {
       let mutated = map;
 
       for (const setting of settings) {

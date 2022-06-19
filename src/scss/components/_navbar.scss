@@ -18,7 +18,7 @@ nav.navbar.navbar-default.navbar-fixed-top {
 
   ol.navbar-nav {
     @media (min-width: $screen-sm-min) {
-      .channel:nth-child(n+5) {
+      .channel:nth-child(n + 5) {
         display: none;
       }
     }
@@ -30,7 +30,7 @@ nav.navbar.navbar-default.navbar-fixed-top {
     }
 
     @media (min-width: $screen-lg-min) {
-      .channel:nth-child(n+6) {
+      .channel:nth-child(n + 6) {
         display: block;
       }
     }

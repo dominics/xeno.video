@@ -1,11 +1,12 @@
-import libdebug from 'debug';
-const debug = libdebug('xeno:stack');
+import libdebug from "debug";
+
+const debug = libdebug("xeno:stack");
 
 export default (app, session, passport, router) => {
   app.use(session);
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use('/', router);
+  app.use("/", router);
 
   return app;
 };

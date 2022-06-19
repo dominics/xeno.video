@@ -5,10 +5,10 @@
  * DEBUG, DEBUG_COLORS, etc.
  */
 
-const fs = require('fs');
-const path = require('path');
-const _ = require('lodash');
-const envFile = require('node-env-file');
+const fs = require("fs");
+const path = require("path");
+const _ = require("lodash");
+const envFile = require("node-env-file");
 
 /**
  * true for required, false for not required
@@ -31,7 +31,7 @@ const schema = {
 
 function filter(settings) {
   return _.pick(settings, (v, k) => {
-    return typeof schema[k] !== 'undefined';
+    return typeof schema[k] !== "undefined";
   });
 }
 
@@ -40,9 +40,9 @@ function getMergedConfig() {
   process.env = {};
 
   const configPaths = [
-    '/etc/xeno/env',
-    path.join(__dirname, '/../.env'),
-    path.join(__dirname, '/../.env.dist'),
+    "/etc/xeno/env",
+    path.join(__dirname, "/../.env"),
+    path.join(__dirname, "/../.env.dist"),
   ];
 
   configPaths.forEach(function requirePath(configPath) {
@@ -56,7 +56,9 @@ function getMergedConfig() {
 
 function requiredParameter(param) {
   if (!process.env[param]) {
-    throw new Error('You must define ' + param + ' as an environment variable, or in .env');
+    throw new Error(
+      "You must define " + param + " as an environment variable, or in .env"
+    );
   }
 }
 
@@ -80,7 +82,7 @@ module.exports = () => {
   const config = getMergedConfig();
 
   // Validate required parameter (TODO: move to Joi)
-  Object.keys(_.pick(schema, v => v)).forEach(requiredParameter);
+  Object.keys(_.pick(schema, (v) => v)).forEach(requiredParameter);
 
   config.PORT = normalizePort(config.PORT);
 

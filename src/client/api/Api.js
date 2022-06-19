@@ -1,7 +1,7 @@
-import libdebug from 'debug';
-import _ from 'lodash';
+import libdebug from "debug";
+import _ from "lodash";
 
-const debug = libdebug('xeno:api');
+const debug = libdebug("xeno:api");
 
 export default class Api {
   /**
@@ -10,26 +10,25 @@ export default class Api {
    */
   get(url) {
     return new Promise((resolve, reject) => {
-      $.getJSON(url)
-        .then(
-          (data) => {
-            resolve(data.data);
-          },
-          (xhr, status, err) => {
-            reject(new Error(err));
-          }
-        );
+      $.getJSON(url).then(
+        (data) => {
+          resolve(data.data);
+        },
+        (xhr, status, err) => {
+          reject(new Error(err));
+        }
+      );
     });
   }
 
   patch(url, data) {
     return new Promise((resolve, reject) => {
       $.ajax({
-        url: url,
+        url,
         data: JSON.stringify(data),
-        type: 'PATCH',
-        dataType: 'json',
-        contentType: 'application/json',
+        type: "PATCH",
+        dataType: "json",
+        contentType: "application/json",
         success: (data) => {
           resolve(data.data);
         },
@@ -41,11 +40,11 @@ export default class Api {
   }
 
   filterId(dataPromise) {
-    return dataPromise.then(data => {
+    return dataPromise.then((data) => {
       if (!Array.isArray(data)) {
         return Promise.resolve(data);
       }
-      return Promise.resolve(data.filter(item => _.has(item, 'id')));
+      return Promise.resolve(data.filter((item) => _.has(item, "id")));
     });
   }
 }

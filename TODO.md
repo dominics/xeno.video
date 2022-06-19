@@ -5,7 +5,7 @@
 - Replace wercker (with Github Actions?)
 - Replace gulp with webpack bundling
 - Update all dependencies
-  - Replace superagent with fetch or axios
+  - Replace superagent amd request with fetch or axios
   - Replace browserify, bower with Webpack
   - Remove babel (not needed with TS build to node-compatible ES6+)\
   - Replace karma (with Jest and Cypress?)
@@ -24,16 +24,17 @@
   - And we need to upgrade from 0.14 first, and we don't want to do that with ancient gulp
 
 ## Other
+
 ### Short term
 
-* Prewarm more than the defaults
-* Filter channels with strictly no items
-* Score on item list, maybe links too
-* Key shortcuts
+- Prewarm more than the defaults
+- Filter channels with strictly no items
+- Score on item list, maybe links too
+- Key shortcuts
 
 ### Long term
 
-* Watched items
-* Channel updates via websocket
-* Rand subreddit button
-* Selenium testing
+- Watched items
+- Channel updates via websocket
+- Rand subreddit button
+- Selenium testing

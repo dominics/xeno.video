@@ -14,8 +14,8 @@ export function fragment() {
  */
 export function currentRoute() {
   const current = fragment();
-  const parts = current.split('/');
-  const route = {channel: false, item: false};
+  const parts = current.split("/");
+  const route = { channel: false, item: false };
 
   if (parts.length === 1) {
     route.channel = parts[0];

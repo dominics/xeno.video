@@ -1,8 +1,8 @@
-import redis from 'redis';
-import Promise from 'bluebird';
-import libdebug from 'debug';
+import redis from "redis";
+import Promise from "bluebird";
+import libdebug from "debug";
 
-const debug = libdebug('xeno:redis');
+const debug = libdebug("xeno:redis");
 
 Promise.promisifyAll(redis.RedisClient.prototype);
 Promise.promisifyAll(redis.Multi.prototype);
@@ -14,7 +14,7 @@ export default (config) => {
     {}
   );
 
-  client.on('error', (err) => {
+  client.on("error", (err) => {
     debug(err);
   });
 

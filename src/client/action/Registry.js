@@ -1,7 +1,7 @@
-import libdebug from 'debug';
-import Action from './Action';
+import libdebug from "debug";
+import Action from "./Action";
 
-const debug = libdebug('xeno:action:registry');
+const debug = libdebug("xeno:action:registry");
 
 export default class ActionRegistry {
   /**
@@ -21,7 +21,7 @@ export default class ActionRegistry {
   constructor(dispatcher, types) {
     this.dispatcher = dispatcher;
 
-    Object.keys(types).forEach(type => {
+    Object.keys(types).forEach((type) => {
       this.creators[types[type]] = this._creator(types[type]);
     });
   }
@@ -31,8 +31,8 @@ export default class ActionRegistry {
    * @returns {function(*, Object): string|null}
    */
   addType(type) {
-    if (typeof this.creators[type] !== 'undefined') {
-      throw new Error('Type is already defined');
+    if (typeof this.creators[type] !== "undefined") {
+      throw new Error("Type is already defined");
     }
 
     return (this.creators[type] = this._creator(type));
@@ -119,8 +119,8 @@ export default class ActionRegistry {
   }
 
   _validateType(type) {
-    if (typeof this.creators[type] === 'undefined') {
-      throw new Error('Unknown action type: ' + type);
+    if (typeof this.creators[type] === "undefined") {
+      throw new Error(`Unknown action type: ${  type}`);
     }
   }
 
@@ -130,7 +130,7 @@ export default class ActionRegistry {
    * @private
    */
   _dispatch(action) {
-    debug('Dispatching action', action);
+    debug("Dispatching action", action);
     return this.dispatcher.dispatch(action);
   }
 
@@ -140,10 +140,10 @@ export default class ActionRegistry {
    */
   _creator(type) {
     return (err = null, data = null) => {
-      debug('Creating action', type, err, data);
+      debug("Creating action", type, err, data);
       const action = new Action(type, err, data);
 
-      debug('Action is', action);
+      debug("Action is", action);
       return this._dispatch(action);
     };
   }

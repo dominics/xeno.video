@@ -1,7 +1,10 @@
 export default class Setting {
   id = null;
+
   value = null;
+
   pending = true;
+
   confirmed = false;
 
   constructor(id, value, pending = true, confirmed = false) {

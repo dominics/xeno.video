@@ -1,19 +1,19 @@
-import validator from './../../src/session/validator';
+import validator from "../../src/session/validator";
 
-describe('session module validator', () => {
-  it('is a constructor function', () => {
+describe("session module validator", () => {
+  it("is a constructor function", () => {
     expect(validator).toBeInstanceOf(Function);
   });
 
-  it('validates a request is authenticated', () => {
+  it("validates a request is authenticated", () => {
     const goodRequest = {
       isAuthenticated: sinon.stub().returns(true),
       session: {
         passport: {
           user: {
-            accessToken: 'fooAccessToken',
-            refreshToken: 'fooRefreshToken',
-            authenticated: (Date.now() / 1000) - 10,
+            accessToken: "fooAccessToken",
+            refreshToken: "fooRefreshToken",
+            authenticated: Date.now() / 1000 - 10,
           },
         },
       },
@@ -24,18 +24,20 @@ describe('session module validator', () => {
       session: {
         passport: {
           user: {
-            accessToken: 'fooAccessToken',
-            refreshToken: 'fooRefreshToken',
-            authenticated: (Date.now() / 1000) - (100 * 60 * 60),
+            accessToken: "fooAccessToken",
+            refreshToken: "fooRefreshToken",
+            authenticated: Date.now() / 1000 - 100 * 60 * 60,
           },
         },
       },
     };
 
-    const refresh = sinon.stub().returns(Promise.resolve('foo'));
+    const refresh = sinon.stub().returns(Promise.resolve("foo"));
     const authRequired = true;
 
-    expect(validator(refresh).validate(authRequired, goodRequest)).to.eventually.be.resolved;
-    expect(validator(refresh).validate(authRequired, badRequest)).to.eventually.be.rejected;
+    expect(validator(refresh).validate(authRequired, goodRequest)).to.eventually
+      .be.resolved;
+    expect(validator(refresh).validate(authRequired, badRequest)).to.eventually
+      .be.rejected;
   });
 });

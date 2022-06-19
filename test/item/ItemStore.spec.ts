@@ -1,7 +1,7 @@
-import ItemStore from './../../src/item/ItemStore';
-import {default as storeTest, queue} from './../reddit/Store';
+import ItemStore from "../../src/item/ItemStore";
+import { default as storeTest, queue } from "../reddit/Store";
 
-describe('store (item) concrete', function () {
+describe("store (item) concrete", function () {
   this.sut = null;
 
   beforeAll(() => {
@@ -16,7 +16,7 @@ describe('store (item) concrete', function () {
     this.sut = new ItemStore(api, redis, validator, queues);
   });
 
-  describe('abstract', () => {
-    it('is a store', () => storeTest(this.sut));
+  describe("abstract", () => {
+    it("is a store", () => storeTest(this.sut));
   });
 });
