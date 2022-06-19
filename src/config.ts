@@ -5,15 +5,31 @@
  * DEBUG, DEBUG_COLORS, etc.
  */
 
-const fs = require("fs");
-const path = require("path");
-const _ = require("lodash");
-const envFile = require("node-env-file");
+import fs from 'fs'
+import path from 'path'
+import _ from 'lodash'
+import envFile from 'node-env-file'
+
+interface Config {
+  NODE_ENV: boolean
+  HOST: boolean
+  PORT: boolean
+  SESSION_SECRET: boolean
+  REDDIT_CONSUMER_KEY: boolean
+  REDDIT_CONSUMER_SECRET: boolean
+  REDDIT_OAUTH_SCOPE: boolean
+  REDDIT_DEFAULT_REFRESH_TOKEN: boolean
+  REDIS_PORT: boolean
+  REDIS_HOST: boolean
+  DEBUG: boolean
+  GOOGLE_ANALYTICS_ID: boolean
+  LOG_FILE: boolean
+}
 
 /**
  * true for required, false for not required
  */
-const schema = {
+const schema: Config = {
   NODE_ENV: true,
   HOST: true,
   PORT: true,
@@ -30,12 +46,10 @@ const schema = {
 };
 
 function filter(settings) {
-  return _.pick(settings, (v, k) => {
-    return typeof schema[k] !== "undefined";
-  });
+  return _.pick(settings, (v, k) => typeof schema[k] !== "undefined");
 }
 
-function getMergedConfig() {
+function getMergedConfig(): Config {
   const actual = filter(process.env);
   process.env = {};
 
@@ -45,19 +59,19 @@ function getMergedConfig() {
     path.join(__dirname, "/../.env.dist"),
   ];
 
-  configPaths.forEach(function requirePath(configPath) {
+  configPaths.forEach((configPath) => {
     if (fs.existsSync(configPath)) {
       envFile(configPath);
     }
   });
 
-  return Object.assign(process.env, actual);
+  return Object.assign(process.env, actual) as Config;
 }
 
 function requiredParameter(param) {
   if (!process.env[param]) {
     throw new Error(
-      "You must define " + param + " as an environment variable, or in .env"
+      `You must define ${  param  } as an environment variable, or in .env`
     );
   }
 }
@@ -78,8 +92,8 @@ function normalizePort(val) {
   return false;
 }
 
-module.exports = () => {
-  const config = getMergedConfig();
+export function getConfig(): Config {
+  const config: Config = getMergedConfig();
 
   // Validate required parameter (TODO: move to Joi)
   Object.keys(_.pick(schema, (v) => v)).forEach(requiredParameter);
@@ -90,4 +104,4 @@ module.exports = () => {
   return config;
 };
 
-export default module.exports;
+export default getConfig;

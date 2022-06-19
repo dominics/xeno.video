@@ -1,5 +1,8 @@
+import supertest from "supertest";
 import deps from "../../src/deps";
 import config from "../../src/config";
+import {outfile} from "../helper";
+
 
 describe("functional test: index routes", function tests() {
   beforeAll(() => {
@@ -7,7 +10,7 @@ describe("functional test: index routes", function tests() {
     this.container.config.LOG_FILE = outfile(["functional", "index"]);
 
     this.app = this.container.stack;
-    this.request = request(this.app);
+    this.request = supertest(this.app);
   });
 
   describe("GET /", () => {

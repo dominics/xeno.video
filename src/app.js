@@ -9,7 +9,13 @@ import cookieParser from "cookie-parser";
 import { ValidationError } from "express-validation";
 import fs from "fs";
 
+// eslint-disable-next-line import/no-extraneous-dependencies
+import webpack from "webpack";
+
 const debug = libdebug("xeno:app");
+
+const clientConfig = require("../webpack.config.js")[1]
+const compiler = webpack(clientConfig);
 
 export default (config) => {
   const app = express();
@@ -54,6 +60,12 @@ export default (config) => {
   // development error handler
   // will print stacktrace
   if (app.get("env") === "development") {
+    app.use(
+      webpackDevMiddleware(compiler, {
+        publicPath: config.output.publicPath,
+      })
+    );
+
     app.use((err, req, res, next) => {
       res.status(err.status || 500);
       res.render("error", {

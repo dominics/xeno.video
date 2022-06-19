@@ -3,7 +3,7 @@ import sinon from "sinon";
 import chaiAsPromised from "chai-as-promised";
 import supertest from "supertest";
 import jsdom from "jsdom";
-import TestUtils from "react-addons-test-utils";
+import TestUtils from "react-dom/test-utils";
 import path from "path";
 import jquery from "../bower_components/jquery/src/jquery";
 import log from "../src/util/log";
@@ -33,12 +33,3 @@ global.sinon = sinon;
 global.request = supertest;
 global.TestUtils = TestUtils;
 global.$ = jquery(global.window);
-
-global.outfile = (ident = [], extension = ".log") => {
-  const identifier =
-    Array.isArray(ident) && ident.length > 1 ? ident.join("-") : "xeno";
-  return path.join(
-    config.build.output,
-    `${identifier}-${new Date().getTime()}${extension}`
-  );
-};

@@ -32,4 +32,8 @@ module.exports = {
     describe: false,
     sinon: false,
   },
+  rules: {
+    "import/prefer-default-export": "off",
+    "import/newline-after-import": "off",
+  }
 };

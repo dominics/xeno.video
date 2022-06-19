@@ -11,7 +11,7 @@
     "disabled-prepublish": "run-s build",
     "disabled-preversion": "run-s build test",
     "build": "webpack build",
-    "start": "./index.js",
+    "start": "./bin/server",
     "test": "jest",
     "cli": "./cli.js",
     "prepare": "husky install",
@@ -20,6 +20,7 @@
     "watch": "webpack watch"
   },
   "bin": {
+    "server": "./bin/server",
     "xeno": "./cli.js"
   },
   "repository": {
@@ -56,7 +57,7 @@
     "moment": "^2.10.6",
     "morgan": "^1.6.1",
     "next": "^12.1.6",
-    "node-env-file": "^0.1.7",
+    "node-env-file": "^0.1.8",
     "passport": "^0.3.2",
     "passport-oauth2-refresh": "^1.0.0",
     "passport-reddit": "^0.2.4",
@@ -94,11 +95,17 @@
     "@babel/preset-typescript": "7.17.12",
     "@babel/register": "^7.0.0",
     "@babel/template": "^7.0.0",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
     "@swc/core": "^1.2.189",
     "@swc/jest": "^0.2.21",
+    "@types/debug": "^4.1.7",
+    "@types/express": "^4.17.13",
     "@types/jest": "^28.1.2",
+    "@types/lodash": "^4.14.182",
     "@types/node": "^18.0.0",
     "@types/react": "^17.0.47",
+    "@types/superagent": "^4.1.15",
+    "@types/supertest": "^2.0.12",
     "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.28.0",
@@ -125,6 +132,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.30.0",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "html-webpack-plugin": "^5.5.0",
     "husky": "8.0.1",
     "isparta": "^4.0.0",
     "istanbul": "^0.4.0",
@@ -134,7 +142,7 @@
     "opt-cli": "^1.6.0",
     "path-browserify": "^1.0.1",
     "prettier": "^2.7.1",
-    "react-addons-test-utils": "^15.6.2",
+    "react-refresh": "^0.14.0",
     "regenerator": "^0.8.42",
     "sass-loader": "13.0.0",
     "sinon": "^1.17.2",
@@ -149,7 +157,9 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "webpack": "5.72.1",
-    "webpack-cli": "^4.9.2"
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-middleware": "^5.3.3",
+    "webpack-node-externals": "^3.0.0"
   },
   "engines": {
     "node": ">=16.0.0"
