@@ -18,3 +18,4 @@ export default (config: Config) => {
 
   return client;
 };
+

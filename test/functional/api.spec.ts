@@ -1,5 +1,6 @@
 import deps from "../../src/deps";
 import config from "../../src/config";
+import {outfile} from "../helper";
 
 describe("functional test: API routes", function tests() {
   beforeAll(() => {
