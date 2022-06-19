@@ -1,9 +1,9 @@
-//import { ReduceStore } from 'flux/utils';
-//import libdebug from 'debug';
+// import { ReduceStore } from 'flux/utils';
+// import libdebug from 'debug';
 //
-//const debug = libdebug('xeno:store:basicReduceStore');
+// const debug = libdebug('xeno:store:basicReduceStore');
 //
-//export default class BasicReduceStore extends ReduceStore {
+// export default class BasicReduceStore extends ReduceStore {
 //  /**
 //   * @type {Object.<string, function(K, object): K>}
 //   */
@@ -50,4 +50,4 @@
 //
 //    return state;
 //  }
-//}
+// }

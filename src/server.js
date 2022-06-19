@@ -1,7 +1,7 @@
-import http from 'http';
-import libdebug from 'debug';
+import http from "http";
+import libdebug from "debug";
 
-const debug = libdebug('xeno:server');
+const debug = libdebug("xeno:server");
 
 export default (config, app) => {
   /**
@@ -9,23 +9,21 @@ export default (config, app) => {
    */
   const server = http.createServer(app); //
 
-  server.on('error', (error) => {
-    if (error.syscall !== 'listen') {
+  server.on("error", (error) => {
+    if (error.syscall !== "listen") {
       throw error;
     }
 
     const port = config.PORT;
-    const bind = typeof port === 'string'
-      ? 'Pipe ' + port
-      : 'Port ' + port;
+    const bind = typeof port === "string" ? `Pipe ${  port}` : `Port ${  port}`;
 
     switch (error.code) {
-      case 'EACCES':
-        debug(bind + ' requires elevated privileges');
+      case "EACCES":
+        debug(`${bind  } requires elevated privileges`);
         process.exit(1);
         break;
-      case 'EADDRINUSE':
-        debug(bind + ' is already in use');
+      case "EADDRINUSE":
+        debug(`${bind  } is already in use`);
         process.exit(1);
         break;
       default:
@@ -33,13 +31,12 @@ export default (config, app) => {
     }
   });
 
-  server.on('listening', () => {
+  server.on("listening", () => {
     const addr = server.address();
-    const bind = typeof addr === 'string'
-      ? 'pipe ' + addr
-      : 'port ' + addr.port;
+    const bind =
+      typeof addr === "string" ? `pipe ${  addr}` : `port ${  addr.port}`;
 
-    debug('Listening on ' + bind);
+    debug(`Listening on ${  bind}`);
   });
 
   return server;

@@ -1,9 +1,9 @@
-import { default as React, Component } from 'react';
-import registry from '../../action';
-import types from '../../action/types';
-import libdebug from 'debug';
+import { default as React, Component } from "react";
+import registry from "../../action";
+import types from "../../action/types";
+import libdebug from "debug";
 
-const debug = libdebug('xeno:component:channel:search');
+const debug = libdebug("xeno:component:channel:search");
 
 /**
  * Channel search widget on the navbar
@@ -14,7 +14,7 @@ export default class Search extends Component {
   };
 
   setSearchInput(ref) {
-    debug('Received search input', ref);
+    debug("Received search input", ref);
     this.searchInput = ref;
   }
 
@@ -23,7 +23,7 @@ export default class Search extends Component {
     event.stopPropagation();
 
     if (!this.searchInput) {
-      debug('Add button clicked, no search input found');
+      debug("Add button clicked, no search input found");
       return false;
     }
 
@@ -32,11 +32,11 @@ export default class Search extends Component {
     this.setState({ open: false });
 
     if (!channel) {
-      debug('Add button clicked, no channel value');
+      debug("Add button clicked, no channel value");
       return false;
     }
 
-    debug('Add button clicked, dispatching add');
+    debug("Add button clicked, dispatching add");
     return registry.getHandler(types.channelAdd, true)(channel, event);
   }
 
@@ -52,29 +52,38 @@ export default class Search extends Component {
   }
 
   render() {
-    debug('Rendering channel search');
+    debug("Rendering channel search");
 
-    return this.state.open
-      ? (
-        <li className="search" key="search-form">
-          <form className="navbar-form navbar-left" role="search">
-            <input type="text" className="form-control" placeholder="subreddit" ref={this.setSearchInput.bind(this)} />
-            &nbsp;
-            <button className="btn btn-default btn-sm" onClick={this.onAdd.bind(this)}>
-              <span className="fa fa-plus" />
-              <span> &nbsp; Add </span>
-            </button>
-          </form>
-        </li>
-      )
-      : (
-        <li className="search-open" key="search-form">
-          <form className="navbar-form navbar-left" role="search">
-            <button className="btn btn-default btn-sm" onClick={this.onOpen.bind(this)}>
-              <span className="fa fa-search" />
-            </button>
-          </form>
-        </li>
-      );
+    return this.state.open ? (
+      <li className="search" key="search-form">
+        <form className="navbar-form navbar-left" role="search">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="subreddit"
+            ref={this.setSearchInput.bind(this)}
+          />
+          &nbsp;
+          <button
+            className="btn btn-default btn-sm"
+            onClick={this.onAdd.bind(this)}
+          >
+            <span className="fa fa-plus" />
+            <span> &nbsp; Add </span>
+          </button>
+        </form>
+      </li>
+    ) : (
+      <li className="search-open" key="search-form">
+        <form className="navbar-form navbar-left" role="search">
+          <button
+            className="btn btn-default btn-sm"
+            onClick={this.onOpen.bind(this)}
+          >
+            <span className="fa fa-search" />
+          </button>
+        </form>
+      </li>
+    );
   }
 }

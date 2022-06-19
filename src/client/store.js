@@ -1,13 +1,13 @@
-import dispatcher from './dispatcher';
-import ItemStore from './store/ItemStore';
-import ChannelStore from './store/ChannelStore';
-import SettingStore from './store/SettingStore';
-import CurrentChannelStore from './store/CurrentChannelStore';
-import CurrentItemStore from './store/CurrentItemStore';
-import ViewedItemStore from './store/ViewedItemStore';
-import SocketStore from './store/SocketStore';
-import ItemByChannelStore from './store/ItemByChannelStore';
-import FavouriteChannelStore from './store/FavouriteChannelStore';
+import dispatcher from "./dispatcher";
+import ItemStore from "./store/ItemStore";
+import ChannelStore from "./store/ChannelStore";
+import SettingStore from "./store/SettingStore";
+import CurrentChannelStore from "./store/CurrentChannelStore";
+import CurrentItemStore from "./store/CurrentItemStore";
+import ViewedItemStore from "./store/ViewedItemStore";
+import SocketStore from "./store/SocketStore";
+import ItemByChannelStore from "./store/ItemByChannelStore";
+import FavouriteChannelStore from "./store/FavouriteChannelStore";
 
 export const itemStore = new ItemStore(dispatcher);
 export const itemByChannelStore = new ItemByChannelStore(dispatcher);

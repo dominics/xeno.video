@@ -1,12 +1,16 @@
-import libdebug from 'debug';
+import libdebug from "debug";
 
-const debug = libdebug('xeno:store');
+const debug = libdebug("xeno:store");
 
 export default class Store {
-  type = 'unknown';
+  type = "unknown";
+
   api = null;
+
   redis = null;
+
   validator = null;
+
   queues = {};
 
   /**
@@ -37,15 +41,13 @@ export default class Store {
    * @returns Promise.<int>
    */
   prepareList(key) {
-    return this.redis.llenAsync(key)
-      .then(length => {
-        return length;
-      }).catch(err => {
-        debug('Caught key error', key, err, 'deleting key');
+    return this.redis
+      .llenAsync(key)
+      .then((length) => length)
+      .catch((err) => {
+        debug("Caught key error", key, err, "deleting key");
 
-        return this.redis.delAsync(key).then(() => {
-          return 0;
-        });
+        return this.redis.delAsync(key).then(() => 0);
       });
   }
 }

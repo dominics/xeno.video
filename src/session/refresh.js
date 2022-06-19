@@ -1,7 +1,7 @@
-import refresh from 'passport-oauth2-refresh';
-import libdebug from 'debug';
+import refresh from "passport-oauth2-refresh";
+import libdebug from "debug";
 
-const debug = libdebug('xeno:session:refresh');
+const debug = libdebug("xeno:session:refresh");
 
 export default (strategy) => {
   refresh.use(strategy);
@@ -16,7 +16,8 @@ export default (strategy) => {
    * to carry this monkey patching through
    */
   const context = refresh._strategies.reddit.refreshOAuth2;
-  context.getOAuthAccessToken = strategy._oauth2.getOAuthAccessToken.bind(context);
+  context.getOAuthAccessToken =
+    strategy._oauth2.getOAuthAccessToken.bind(context);
 
   return refresh;
 };

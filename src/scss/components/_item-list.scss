@@ -36,7 +36,7 @@
 
   &.active {
     h4 {
-      opacity: 1.0;
+      opacity: 1;
       color: orangered;
       background-color: white;
 
@@ -50,9 +50,10 @@
     border-right: 2px orangered solid;
   }
 
-  &:hover, &:active {
+  &:hover,
+  &:active {
     h4 {
-      opacity: 1.0;
+      opacity: 1;
       background-color: #111;
     }
 
@@ -102,5 +103,4 @@
 
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: $screen-lg-min) {
-
 }

@@ -1,21 +1,21 @@
-import { default as React, Component } from 'react';
+import { default as React, Component } from "react";
 
-import ChannelFavourite from './ChannelFavourite';
-import DropdownMultis from './DropdownMultis';
-import DropdownSubscribed from './DropdownSubscribed';
-import Search from './Search';
+import ChannelFavourite from "./ChannelFavourite";
+import DropdownMultis from "./DropdownMultis";
+import DropdownSubscribed from "./DropdownSubscribed";
+import Search from "./Search";
 
-import libdebug from 'debug'; //
-import {Map, List as ImmutableList} from 'immutable'; //
+import libdebug from "debug"; //
+import { Map, List as ImmutableList } from "immutable"; //
 
-const debug = libdebug('xeno:component:channel:list');
+const debug = libdebug("xeno:component:channel:list");
 
 /**
  * A channel-list is full of channels
  */
 export default class List extends Component {
   static propTypes = {
-    channel:          React.PropTypes.instanceOf(Map).isRequired,
+    channel: React.PropTypes.instanceOf(Map).isRequired,
     favouriteChannel: React.PropTypes.instanceOf(ImmutableList).isRequired,
     currentChannelId: React.PropTypes.string,
   };
@@ -31,27 +31,28 @@ export default class List extends Component {
    * @returns {XML}
    */
   render() {
-    const subscribed = this.props.channel.get('subscribed', new Map());
-    const multis = this.props.channel.get('multis', new Map());
-    const _unused = <DropdownMultis current={this.props.currentChannelId} multis={multis} />;
+    const subscribed = this.props.channel.get("subscribed", new Map());
+    const multis = this.props.channel.get("multis", new Map());
+    const _unused = (
+      <DropdownMultis current={this.props.currentChannelId} multis={multis} />
+    );
 
     return (
       <ol className="nav navbar-nav">
-        {
-          this.props.favouriteChannel.map(
-            (channel) => {
-              return (
-                <ChannelFavourite
-                  key={channel}
-                  id={channel}
-                  selected={channel === this.props.currentChannelId}
-                />
-              );
-            }
-          )
-        }
+        {this.props.favouriteChannel.map((channel) => {
+          return (
+            <ChannelFavourite
+              key={channel}
+              id={channel}
+              selected={channel === this.props.currentChannelId}
+            />
+          );
+        })}
 
-        <DropdownSubscribed current={this.props.currentChannelId} subscribed={subscribed} />
+        <DropdownSubscribed
+          current={this.props.currentChannelId}
+          subscribed={subscribed}
+        />
         <Search />
       </ol>
     );

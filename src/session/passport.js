@@ -1,7 +1,7 @@
-import passport from 'passport';
-import libdebug from 'debug';
+import passport from "passport";
+import libdebug from "debug";
 
-const debug = libdebug('xeno:session:passport');
+const debug = libdebug("xeno:session:passport");
 
 export default (strategy) => {
   passport.serializeUser((user, done) => {

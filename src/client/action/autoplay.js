@@ -1,21 +1,22 @@
-import libdebug from 'debug';
+import libdebug from "debug";
 
-const debug = libdebug('xeno:actions:autoplay');
+const debug = libdebug("xeno:actions:autoplay");
 
 function attach(next, iframe) {
-  debug('Got iframe, processing autoplay', iframe);
-  const player = new window.playerjs.Player(iframe);
-
-  player.on('ready', () => {
-    debug('Player ready to start video');
-
-    player.on('ended', () => {
-      debug('Video ended');
-      next();
-    });
-
-    player.play();
-  });
+  // disabled because want to replace playerjs.io dependency for now
+  // debug("Got iframe, processing autoplay", iframe);
+  // const player = new window.playerjs.Player(iframe);
+  //
+  // player.on("ready", () => {
+  //   debug("Player ready to start video");
+  //
+  //   player.on("ended", () => {
+  //     debug("Video ended");
+  //     next();
+  //   });
+  //
+  //   player.play();
+  // });
 }
 
 /**
@@ -25,9 +26,11 @@ function attach(next, iframe) {
  * @param {function} next
  */
 export default (section, next) => {
-  $(section).find('iframe.embedly-embed').each(function loop() {
-    return attach(next, this);
-  });
+  $(section)
+    .find("iframe.embedly-embed")
+    .each(function loop() {
+      return attach(next, this);
+    });
 
-  debug('Done processing section');
+  debug("Done processing section");
 };

@@ -1,12 +1,14 @@
 export default class Action {
   type = null;
+
   data = null;
+
   err = null;
 
   constructor(type, err = null, data = null) {
-    this.type    = type;
-    this.data    = data;
-    this.err     = err;
+    this.type = type;
+    this.data = data;
+    this.err = err;
     this.created = Date.now() / 1000;
   }
 
@@ -19,6 +21,8 @@ export default class Action {
   }
 
   toString() {
-    return `Action<${this.type}>${this.isError() ? '#ERR' : ''}${JSON.stringify(this.payload)}}`;
+    return `Action<${this.type}>${this.isError() ? "#ERR" : ""}${JSON.stringify(
+      this.payload
+    )}}`;
   }
 }

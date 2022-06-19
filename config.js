@@ -11,26 +11,28 @@
  *   NODE_ENV: string, development|production
  *   TEST_USE_CHROME 1|0
  *   DEBUG_PORT int
+ *
+ * @todo Move all of this into webpack configuration?
  */
-const path = require('path');
-const fs = require('fs');
+const path = require("path");
+const fs = require("fs");
 
-const conf = __dirname + '/.env';
+const conf = __dirname + "/.env";
 
 if (fs.existsSync(conf)) {
-  require('node-env-file')(conf);
+  require("node-env-file")(conf);
 } else {
-  require('debug')('xeno:env')('No env file found', conf);
+  require("debug")("xeno:env")("No env file found", conf);
 }
 
-const debug = (process.env.NODE_ENV === 'development');
-const output = path.join(__dirname, 'build');
+const debug = process.env.NODE_ENV === "development";
+const output = path.join(__dirname, "build");
 
 const nodeOptions = [];
 
 if (process.env.DEBUG_PORT) {
   nodeOptions.push(`--debug=${process.env.DEBUG_PORT}`);
-  nodeOptions.push('--nolazy');
+  nodeOptions.push("--nolazy");
 }
 
 const config = {
@@ -40,72 +42,50 @@ const config = {
   compress: !debug,
   browserifyDebug: debug,
 
-  node: `${process.execPath} ${nodeOptions.join(' ')}`,
+  node: `${process.execPath} ${nodeOptions.join(" ")}`,
   nodeOptions: nodeOptions,
-  vendorRegex: /(node_modules|bower_components)/,
+  vendorRegex: /(node_modules)/,
 
-  socket: './node_modules/socket.io-client/socket.io.js',
+  socket: "./node_modules/socket.io-client/socket.io.js",
 
   build: {
     output: output,
-    lcov:   output,
+    lcov: output,
   },
 
   server: {
-    entryPoint: './index.js',
+    entryPoint: "./index.js",
     src: {
-      js: ['src/**/*.js?(x)'], // We include the client-side code, so we can unit-test it server-side
-      jsExcl: ['src/**/*.js?(x)', '!src/client/**/*.js?(x)'],
-      jade: ['src/views/**/*.jade'],
+      js: ["src/**/*.js?(x)"], // We include the client-side code, so we can unit-test it server-side
+      jsExcl: ["src/**/*.js?(x)", "!src/client/**/*.js?(x)"],
+      jade: ["src/views/**/*.jade"],
     },
-    output: 'dist',
+    output: "dist",
   },
 
   client: {
-    entryPoint: './src/client/app.jsx',
+    entryPoint: "./src/client/app.jsx",
     src: {
-      js: ['src/client/**/*.js?(x)'],
+      js: ["src/client/**/*.js?(x)"],
     },
-    compiled: 'app.js',
-    output: 'public/js/',
+    compiled: "app.js",
+    output: "public/js/",
   },
 
   test: {
-    src: ['test/**/*.js', '!test/fixture/**/*'],
-    output: 'dist-test',
-    tests: 'dist-test/**/*.spec.js',
-    bootstrap: './dist-test/bootstrap.js',
-    coverage: 'dist/**/*.js',
-  },
-
-  bower: {
-    src: 'bower_components',
-    compiled: 'common.js',
-    output: {
-      js: 'public/js/',
-      font: 'public/fonts',
-    },
-    overrides: {
-      'bootstrap-sass': {
-        main: [
-          './assets/javascripts/bootstrap.js',
-          './assets/fonts/bootstrap/*',
-        ],
-      },
-      'font-awesome': {
-        main: [
-          './fonts/*',
-        ],
-      },
-    },
+    src: ["test/**/*.js", "!test/fixture/**/*"],
+    output: "dist-test",
+    tests: "dist-test/**/*.spec.js",
+    bootstrap: "./dist-test/bootstrap.js",
+    coverage: "dist/**/*.js",
   },
 
   css: {
-    entryPoint: 'src/scss/style.scss',
+    entryPoint: "src/scss/style.scss",
     src: {
-      scss: ['src/scss/**/*.scss'],
+      scss: ["src/scss/**/*.scss"],
     },
-    output: 'public/css',
+    output: "public/css",
   },
 };
 
@@ -114,7 +94,6 @@ config.clean = [
   config.server.output,
   config.test.output,
   config.css.output,
-  config.bower.output.font,
 ];
 
 module.exports = config;

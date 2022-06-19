@@ -1,10 +1,10 @@
-import { default as React, Component } from 'react';
-import types from './../../action/types';
-import registry from './../../action';
-import Setting from './../../setting/Setting';
-import libdebug from 'debug';
+import { default as React, Component } from "react";
+import types from "./../../action/types";
+import registry from "./../../action";
+import Setting from "./../../setting/Setting";
+import libdebug from "debug";
 
-const debug = libdebug('xeno:component:setting:checkbox');
+const debug = libdebug("xeno:component:setting:checkbox");
 
 export default class Checkbox extends Component {
   static propTypes = {
@@ -30,8 +30,11 @@ export default class Checkbox extends Component {
      */
     window.setTimeout(() => {
       this.checked = toState;
-      debug('Firing click handler for checkbox');
-      (registry.getHandler(types.settingUpdate, preventDefault))([new Setting(setting, toState)], event);
+      debug("Firing click handler for checkbox");
+      registry.getHandler(types.settingUpdate, preventDefault)(
+        [new Setting(setting, toState)],
+        event
+      );
     }, 0);
 
     return false;
@@ -41,15 +44,16 @@ export default class Checkbox extends Component {
     const id = this.props.id;
     const htmlId = `setting-${id}`;
 
-    const checked = this.checked === null
-      ? this.props.checked
-      : this.checked;
+    const checked = this.checked === null ? this.props.checked : this.checked;
 
     const next = !checked;
 
     return (
       <li className="setting-checkbox">
-        <a onClick={this.handler.bind(this, this.props.id, next, true)} className={checked ? 'checked' : 'unchecked'}>
+        <a
+          onClick={this.handler.bind(this, this.props.id, next, true)}
+          className={checked ? "checked" : "unchecked"}
+        >
           {this.props.title}
         </a>
       </li>

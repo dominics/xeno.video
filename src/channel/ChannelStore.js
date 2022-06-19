@@ -1,9 +1,9 @@
-import Store from './../reddit/Store';
-import Promise from 'bluebird';
-import libdebug from 'debug';
+import Promise from "bluebird";
+import libdebug from "debug";
+import Store from "../reddit/Store";
 
-const debug = libdebug('xeno:store:channel');
-const workerLog = libdebug('xeno:store:channel:worker');
+const debug = libdebug("xeno:store:channel");
+const workerLog = libdebug("xeno:store:channel:worker");
 
 export default class ChannelStore extends Store {
   /**
@@ -22,27 +22,27 @@ export default class ChannelStore extends Store {
   constructor(api, redis, validator, queues, sessionStore) {
     super(api, redis, validator, queues);
 
-    this.type = 'channel';
+    this.type = "channel";
     this.sessionStore = sessionStore;
     this.queues.channelsForUser.process(this.processChannelsForUser.bind(this));
   }
 
   getFromSession(req) {
-    if (!req.session || typeof req.session.channels !== 'object') {
-      return Promise.reject('No channels found in session');
+    if (!req.session || typeof req.session.channels !== "object") {
+      return Promise.reject("No channels found in session");
     }
 
     return Promise.resolve(req.session.channels);
   }
 
   getAll(req, res) {
-    debug('Getting all channels for user');
+    debug("Getting all channels for user");
 
     return this.ensureAuthenticated(req, ChannelStore.getDefaults())
       .then(() => this.enqueueChannelsForUser(req))
       .then(() => this.getFromSession(req))
-      .catch(err => {
-        debug('Got error, resolving to default', err);
+      .catch((err) => {
+        debug("Got error, resolving to default", err);
         return Promise.resolve({
           subscribed: [],
           multis: [],
@@ -52,48 +52,59 @@ export default class ChannelStore extends Store {
   }
 
   enqueueChannelsForUser(req) {
-    debug('Enqueuing update of channels for user');
+    debug("Enqueuing update of channels for user");
     const now = Math.floor(Date.now() / 1000);
     const refreshed = req.session.channelsRefreshed;
 
-    if (false && refreshed && refreshed > (now - ChannelStore.CACHE_TTL_CHANNELS)) {
-      debug('Skipped API refresh because of cool-down: ', refreshed - (now - ChannelStore.CACHE_TTL_CHANNELS));
+    if (
+      false &&
+      refreshed &&
+      refreshed > now - ChannelStore.CACHE_TTL_CHANNELS
+    ) {
+      debug(
+        "Skipped API refresh because of cool-down: ",
+        refreshed - (now - ChannelStore.CACHE_TTL_CHANNELS)
+      );
       return Promise.resolve();
     }
 
-    return this.queues.channelsForUser.add({
-      id: req.sessionID,
-      token: req.session.passport.user.accessToken,
-    }, {
-      attempts: 3,
-      backoff: {
-        type: 'exponential',
-        delay: 10000,
+    return this.queues.channelsForUser.add(
+      {
+        id: req.sessionID,
+        token: req.session.passport.user.accessToken,
       },
-      timeout: 30000,
-    })
+      {
+        attempts: 3,
+        backoff: {
+          type: "exponential",
+          delay: 10000,
+        },
+        timeout: 30000,
+      }
+    );
   }
 
   processChannelsForUser(job) {
-    workerLog('Processing channels for user in background');
+    workerLog("Processing channels for user in background");
 
-    const {id, token} = job.data;
+    const { id, token } = job.data;
 
     if (!id || !token) {
-      throw new Error('You must provide a session ID and token in job data');
+      throw new Error("You must provide a session ID and token in job data");
     }
 
-    return this.sessionStore.getAsync(id)
+    return this.sessionStore
+      .getAsync(id)
       .then((session) => {
-        workerLog('Got session for id', id);
-        return this.getFromApi(session.passport.user.accessToken)
-          .then((subscriptions) => {
-            return this.saveToSession(id, session, subscriptions)
-              .then(() => Promise.resolve(subscriptions))
-          });
+        workerLog("Got session for id", id);
+        return this.getFromApi(session.passport.user.accessToken).then(
+          (subscriptions) => this.saveToSession(id, session, subscriptions).then(() =>
+              Promise.resolve(subscriptions)
+            )
+        );
       })
       .catch((err) => {
-        workerLog('Error processing channels for user', err);
+        workerLog("Error processing channels for user", err);
 
         if (err instanceof Error) {
           console.error(err.stack);
@@ -104,32 +115,29 @@ export default class ChannelStore extends Store {
   }
 
   saveToSession(id, session, subscriptions) {
-    workerLog('Got subscribed channels, saving to session');
+    workerLog("Got subscribed channels, saving to session");
 
     session.channels = subscriptions;
     session.channelsRefreshed = Math.floor(Date.now() / 1000);
 
-    return this.sessionStore.setAsync(id, session)
-      .then(() => {
-        debug('Saved to session');
-      });
+    return this.sessionStore.setAsync(id, session).then(() => {
+      debug("Saved to session");
+    });
   }
 
   getFromApi(token) {
-    workerLog('Getting subscription details from API');
+    workerLog("Getting subscription details from API");
 
     this.api.setToken(token);
 
     return Promise.join(
       this.api.subscribed(),
       this.api.multis(),
-      (subscribed, multis) => {
-        return Promise.resolve({
+      (subscribed, multis) => Promise.resolve({
           subscribed,
           multis,
           defaults: ChannelStore.getDefaults(),
-        });
-      }
+        })
     );
   }
 
@@ -138,11 +146,11 @@ export default class ChannelStore extends Store {
    */
   static getDefaults() {
     return [
-      { id: 'videos' },
-      { id: 'aww' },
-      { id: 'music' },
-      { id: 'deepintoyoutube' },
-      { id: 'all' },
+      { id: "videos" },
+      { id: "aww" },
+      { id: "music" },
+      { id: "deepintoyoutube" },
+      { id: "all" },
     ];
   }
 }

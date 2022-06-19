@@ -1,7 +1,6 @@
 *.log
 build
 node_modules
-bower_components
 public/css
 public/fonts
 public/js/**/*.js

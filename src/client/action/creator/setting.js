@@ -1,17 +1,17 @@
-import types from './../types';
-import libdebug from 'debug';
+import libdebug from "debug";
+import types from "../types";
 
-const debug = libdebug('xeno:actions:setting');
+const debug = libdebug("xeno:actions:setting");
 
 export default (registry, api, store) => {
   function _receive(requestPromise) {
     return requestPromise
       .then((data) => {
-        debug('Got setting data from API', data);
+        debug("Got setting data from API", data);
         return registry.getCreator(types.settingReceive)(null, data);
       })
       .catch((e) => {
-        debug('Got error receiving settings from API', e);
+        debug("Got error receiving settings from API", e);
         return registry.getCreator(types.settingReceive)(e);
       });
   }
@@ -31,7 +31,7 @@ export default (registry, api, store) => {
 
     _receive(api.setting.refresh());
 
-    debug('Beginning setting initialization');
+    debug("Beginning setting initialization");
     return previous(err, _data);
   }
 
@@ -46,7 +46,7 @@ export default (registry, api, store) => {
       return previous(err);
     }
 
-    debug('Beginning setting update');
+    debug("Beginning setting update");
     _receive(api.setting.update(settings));
 
     return previous(err, settings);
@@ -55,4 +55,3 @@ export default (registry, api, store) => {
   registry.wrap(types.initialize, initialize);
   registry.wrap(types.settingUpdate, settingUpdate);
 };
-

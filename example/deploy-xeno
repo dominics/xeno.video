@@ -26,7 +26,7 @@ echo "Pulling image: $IMAGE"
 docker pull $IMAGE
 set +e
 
-if [ -n $(docker ps -aqf name=${INSTANCE_NAME}) ]; then
+if [[ -n $(docker ps -aqf name=${INSTANCE_NAME}) ]]; then
     echo "Instance running: stopping current instance"
     docker stop ${INSTANCE_NAME}
 

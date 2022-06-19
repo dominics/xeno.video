@@ -1,9 +1,9 @@
-import { MapStore } from 'flux/utils';
-import types from '../action/types';
-import libdebug from 'debug';
-import { Map } from 'immutable';
+import { MapStore } from "flux/utils";
+import libdebug from "debug";
+import { Map } from "immutable";
+import types from "../action/types";
 
-const debug = libdebug('xeno:store:channel');
+const debug = libdebug("xeno:store:channel");
 
 export default class ChannelStore extends MapStore {
   /**
@@ -15,13 +15,13 @@ export default class ChannelStore extends MapStore {
     switch (action.type) {
       case types.channelReceive:
         if (action.isError()) {
-          debug('Channel store received error updating channels');
+          debug("Channel store received error updating channels");
           return state;
         }
 
-        debug('Channel store received channel data, mutating', action.data);
+        debug("Channel store received channel data, mutating", action.data);
 
-        return state.withMutations(map => {
+        return state.withMutations((map) => {
           let subscribed = new Map();
           let multis = new Map();
 
@@ -33,8 +33,8 @@ export default class ChannelStore extends MapStore {
             multis = multis.set(channel.id, channel);
           }
 
-          map.set('subscribed', subscribed);
-          map.set('multis', multis);
+          map.set("subscribed", subscribed);
+          map.set("multis", multis);
         });
       default:
         return state;
