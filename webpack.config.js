@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-var-requires,global-require */
 
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
@@ -74,6 +74,33 @@ const client = {
         use: [
           'style-loader',
           'css-loader'
+        ]
+      },
+      {
+        test: /\.(scss)$/,
+        use: [
+          {
+            // inject CSS to page
+            loader: 'style-loader'
+          }, {
+            // translates CSS into CommonJS modules
+            loader: 'css-loader'
+          }, {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                // postcss plugins, can be exported to postcss.config.js
+                plugins () {
+                  return [
+                    require('autoprefixer')
+                  ];
+                }
+              }
+            }
+          },
+          {
+            loader: 'sass-loader'
+          }
         ]
       },
       {

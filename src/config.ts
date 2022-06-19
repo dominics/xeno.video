@@ -8,9 +8,9 @@
 import fs from 'fs'
 import path from 'path'
 import _ from 'lodash'
-import envFile from 'node-env-file'
+import dotenv from 'dotenv'
 
-interface Config {
+export interface Config {
   NODE_ENV: boolean
   HOST: boolean
   PORT: boolean
@@ -19,8 +19,8 @@ interface Config {
   REDDIT_CONSUMER_SECRET: boolean
   REDDIT_OAUTH_SCOPE: boolean
   REDDIT_DEFAULT_REFRESH_TOKEN: boolean
-  REDIS_PORT: boolean
-  REDIS_HOST: boolean
+  REDIS_PORT?: string
+  REDIS_HOST?: string
   DEBUG: boolean
   GOOGLE_ANALYTICS_ID: boolean
   LOG_FILE: boolean
@@ -29,7 +29,7 @@ interface Config {
 /**
  * true for required, false for not required
  */
-const schema: Config = {
+const schema: Record<keyof Config, boolean> = {
   NODE_ENV: true,
   HOST: true,
   PORT: true,
@@ -61,7 +61,7 @@ function getMergedConfig(): Config {
 
   configPaths.forEach((configPath) => {
     if (fs.existsSync(configPath)) {
-      envFile(configPath);
+      dotenv.config({ override: true, path: configPath, debug: true })
     }
   });
 

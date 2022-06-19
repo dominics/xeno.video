@@ -5,7 +5,6 @@ import supertest from "supertest";
 import jsdom from "jsdom";
 import TestUtils from "react-dom/test-utils";
 import path from "path";
-import jquery from "../bower_components/jquery/src/jquery";
 import log from "../src/util/log";
 import config from "../config";
 

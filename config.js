@@ -44,7 +44,7 @@ const config = {
 
   node: `${process.execPath} ${nodeOptions.join(" ")}`,
   nodeOptions: nodeOptions,
-  vendorRegex: /(node_modules|bower_components)/,
+  vendorRegex: /(node_modules)/,
 
   socket: "./node_modules/socket.io-client/socket.io.js",
 
@@ -80,26 +80,6 @@ const config = {
     coverage: "dist/**/*.js",
   },
 
-  bower: {
-    src: "bower_components",
-    compiled: "common.js",
-    output: {
-      js: "public/js/",
-      font: "public/fonts",
-    },
-    overrides: {
-      "bootstrap-sass": {
-        main: [
-          "./assets/javascripts/bootstrap.js",
-          "./assets/fonts/bootstrap/*",
-        ],
-      },
-      "font-awesome": {
-        main: ["./fonts/*"],
-      },
-    },
-  },
-
   css: {
     entryPoint: "src/scss/style.scss",
     src: {
@@ -114,7 +94,6 @@ config.clean = [
   config.server.output,
   config.test.output,
   config.css.output,
-  config.bower.output.font,
 ];
 
 module.exports = config;

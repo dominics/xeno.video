@@ -23,7 +23,6 @@ module.exports = (prev) => {
     // list of files / patterns to load in the browser
     files: [
       "node_modules/babel-core/browser-polyfill.js",
-      path.join(config.bower.output.js, config.bower.compiled),
       config.client.src.test[0],
       config.server.src.test[0],
     ],

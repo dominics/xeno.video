@@ -4,8 +4,6 @@
 const autoprefixer = require("gulp-autoprefixer");
 const babel = require("gulp-babel");
 const babelify = require("babelify");
-const bower = require("gulp-bower");
-const bowerFiles = require("bower-files");
 const browserify = require("browserify");
 const buffer = require("vinyl-buffer");
 const concat = require("gulp-concat");
@@ -64,8 +62,7 @@ gulp.task("lib", sequence("js", "coverage"));
 
 // Concrete
 gulp.task("lint", ["lintClient", "lintServer"]);
-gulp.task("js", ["bower", "jsClient", "jsServer", "jsTest"]);
-gulp.task("bower", sequence("bowerInstall", "bowerJs", "bowerFont"));
+gulp.task("js", ["jsClient", "jsServer", "jsTest"]);
 
 /*
  * And finally, our task definitions
@@ -81,46 +78,6 @@ gulp.task("pkill", () =>
 );
 
 gulp.task("clean", () => del(config.clean));
-
-/* Build tasks */
-gulp.task("bowerInstall", () => bower().pipe(gulp.dest(config.bower.src)));
-
-gulp.task("bowerJs", () => {
-  const {files} = bowerFiles({ overrides: config.bower.overrides })
-    .self()
-    .camelCase(false)
-    .join({
-      font: ["eot", "otf", "woff", "woff2", "ttf", "svg"],
-      js: ["js", "jsx"],
-    })
-    .match("!**/*.min.js")
-    .ext("js");
-
-  return gulp
-    .src(files.concat(config.socket))
-    .pipe(debug({ title: "bower-build" }))
-    .pipe(gulpif(config.sourcemap, sourcemaps.init({ loadMaps: true })))
-    .pipe(concat("common.js"))
-    .pipe(gulpif(config.compress, uglify({ mangle: false })))
-    .pipe(gulpif(config.sourcemap, sourcemaps.write("./")))
-    .pipe(gulp.dest(config.bower.output.js));
-});
-
-gulp.task("bowerFont", () => {
-  const {files} = bowerFiles({ overrides: config.bower.overrides })
-    .self()
-    .camelCase(false)
-    .join({
-      font: ["eot", "otf", "woff", "woff2", "ttf", "svg"],
-      js: ["js", "jsx"],
-    })
-    .ext("font");
-
-  return gulp
-    .src(files)
-    .pipe(debug({ title: "bower-font" }))
-    .pipe(gulp.dest(config.bower.output.font));
-});
 
 gulp.task("jsClient", () => browserify({
     entries: config.client.entryPoint,
@@ -174,7 +131,7 @@ gulp.task("coverage", () => gulp
     .pipe(istanbul({ instrumenter: isparta.Instrumenter }))
     .pipe(istanbul.hookRequire()));
 
-gulp.task("css", ["bowerInstall"], () => gulp
+gulp.task("css", () => gulp
     .src(config.css.entryPoint)
     .pipe(debug({ title: "css-build" }))
     .pipe(gulpif(config.sourcemap, sourcemaps.init({ loadMaps: true })))
@@ -183,9 +140,6 @@ gulp.task("css", ["bowerInstall"], () => gulp
         outputStyle: config.compress ? "compressed" : "expanded",
         includePaths: [
           "./scss",
-          path.join(config.bower.src, "bootstrap-sass/assets/stylesheets"),
-          path.join(config.bower.src, "font-awesome/scss"),
-          path.join(config.bower.src, "awesome-bootstrap-checkbox"),
         ],
       })
     )

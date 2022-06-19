@@ -3,19 +3,20 @@ import libdebug from "debug";
 const debug = libdebug("xeno:actions:autoplay");
 
 function attach(next, iframe) {
-  debug("Got iframe, processing autoplay", iframe);
-  const player = new window.playerjs.Player(iframe);
-
-  player.on("ready", () => {
-    debug("Player ready to start video");
-
-    player.on("ended", () => {
-      debug("Video ended");
-      next();
-    });
-
-    player.play();
-  });
+  // disabled because want to replace playerjs.io dependency for now
+  // debug("Got iframe, processing autoplay", iframe);
+  // const player = new window.playerjs.Player(iframe);
+  //
+  // player.on("ready", () => {
+  //   debug("Player ready to start video");
+  //
+  //   player.on("ended", () => {
+  //     debug("Video ended");
+  //     next();
+  //   });
+  //
+  //   player.play();
+  // });
 }
 
 /**

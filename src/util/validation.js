@@ -16,7 +16,7 @@ export const settingUpdate = {
       .required()
       .items(
         Joi.object().keys({
-          id: Joi.string().required().valid(WRITABLE_SETTINGS),
+          id: Joi.string().required().valid(...WRITABLE_SETTINGS),
           value: Joi.boolean().required(),
         })
       ),

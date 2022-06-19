@@ -6,7 +6,6 @@
 - Replace gulp with webpack bundling
 - Update all dependencies
   - Replace superagent amd request with fetch or axios
-  - Replace browserify, bower with Webpack
   - Remove babel (not needed with TS build to node-compatible ES6+)\
   - Replace karma (with Jest and Cypress?)
   - Replace yargs with oclif
