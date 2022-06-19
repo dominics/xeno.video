@@ -2,14 +2,15 @@ import deps from './../src/deps';
 import config from './../src/config';
 
 describe('module app', function() {
-  this.sut = null;
+  let sut = null;
 
-  before(() => {
-    this.sut = deps(config()).container.app;
+  beforeAll(() => {
+    sut = deps(config()).container.app;
   });
 
   it('is an express instance', () => {
-    expect(this.sut).itself.to.respondTo('use');
+    expect(sut?.use).toBeDefined()
+    expect(typeof sut.use).toBe('function')
   });
 });
 //

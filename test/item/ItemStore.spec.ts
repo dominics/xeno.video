@@ -4,7 +4,7 @@ import {default as storeTest, queue} from './../reddit/Store';
 describe('store (item) concrete', function () {
   this.sut = null;
 
-  before(() => {
+  beforeAll(() => {
     const api = null;
     const redis = null;
     const validator = null;

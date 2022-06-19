@@ -2,7 +2,7 @@ import deps from './../../src/deps';
 import config from './../../src/config';
 
 describe('functional test: user routes', function tests() {
-  before(() => {
+  beforeAll(() => {
     this.container = deps(config()).container;
     this.container.config.LOG_FILE = outfile(['functional', 'index']);
 
@@ -18,7 +18,7 @@ describe('functional test: user routes', function tests() {
     });
   });
 
-  after(() => {
+  afterAll(() => {
     (this.container.shutdown)();
   });
 });

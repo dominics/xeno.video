@@ -4,7 +4,7 @@ import {default as storeTest, queue} from './../reddit/Store';
 describe('store (channel) concrete', function() {
   this.sut = null;
 
-  before(() => {
+  beforeAll(() => {
     const api = null;
     const redis = null;
     const validator = {
@@ -38,12 +38,12 @@ describe('store (channel) concrete', function() {
       const res = null; //
 
       const result = this.sut.getAll(req, res);
-      return expect(result).to.eventually.be.an('object').then((subscriptions) => {
+      return expect(result).toBeInstanceOf(Object).then((subscriptions) => {
         expect(subscriptions).to.haveOwnProperty('multis')
           .and.haveOwnProperty('subscribed');
 
-        expect(subscriptions.multis).to.be.an.instanceof(Array);
-        expect(subscriptions.subscribed).to.be.an.instanceof(Array);
+        expect(subscriptions.multis).toBeInstanceOf(Array);
+        expect(subscriptions.subscribed).toBeInstanceOf(Array);
       });
     });
   });

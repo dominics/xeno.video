@@ -15,8 +15,8 @@ describe('util module validation', () => {
     Object.keys(invalid).forEach((testcase) => {
       it('rejects invalid parameter: ' + testcase, (done) => {
         sut.validate(invalid[testcase], (err, value) => {
-          expect(err).to.be.instanceof(Error);
-          expect(value).to.be.empty;
+          expect(err).toBeInstanceOf(Error);
+          expect(Object.keys(value)).toHaveLength(0);
           done();
         });
       });

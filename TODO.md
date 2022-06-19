@@ -10,10 +10,10 @@
   - Remove babel (not needed with TS build to node-compatible ES6+)\
   - Replace karma (with Jest and Cypress?)
   - Replace yargs with oclif
-  - Replace 
 - Maybe start a simple all-encompassing functional test with Cypress before going further?
 - Add Typescript configuration, start to convert our code where easy
 - Update React (currently 0.14!)
+- Replace flux with redux
 - Replace container with serverless? or prepare container to run in AWS Lambda etc.?
 
 ### Question about strategy

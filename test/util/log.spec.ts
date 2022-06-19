@@ -5,16 +5,16 @@ const _outfile = (ident) => outfile.apply(undefined, ['util', 'log', ident]);
 describe('module log', () => {
   describe('class Log', () => {
     it('can be instantiated, for whatever good that does', () => {
-      expect(new log.Log()).to.be.an.instanceof(log.Log);
+      expect(new log.Log()).toBeInstanceOf(log.Log);
     });
 
     describe('static methods', () => {
       describe('.setLevel(level)', () => {
         it('can be used to set the log level', () => {
           log.Log.setLevel(log.Log.error);
-          expect(log.Log.level).to.be.eql(log.Log.error);
+          expect(log.Log.level).toEqual(log.Log.error);
           log.Log.setLevel(log.Log.debug);
-          expect(log.Log.level).to.be.eql(log.Log.debug);
+          expect(log.Log.level).toEqual(log.Log.debug);
         });
       });
 

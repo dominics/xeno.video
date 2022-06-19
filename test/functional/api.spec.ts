@@ -2,7 +2,7 @@ import deps from './../../src/deps';
 import config from './../../src/config';
 
 describe('functional test: API routes', function tests() {
-  before(() => {
+  beforeAll(() => {
     this.container = deps(config()).container;
     this.container.config.LOG_FILE = outfile(['functional', 'api']);
 
@@ -16,12 +16,12 @@ describe('functional test: API routes', function tests() {
         .get('/api/channel/all')
         .expect('Content-Type', /application\/json/)
         .expect(function(res) {
-          expect(res.body).to.be.an('object');
-          expect(res.body.type).to.be.eql('channel');
-          expect(res.body.data).to.be.a('object');
-          expect(res.body.data.subscribed).to.be.an.instanceof(Array);
-          expect(res.body.data.multis).to.be.an.instanceof(Array);
-          expect(res.body.data.defaults).to.be.an.instanceof(Array);
+          expect(res.body).toBeInstanceOf(Object);
+          expect(res.body.type).toEqual('channel');
+          expect(res.body.data).toBeInstanceOf(Object);
+          expect(res.body.data.subscribed).toBeInstanceOf(Array);
+          expect(res.body.data.multis).toBeInstanceOf(Array);
+          expect(res.body.data.defaults).toBeInstanceOf(Array);
         })
         .expect(200, done);
     });
@@ -33,9 +33,9 @@ describe('functional test: API routes', function tests() {
         .get('/api/setting/all')
         .expect('Content-Type', /application\/json/)
         .expect(function(res) {
-          expect(res.body).to.be.an('object');
-          expect(res.body.type).to.be.eql('setting');
-          expect(res.body.data).to.be.instanceOf(Array);
+          expect(res.body).toBeInstanceOf(Object);
+          expect(res.body.type).toEqual('setting');
+          expect(res.body.data).toBeInstanceOf(Array);
         })
         .expect(200, done);
     });
@@ -59,9 +59,9 @@ describe('functional test: API routes', function tests() {
         .set('Content-Type', 'application/json')
         .expect('Content-Type', /application\/json/)
         .expect(function(res) {
-          expect(res.body).to.be.an('object');
-          expect(res.body.type).to.be.eql('setting');
-          expect(res.body.data).to.deep.include.members([{ id: 'nsfw', value: true }]);
+          expect(res.body).toBeInstanceOf(Object);
+          expect(res.body.type).toEqual('setting');
+          expect(res.body.data).toEqual(expect.arrayContaining([{ id: 'nsfw', value: true }]));
         })
         .expect(200, done);
     });
@@ -73,15 +73,15 @@ describe('functional test: API routes', function tests() {
         .get('/api/item/channel/videos')
         .expect('Content-Type', /application\/json/)
         .expect(function(res) {
-          expect(res.body).to.be.an('object');
-          expect(res.body.type).to.be.eql('item');
-          expect(res.body.data).to.be.instanceOf(Array);
+          expect(res.body).toBeInstanceOf(Object);
+          expect(res.body.type).toEqual('item');
+          expect(res.body.data).toBeInstanceOf(Array);
         })
         .expect(200, done);
     });
   });
 
-  after(() => {
+  afterAll(() => {
     (this.container.shutdown)();
   });
 });

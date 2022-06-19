@@ -1,7 +1,7 @@
 import Setting from './../../../src/client/api/Setting';
 
 describe('client api class Setting', function() {
-  before(() => {
+  beforeAll(() => {
     this.server = sinon.fakeServer.create();
     this.server.autoRespond = true;
 
@@ -16,7 +16,7 @@ describe('client api class Setting', function() {
     this.setting = new Setting();
   });
 
-  after(() => { //
+  afterAll(() => { //
     this.server.restore();
   });
 
@@ -26,8 +26,7 @@ describe('client api class Setting', function() {
     });
 
     it('eventually returns a map of settings', () => {
-      return expect(this.setting.refresh())
-        .to.eventually.be.instanceOf(Array);
+      return expect(this.setting.refresh()).toBeInstanceOf(Array);
     });
   });
 });

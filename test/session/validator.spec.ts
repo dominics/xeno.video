@@ -2,7 +2,7 @@ import validator from './../../src/session/validator';
 
 describe('session module validator', () => {
   it('is a constructor function', () => {
-    expect(validator).to.be.a('function');
+    expect(validator).toBeInstanceOf(Function);
   });
 
   it('validates a request is authenticated', () => {
