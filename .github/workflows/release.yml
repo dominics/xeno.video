@@ -1,9 +1,12 @@
-name: build
+name: release
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,3 +20,6 @@ jobs:
           cache: "pnpm"
       - run: pnpm install
       - run: pnpm ci
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm release

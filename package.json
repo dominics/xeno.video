@@ -76,7 +76,9 @@
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
+    "@popperjs/core": "^2.11.5",
     "@redux-devtools/core": "^3.13.1",
+    "@semantic-release/changelog": "^6.0.1",
     "@swc/core": "^1.2.204",
     "@swc/jest": "^0.2.21",
     "@types/debug": "^4.1.7",
@@ -113,10 +115,12 @@
     "jsdom": "^19.0.0",
     "opt-cli": "^1.6.0",
     "path-browserify": "^1.0.1",
+    "postcss": "^8.4.14",
     "prettier": "^2.7.1",
     "react-refresh": "^0.14.0",
     "regenerator": "^0.14.7",
     "sass-loader": "13.0.0",
+    "semantic-release": "^19.0.3",
     "socket.io-client": "^4.5.1",
     "sourcemapify": "^2.0.2",
     "supertest": "^6.2.3",
@@ -138,5 +142,15 @@
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
+  },
+  "release": {
+    "ci": false,
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/git",
+      "@semantic-release/github"
+    ]
   }
 }
